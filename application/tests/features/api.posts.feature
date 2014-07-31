@@ -463,7 +463,7 @@ Feature: Testing the Posts API
 				{
 					"full_name":"David Kobia",
 					"description":"Skinny, homeless Kenyan last seen in the vicinity of the greyhound station",
-			"date_of_birth":null,
+					"date_of_birth":null,
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta"
 				},
@@ -490,7 +490,7 @@ Feature: Testing the Posts API
 				{
 					"full_name":"David Kobia",
 					"description":"Skinny, homeless Kenyan last seen in the vicinity of the greyhound station",
-			"date_of_birth":null,
+					"date_of_birth":null,
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta",
 					"missing_status":"believed_missing"
@@ -718,7 +718,7 @@ Feature: Testing the Posts API
 				{
 					"full_name":"David Kobia",
 					"description":"Skinny, homeless Kenyan last seen in the vicinity of the greyhound station",
-			"date_of_birth":null,
+					"date_of_birth":null,
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta",
 					"missing_status":"believed_missing"

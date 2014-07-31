@@ -11,11 +11,12 @@
 
 use Ushahidi\Entity\Post;
 use Ushahidi\Entity\PostRepository;
+use Ushahidi\Usecase\Post\UpdatePostRepository;
 use Ushahidi\Entity\FormAttributeRepository;
 use Ushahidi\Entity\PostSearchData;
 use Aura\DI\InstanceFactory;
 
-class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostRepository
+class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostRepository, UpdatePostRepository
 {
 	protected $form_attribute_repo;
 	protected $post_value_factory;
@@ -248,6 +249,26 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 			->where('post_id', '=', $id)
 			->execute($this->db);
 		return $result->as_array(NULL, 'tag_id');
+	}
+
+
+	// UpdatePostRepository
+	public function isSlugAvailable($slug)
+	{
+		return $this->selectCount(compact('slug')) === 0;
+	}
+
+	// UpdatePostRepository
+	public function updatePost($id, Array $update)
+	{
+		if ($id && $update)
+		{
+			$this->update(compact('id'), $update);
+
+			// @todo update post-tags
+			// @todo update post-values
+		}
+		return $this->get($id);
 	}
 
 }

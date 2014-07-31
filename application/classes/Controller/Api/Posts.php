@@ -208,11 +208,36 @@ class Controller_Api_Posts extends Ushahidi_Api {
 	 */
 	public function action_put_index()
 	{
-		$post = $this->_request_payload;
+		$format  = service('formatter.entity.post');
+		$parser  = service('parser.post.update');
+		$usecase = service('usecase.post.update');
 
-		$_post = $this->resource();
+		$id = $this->request->param('id');
+		$post = service('repository.post')->get($id);
 
-		$this->create_or_update_post($_post, $post);
+		if (!$post->id)
+		{
+			throw new HTTP_Exception_404('Post :id does not exist', array(
+				':id' => $id,
+			));
+		}
+
+		try
+		{
+			$request = $parser($this->_request_payload);
+			$usecase->interact($post, $request);
+		}
+		catch (Ushahidi\Exception\ValidatorException $e)
+		{
+			// Also handles ParserException
+			throw new HTTP_Exception_400('Validation Error: \':errors\'', array(
+				':errors' => implode(', ', Arr::flatten($e->getErrors())),
+			));
+		}
+
+		$this->_response_payload = $format($post);
+		$this->_response_payload['updated_fields'] = $usecase->getUpdated();
+		$this->_response_payload['allowed_methods'] = $this->_allowed_methods();
 	}
 
 	/**
