@@ -15,17 +15,12 @@ use Ushahidi\Data;
 
 class PostData extends Data
 {
-	public $id;
-	public $parent_id;
 	public $form_id;
 	public $user_id;
-	public $type;
 	public $title;
 	public $slug;
 	public $content;
 	public $status;
-	public $created;
-	public $updated;
 	public $locale;
 
 	public $values = [];
