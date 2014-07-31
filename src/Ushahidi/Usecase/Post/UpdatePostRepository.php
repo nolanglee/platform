@@ -20,6 +20,26 @@ interface UpdatePostRepository
 	public function isSlugAvailable($slug);
 
 	/**
+	 * @param  Int $form_id
+	 * @return Boolean
+	 */
+	public function doesFormExist($form_id);
+
+	/**
+	 * @param  String $locale
+	 * @param  Int    $parent_id
+	 * @param  String $type
+	 * @return Boolean
+	 */
+	public function doesLocaleAlreadyExist($locale, $parent_id, $type);
+
+	/**
+	 * @param  Int $parent_id
+	 * @return Boolean
+	 */
+	public function doesParentExist($parent_id);
+
+	/**
 	 * @param  Integer $id
 	 * @param  Array   $update
 	 * @return void

@@ -258,6 +258,58 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		return $this->selectCount(compact('slug')) === 0;
 	}
 
+
+	// UpdatePostRepository
+	public function doesFormExist($form_id)
+	{
+		$result = DB::select('id')->from('forms')
+			->where('id', '=', $form_id)
+			->limit(1)
+			->execute($this->db);
+
+		$form = $result->current();
+
+		return (boolean)$form;
+	}
+
+	// UpdatePostRepository
+	public function doesLocaleAlreadyExist($locale, $parent_id, $type)
+	{
+		// If this isn't a translation of an existing post, skip
+		if ($type != 'translation')
+		{
+			return TRUE;
+		}
+
+		// Is locale the same as parent?
+		$parent = $this->get($parent_id);
+		if ($parent->locale === $locale)
+		{
+			return FALSE;
+		}
+
+		// Check for other translations
+		return $this->selectCount([
+			'type' => 'translation',
+			'parent_id' => $parent_id,
+			'locale' => $locale
+			]) === 0;
+	}
+
+	// UpdatePostRepository
+	public function doesParentExist($parent_id)
+	{
+		// Skip check if parent is empty
+		if (empty($parent_id)) return TRUE;
+
+		$parent = ORM::factory('Post')
+			->where('id', '=', $parent_id)
+			->where('id', '!=', $id)
+			->find();
+
+		return $parent->loaded();
+	}
+
 	// UpdatePostRepository
 	public function updatePost($id, Array $update)
 	{

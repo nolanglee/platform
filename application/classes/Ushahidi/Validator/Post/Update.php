@@ -37,7 +37,6 @@ class Ushahidi_Validator_Post_Update implements Validator
 					array([$this->repo, 'isSlugAvailable'], array(':value')),
 				))
 			->rules('type', array(
-					// not empty?
 					array('in_array', array(':value', array(
 						'report',
 						'revision',
@@ -47,19 +46,18 @@ class Ushahidi_Validator_Post_Update implements Validator
 					))),
 				))
 			->rules('locale', array(
-					//array('not_empty'),
 					array('max_length', array(':value', 5)),
 					array('alpha_dash', array(':value', TRUE)),
 					// @todo check locale is valid
-					array(array($this->repo, 'unique_locale'), array(':value'))
+					array(array($this->repo, 'doesLocaleAlreadyExist'), array(':value', $input->parent_id, $input->type))
 				))
 			->rules('form_id', array(
 					array('numeric'),
-					array(array($this->repo, 'fk_exists'), array(':value'))
+					array(array($this->repo, 'doesFormExist'), array(':value'))
 				))
 			->rules('parent_id', array(
 					array('numeric'),
-					array(array($this->repo, 'parent_exists'), array(':value'))
+					array(array($this->repo, 'doesParentExist'), array(':value'))
 				));
 
 		// validate values?
