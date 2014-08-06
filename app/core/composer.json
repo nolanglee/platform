@@ -1,0 +1,14 @@
+{
+    "require-dev": {
+        "phpspec/phpspec": "~2.0.0"
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "autoload": {
+        "psr-0": {
+            "Ushahidi\\": "src"
+        }
+    }
+}
