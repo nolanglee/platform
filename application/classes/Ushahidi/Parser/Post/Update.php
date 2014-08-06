@@ -39,8 +39,32 @@ class Ushahidi_Parser_Post_Update implements Parser
 				$data['form_id'] = $data['form'];
 			}
 		}
-		// Make form_id a string, avoid triggering 'changed' value
-		$data['form_id'] = isset($data['form_id']) ? (String) $data['form_id'] : NULL;
+
+		// Unpack possible user formats into 3 distinct values
+		if (isset($data['user']) AND ! is_array($data['user']))
+		{
+			$data['user_id'] = $data['user'];
+		}
+		if (!empty($data['user']['email']))
+		{
+			$data['user_email'] = $data['user']['email'];
+		}
+		if (!empty($data['user']['email']))
+		{
+			$data['user_realname'] = $data['user']['realname'];
+		}
+
+		// Parse tags
+		if (isset($data['tags']))
+		{
+			$data['tags'] = $this->parse_tags($data['tags']);
+		}
+
+		// Parse values
+		if (isset($data['values']))
+		{
+			$data['values'] = $this->parse_values($data['values']);
+		}
 
 		$valid = Validation::factory($data)
 			->rules('slug', array(
@@ -62,7 +86,96 @@ class Ushahidi_Parser_Post_Update implements Parser
 			throw new ParserException("Failed to parse post create request", $valid->errors('tag'));
 		}
 
-		// Ensure that all properties of a Tag entity are defined by using Arr::extract
+		// Ensure that all properties of a Post entity are defined by using Arr::extract
 		return new PostData(Arr::extract($data, ['form_id', 'title', 'content', 'status', 'slug', 'locale']));
+	}
+
+	/**
+	 * Flatten tags to just an array of tags/ids
+	 * @param  array $tags incoming tags object
+	 * @return array
+	 */
+	protected function parse_tags($tags)
+	{
+		// Flatten tags
+		$new_tags = [];
+		foreach ($tags as $value)
+		{
+			// Handle multiple formats
+			// ID + URL array
+			if (is_array($value) AND isset($value['id']))
+			{
+				$new_tags[] = $value['id'];
+			}
+			// Just ID or tag name
+			else
+			{
+				$new_tags[] = $value;
+			}
+		}
+
+		return $new_tags;
+	}
+
+	/**
+	 * Parse and normalize post values
+	 * @param  array  $values Incoming values object
+	 * @return array          Normalized values object
+	 */
+	protected function parse_values($values)
+	{
+		// Just normalize value formats
+		// to [
+		// 	{
+		// 		id : 1,
+		// 		value : 'value1'
+		// 	},
+		// 	{
+		// 		value : 'value2'
+		// 	}
+		// ]
+		$_values = array();
+		if (is_array($values))
+		{
+			foreach ($values as $key => $value)
+			{
+				// Skip null/empty values
+				if (empty($value))
+				{
+					continue;
+				}
+
+				// Single simple value
+				// { key : 'value' }
+				if (!is_array($value))
+				{
+					$_values[$key] = ['value' => $value];
+				}
+				// Single complex value key :
+				// { 'lat': 1, 'lon' : 1 }
+				// Does the array have string keys ? (ie. object hash not simple array)
+				elseif ((bool) count(array_filter(array_keys($value), 'is_string')))
+				{
+					$_values[$key] = ['value' => $value];
+				}
+				// Multivalue
+				// [
+				//   {'value' : 'value1', 'id' : 1},
+				//   {'value' : 'value2'}
+				// ]
+				else
+				{
+					// Filter out empty values
+					$_values[$key] = array_filter($value, function ($v) {
+						// Make sure its an array with at least a 'value'
+						return (is_array($v) && ! empty($v['value']));
+					});
+				}
+			}
+		}
+
+		// @todo custom parsing for ie. point values from lat/lon -> WKT
+
+		return $_values;
 	}
 }

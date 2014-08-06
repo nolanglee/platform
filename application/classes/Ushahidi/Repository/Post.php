@@ -317,10 +317,81 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		{
 			$this->update(compact('id'), $update);
 
-			// @todo update post-tags
-			// @todo update post-values
+			// Update post-tags
+			$this->updatePostTags($id, $update->tags);
+
+			// Update/save user
+			$this->updatePostUser($id, $update->user);
+
+			// Update post-values
+			$this->updatePostValues($id, $update->values);
+
+			// @todo save revision
+			//$this->createRevision($id);
 		}
 		return $this->get($id);
+	}
+
+	protected function updatePostValues($post_id, $values)
+	{
+		foreach ($values as $key => $value)
+		{
+			$attribute = $this->attributeRepo->getByKey($key);
+			$repo = $this->post_value_factory
+					->getRepo($attribute->type);
+
+			foreach($values as $v)
+			{
+				if ($v['id'])
+				{
+					$repo->updateValue($v['id'], $post_id, $v);
+				}
+				else
+				{
+					$repo->createValue($post_id, $v);
+				}
+			}
+		}
+	}
+
+	protected function updatePostUser($post_id, $user)
+	{
+
+	}
+
+	protected function updatePostTags($post_id, $tags)
+	{
+		// Load existing tags
+		$existing = $this->getTagsForPost($id);
+
+		$insert = DB::insert('posts_tags', ['post_id', 'tag_id']);
+
+		$tag_ids = [];
+		foreach ($tags as $tag)
+		{
+			// Find the tag by id or name
+			if (! ($tag_entity = $this->tag_repo->get($tag) OR $tag_entity = $this->tag_repo->getByTag($tag)))
+			{
+				// @todo create the tag
+			}
+
+			// Does the post already havet this tag?
+			if (! in_array($tag_entity->id, $existing))
+			{
+				// Add to insert query
+				$insert->values([$post_id, $tag_entity->id]);
+			}
+
+			$tag_ids[] = $tag_entity->id;
+		}
+
+		// Save
+		$insert->execute($this->db);
+
+		// Remove any other tags
+		DB::delete()->from('posts_tags')
+			->where('tag_id', 'NOT IN', $tag_ids)
+			->execture($this->db);
 	}
 
 }
