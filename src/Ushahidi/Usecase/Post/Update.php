@@ -33,6 +33,12 @@ class Update
 		// We only want to work with values that have been changed
 		$update = $input->getDifferent($post->asArray());
 
+		// Include parent and type for use in validation
+		// These are never updated, but needed for some checks
+		// @todo figure out a better way to include these
+		$update->parent_id = $post->parent_id;
+		$update->type = $post->type;
+
 		if (!$this->valid->check($update))
 			throw new ValidatorException("Failed to validate post", $this->valid->errors());
 

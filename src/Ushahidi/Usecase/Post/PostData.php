@@ -23,6 +23,10 @@ class PostData extends Data
 	public $status;
 	public $locale;
 
+	// @todo figure out if these should live elsewhere
+	public $type;
+	public $parent_id;
+
 	public $values = [];
 	public $tags = [];
 }
