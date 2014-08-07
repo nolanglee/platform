@@ -1,6 +1,7 @@
 @post @oauth2Skip
 Feature: Testing the Posts API
 
+	@create
 	Scenario: Creating a new Post
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -49,6 +50,7 @@ Feature: Testing the Posts API
 		And the response has a "values.links.0.id" property
 		Then the guzzle status code should be 200
 
+	@create
 	Scenario: Creating an Post with invalid data returns an error
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -71,6 +73,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@create
 	Scenario: Creating a new Post with too many values for attribute returns an error
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -96,6 +99,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@create
 	Scenario: Creating a new Post with missing value for attribute returns an error
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -122,6 +126,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@create
 	Scenario: Creating a new Post with invalid value ID for attribute returns an error
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -147,6 +152,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@create
 	Scenario: Creating an Post without required fields returns an error
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -172,6 +178,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@create
 	Scenario: Creating an Post with existing user returns an error
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -202,6 +209,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@create
 	Scenario: Creating a Post with existing user by ID (authorized as admin user)
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -232,6 +240,7 @@ Feature: Testing the Posts API
 		And the "user.id" property equals "1"
 		Then the guzzle status code should be 200
 
+	@create
 	Scenario: A normal user creates a Post with different user as author, should get permission error
 		Given that I want to make a new "Post"
 		And that the request "Authorization" header is "Bearer testbasicuser2"
@@ -262,6 +271,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@create
 	Scenario: Creating a Post with no user gets current uid
 		Given that I want to make a new "Post"
 		And that the request "data" is:
@@ -290,6 +300,7 @@ Feature: Testing the Posts API
 		And the "user.id" property equals "2"
 		Then the guzzle status code should be 200
 
+	@create
 	Scenario: Creating a Post with no user and no current user
 		Given that I want to make a new "Post"
 		And that the request "Authorization" header is "Bearer testanon"
@@ -318,6 +329,7 @@ Feature: Testing the Posts API
 		And the response does not have a "user" property
 		Then the guzzle status code should be 200
 
+	@update
 	Scenario: Updating a Post
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -353,6 +365,7 @@ Feature: Testing the Posts API
 		And the "values.last_location_point.lon" property equals "-85.39"
 		Then the guzzle status code should be 200
 
+	@update
 	Scenario: Updating a non-existent Post
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -381,6 +394,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
+	@update
 	Scenario: Updating user info on a Post (as admin)
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -416,6 +430,7 @@ Feature: Testing the Posts API
 		And the "user.id" property equals "4"
 		Then the guzzle status code should be 200
 
+	@update
 	Scenario: Updating user info on a Post (as user) gets error
 		Given that I want to update a "Post"
 		And that the request "Authorization" header is "Bearer testbasicuser"
@@ -449,6 +464,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
+	@update
 	Scenario: Updating a Post with partial data
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -476,6 +492,7 @@ Feature: Testing the Posts API
 		And the response does not have a "values.missing_status" property
 		Then the guzzle status code should be 200
 
+	@update
 	Scenario: Updating a Post with non-existent Form
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -686,6 +703,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
+	@delete
 	Scenario: Deleting a Post
 		Given that I want to delete a "Post"
 		And that its "id" is "1"
@@ -694,6 +712,7 @@ Feature: Testing the Posts API
 		And the response has a "id" property
 		Then the guzzle status code should be 200
 
+	@delete
 	Scenario: Fail to delete a non existent Post
 		Given that I want to delete a "Post"
 		And that its "id" is "35"
@@ -702,6 +721,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
+	@create
 	Scenario: Creating a new Post with UTF-8 title
 		Given that I want to make a new "Post"
 		And that the request "data" is:
