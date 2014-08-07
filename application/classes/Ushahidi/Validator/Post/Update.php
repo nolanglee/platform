@@ -38,15 +38,6 @@ class Ushahidi_Validator_Post_Update implements Validator
 					array('alpha_dash', array(':value', TRUE)),
 					array([$this->repo, 'isSlugAvailable'], array(':value')),
 				))
-			->rules('type', array(
-					array('in_array', array(':value', array(
-						'report',
-						'revision',
-						'comment',
-						'translation',
-						'alert'
-					))),
-				))
 			->rules('locale', array(
 					array('max_length', array(':value', 5)),
 					array('alpha_dash', array(':value', TRUE)),
@@ -56,10 +47,6 @@ class Ushahidi_Validator_Post_Update implements Validator
 			->rules('form_id', array(
 					array('numeric'),
 					array(array($this->repo, 'doesFormExist'), array(':value'))
-				))
-			->rules('parent_id', array(
-					array('numeric'),
-					array(array($this->repo, 'doesParentExist'), array(':value'))
 				));
 
 		// validate tags

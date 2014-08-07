@@ -297,20 +297,6 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	}
 
 	// UpdatePostRepository
-	public function doesParentExist($parent_id)
-	{
-		// Skip check if parent is empty
-		if (empty($parent_id)) return TRUE;
-
-		$parent = ORM::factory('Post')
-			->where('id', '=', $parent_id)
-			->where('id', '!=', $id)
-			->find();
-
-		return $parent->loaded();
-	}
-
-	// UpdatePostRepository
 	public function updatePost($id, Array $update)
 	{
 		if ($id && $update)

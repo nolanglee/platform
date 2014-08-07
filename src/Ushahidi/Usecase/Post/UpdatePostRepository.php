@@ -34,12 +34,6 @@ interface UpdatePostRepository
 	public function doesLocaleAlreadyExist($locale, $parent_id, $type);
 
 	/**
-	 * @param  Int $parent_id
-	 * @return Boolean
-	 */
-	public function doesParentExist($parent_id);
-
-	/**
 	 * @param  Integer $id
 	 * @param  Array   $update
 	 * @return void
