@@ -47,4 +47,22 @@ class Ushahidi_Repository_FormAttribute extends Ushahidi_Repository implements F
 
 		return $this->getCollection($results->as_array());
 	}
+
+	// FormAttributeRepository
+	public function getRequired($form_id)
+	{
+		$query = $this->selectQuery([
+				'form_id'  => $form_id,
+				'required' => true
+			])
+			->select('form_attributes.*')
+			->join('form_groups_form_attributes', 'INNER')
+				->on('form_attributes.id', '=', 'form_attribute_id')
+			->join('form_groups', 'INNER')
+				->on('form_groups_form_attributes.form_group_id', '=', 'form_groups.id');
+
+		$results = $query->execute($this->db);
+
+		return $this->getCollection($results->as_array());
+	}
 }

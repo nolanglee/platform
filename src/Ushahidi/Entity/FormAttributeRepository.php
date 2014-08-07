@@ -29,4 +29,11 @@ interface FormAttributeRepository
 	 * @return [Ushahidi\Entity\FormAttribute, ...]
 	 */
 	public function getAll();
+
+	/**
+	 * @param  int $form_id
+	 * @return [Ushahidi\Entity\FormAttribute, ...]
+	 */
+	public function getRequired($form_id);
+
 }
