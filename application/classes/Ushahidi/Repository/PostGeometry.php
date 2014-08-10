@@ -35,4 +35,6 @@ class Ushahidi_Repository_PostGeometry extends Ushahidi_Repository_PostValue
 		return $query;
 	}
 
+	// @todo override save to use GeomFromText
+
 }

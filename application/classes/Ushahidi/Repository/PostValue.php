@@ -62,4 +62,32 @@ abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository impleme
 			->where('value', 'LIKE', "%$match%");
 	}
 
+	// UpdatePostValueRepository
+	public function createValue($value, $form_attribute_id, $post_id)
+	{
+		$input = compact('value', 'form_attribute_id', 'post_id');
+		$input['created'] = time();
+
+		return $this->insert($input);
+	}
+
+	// UpdatePostValueRepository
+	public function updateValue($id, $value, $form_attribute_id, $post_id)
+	{
+		$update = compact('value');
+		if ($id && $update)
+		{
+			$this->update(compact('id', 'post_id', 'form_attribute_id'), $update);
+		}
+		return $this->get($id);
+	}
+
+	public function deleteNotIn($post_id, $ids)
+	{
+		DB::delete($this->getTable())
+			->where('post_id', '=', $post_id)
+			->where('id', 'NOT IN', $ids)
+			->execute($this->db);
+	}
+
 }

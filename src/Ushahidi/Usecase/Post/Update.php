@@ -30,8 +30,14 @@ class Update
 
 	public function interact(Post $post, PostData $input)
 	{
+
+		$original = $post->asArray();
+		unset($original['values']);
+		unset($original['tags']);
 		// We only want to work with values that have been changed
-		$update = $input->getDifferent($post->asArray());
+		// @todo figure out what to do about this.. something are always different
+		// because input data isn't an entity, and shouldn't have to be.
+		$update = $input->getDifferent($original);
 
 		// Include parent and type for use in validation
 		// These are never updated, but needed for some checks
@@ -48,7 +54,9 @@ class Update
 		$this->repo->updatePost($post->id, $this->updated);
 
 		// Reflect the changes in the post
-		$post->setData($this->updated);
+		//$post->setData($this->updated);
+		// @todo avoid reload
+		$post = $this->repo->get($post->id);
 
 		return $post;
 	}

@@ -36,13 +36,24 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	// Ushahidi_Repository
 	protected function getEntity(Array $data = null)
 	{
-		return new Tag($data);
+		if (!empty($data))
+		{
+			return new Tag($data);
+		}
+
+		return FALSE;
 	}
 
 	// TagRepository
 	public function get($id)
 	{
 		return $this->getEntity($this->selectOne(compact('id')));
+	}
+
+	// TagRepository
+	public function getByTag($tag)
+	{
+		return $this->getEntity($this->selectOne(compact('tag')));
 	}
 
 	// TagRepository
@@ -73,7 +84,7 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 		}
 
 		$results = $query->execute($this->db);
-		
+
 		return $this->getCollection($results->as_array());
 	}
 

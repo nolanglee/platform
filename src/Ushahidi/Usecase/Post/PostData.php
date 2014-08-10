@@ -17,6 +17,8 @@ class PostData extends Data
 {
 	public $form_id;
 	public $user_id;
+	//public $user_email;
+	//public $user_realname;
 	public $title;
 	public $slug;
 	public $content;

@@ -13,6 +13,7 @@ use Ushahidi\Entity\Post;
 use Ushahidi\Entity\PostRepository;
 use Ushahidi\Usecase\Post\UpdatePostRepository;
 use Ushahidi\Entity\FormAttributeRepository;
+use Ushahidi\Entity\TagRepository;
 use Ushahidi\Entity\PostSearchData;
 use Aura\DI\InstanceFactory;
 
@@ -32,7 +33,8 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 			Database $db,
 			FormAttributeRepository $form_attribute_repo,
 			Ushahidi_Repository_PostValueFactory $post_value_factory,
-			InstanceFactory $bounding_box_factory
+			InstanceFactory $bounding_box_factory,
+			TagRepository $tag_repo
 		)
 	{
 		parent::__construct($db);
@@ -40,6 +42,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		$this->form_attribute_repo = $form_attribute_repo;
 		$this->post_value_factory = $post_value_factory;
 		$this->bounding_box_factory = $bounding_box_factory;
+		$this->tag_repo = $tag_repo;
 	}
 
 	// Ushahidi_Repository
@@ -301,16 +304,23 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	{
 		if ($id && $update)
 		{
-			$this->update(compact('id'), $update);
+			$post_update = $update;
+			unset($post_update['values'], $post_update['tags']);
+
+			// Update the post entry if it changed
+			if (! empty($post_update))
+			{
+				$this->update(compact('id'), $post_update);
+			}
 
 			// Update post-tags
-			$this->updatePostTags($id, $update->tags);
+			$this->updatePostTags($id, $update['tags']);
 
 			// Update/save user
-			$this->updatePostUser($id, $update->user);
+			//$this->updatePostUser($id, $update->user);
 
 			// Update post-values
-			$this->updatePostValues($id, $update->values);
+			$this->updatePostValues($id, $update['values']);
 
 			// @todo save revision
 			//$this->createRevision($id);
@@ -322,21 +332,33 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	{
 		foreach ($values as $key => $value)
 		{
-			$attribute = $this->attributeRepo->getByKey($key);
+			$attribute = $this->form_attribute_repo->getByKey($key);
 			$repo = $this->post_value_factory
 					->getRepo($attribute->type);
 
-			foreach($values as $v)
+			foreach($value as $v)
 			{
-				if ($v['id'])
+				if (! empty($v['id']))
 				{
-					$repo->updateValue($v['id'], $post_id, $v);
+					$id = $v['id'];
+					$repo->updateValue($v['id'], $v['value'], $attribute->id, $post_id);
 				}
 				else
 				{
-					$repo->createValue($post_id, $v);
+					$id = $repo->createValue($v['value'], $attribute->id, $post_id);
 				}
+
+				$saved_value_ids[$attribute->type][] = $id;
 			}
+		}
+
+		// Delete any old values that weren't passed through
+		foreach($saved_value_ids as $type => $ids)
+		{// @todo include other tables!?
+			$repo = $this->post_value_factory
+				->getRepo($attribute->type);
+
+			$repo->deleteNotIn($post_id, $ids);
 		}
 	}
 
@@ -348,17 +370,19 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	protected function updatePostTags($post_id, $tags)
 	{
 		// Load existing tags
-		$existing = $this->getTagsForPost($id);
+		$existing = $this->getTagsForPost($post_id);
 
 		$insert = DB::insert('posts_tags', ['post_id', 'tag_id']);
 
-		$tag_ids = [];
+		$tag_ids = [0];
+		$new_tags = FALSE;
 		foreach ($tags as $tag)
 		{
 			// Find the tag by id or name
 			if (! ($tag_entity = $this->tag_repo->get($tag) OR $tag_entity = $this->tag_repo->getByTag($tag)))
 			{
 				// @todo create the tag
+				continue;
 			}
 
 			// Does the post already havet this tag?
@@ -366,18 +390,22 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 			{
 				// Add to insert query
 				$insert->values([$post_id, $tag_entity->id]);
+				$new_tags = TRUE;
 			}
 
 			$tag_ids[] = $tag_entity->id;
 		}
 
 		// Save
-		$insert->execute($this->db);
+		if ($new_tags)
+		{
+			$insert->execute($this->db);
+		}
 
 		// Remove any other tags
-		DB::delete()->from('posts_tags')
+		DB::delete('posts_tags')
 			->where('tag_id', 'NOT IN', $tag_ids)
-			->execture($this->db);
+			->execute($this->db);
 	}
 
 }

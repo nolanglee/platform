@@ -45,14 +45,14 @@ class Ushahidi_Parser_Post_Update implements Parser
 		{
 			$data['user_id'] = $data['user'];
 		}
-		if (!empty($data['user']['email']))
+		/*if (!empty($data['user']['email']))
 		{
 			$data['user_email'] = $data['user']['email'];
 		}
 		if (!empty($data['user']['email']))
 		{
 			$data['user_realname'] = $data['user']['realname'];
-		}
+		}*/
 
 		// Parse tags
 		if (isset($data['tags']))
@@ -70,6 +70,7 @@ class Ushahidi_Parser_Post_Update implements Parser
 			->rules('slug', array(
 					array('not_empty'),
 				))
+			// @todo any point including this when it can't be changed!?
 			->rules('type', array(
 					array('not_empty'),
 				))
@@ -87,7 +88,7 @@ class Ushahidi_Parser_Post_Update implements Parser
 		}
 
 		// Ensure that all properties of a Post entity are defined by using Arr::extract
-		return new PostData(Arr::extract($data, ['form_id', 'title', 'content', 'status', 'slug', 'locale']));
+		return new PostData(Arr::extract($data, ['form_id', 'title', 'content', 'status', 'slug', 'locale', 'tags', 'values', 'user_id'/*, 'user_email', 'user_realname'*/]));
 	}
 
 	/**
@@ -149,14 +150,14 @@ class Ushahidi_Parser_Post_Update implements Parser
 				// { key : 'value' }
 				if (!is_array($value))
 				{
-					$_values[$key] = ['value' => $value];
+					$_values[$key] = [['value' => $value]];
 				}
 				// Single complex value key :
 				// { 'lat': 1, 'lon' : 1 }
 				// Does the array have string keys ? (ie. object hash not simple array)
 				elseif ((bool) count(array_filter(array_keys($value), 'is_string')))
 				{
-					$_values[$key] = ['value' => $value];
+					$_values[$key] = [['value' => $value]];
 				}
 				// Multivalue
 				// [
