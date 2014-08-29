@@ -30,7 +30,6 @@ class Update
 
 	public function interact(Post $post, PostData $input)
 	{
-
 		$original = $post->asArray();
 		unset($original['values']);
 		unset($original['tags']);
@@ -45,8 +44,9 @@ class Update
 		$update->parent_id = $post->parent_id;
 		$update->type = $post->type;
 
-		if (!$this->valid->check($update))
+		if (!$this->valid->check($update)) {
 			throw new ValidatorException("Failed to validate post", $this->valid->errors());
+		}
 
 		// Determine what changes to make in the post
 		$this->updated = $update->asArray();
