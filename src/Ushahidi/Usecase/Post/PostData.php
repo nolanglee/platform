@@ -31,4 +31,30 @@ class PostData extends Data
 
 	public $values = [];
 	public $tags = [];
+
+
+	/**
+	 * Compare with some existing data and get the delta between the two.
+	 * Only values that were present in the input data will be returned!
+	 * @param  Array  $compare  existing data
+	 * @return Data
+	 */
+	public function getDifferent(Array $compare)
+	{
+		// Get the difference of current data and comparison. If not all properties
+		// were defined in input, this will contain false positive (empty) values.
+		$base = $this->asArray();
+		// Exclude values and tags, since array_diff_assoc can't cope with arrays.
+		unset($base['values'], $base['tags'], $compare['values'], $compare['tags']);
+
+		$delta = array_diff_assoc($base, $compare);
+
+		// @todo recursive diff on values and tags
+		// For now, just assume they're always updated
+		$delta['values'] = $this->values;
+		$delta['tags']	 = $this->tags;
+
+		return new static($delta);
+	}
+
 }
