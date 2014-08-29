@@ -51,12 +51,8 @@ class Update
 		// Determine what changes to make in the post
 		$this->updated = $update->asArray();
 
-		$this->repo->updatePost($post->id, $this->updated);
-
-		// Reflect the changes in the post
-		//$post->setData($this->updated);
-		// @todo avoid reload
-		$post = $this->repo->get($post->id);
+		// Update the post and get the updated post back
+		$post = $this->repo->updatePost($post->id, $this->updated);
 
 		return $post;
 	}

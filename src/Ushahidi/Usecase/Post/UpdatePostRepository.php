@@ -36,7 +36,7 @@ interface UpdatePostRepository
 	/**
 	 * @param  Integer $id
 	 * @param  Array   $update
-	 * @return void
+	 * @return Post
 	 */
 	public function updatePost($id, Array $update);
 }
