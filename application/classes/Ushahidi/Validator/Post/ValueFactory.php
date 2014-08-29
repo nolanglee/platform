@@ -1,8 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Ushahidi Post Value Parser
- *
+ * Ushahidi Post Value Validator Factory
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Application
@@ -10,23 +9,18 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-class Ushahidi_Validator_Post_Value implements Validator
+class Ushahidi_Validator_Post_ValueFactory
 {
-	protected $map = [];
+	// a map of value type to factory closures
+	protected $map = array();
 
-	public function __construct($map = [])
+	public function __construct($map = array())
 	{
 		$this->map = $map;
 	}
 
-	public function check(Data $input)
+	public function getValidator($type)
 	{
-		if (isset($this->map[$entity->type]))
-		{
-			$validator = $this->map[$entity->type];
-			return $validator->check($data);
-		}
-
-		return TRUE;
+		return isset($this->map[$type]) ? $this->map[$type]() : FALSE;
 	}
 }

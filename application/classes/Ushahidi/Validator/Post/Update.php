@@ -20,16 +20,28 @@ class Ushahidi_Validator_Post_Update implements Validator
 	protected $repo;
 	protected $valid;
 
+	protected $attribute_repo;
+	protected $post_value_factory;
+	protected $post_value_validator_factory;
+
 	/**
 	 * Construct
 	 *
 	 * @param UpdatePostRepository                  $repo
 	 * @param FormAttributeRepository               $form_attribute_repo
+	 * @param Ushahidi_Repository_PostValueFactory  $post_value_factory
+	 * @param Ushahidi_Validator_Post_ValueFactory  $post_value_validator_factory
 	 */
-	public function __construct(UpdatePostRepository $repo, FormAttributeRepository $attribute_repo)
+	public function __construct(
+			UpdatePostRepository $repo,
+			FormAttributeRepository $attribute_repo,
+			Ushahidi_Repository_PostValueFactory $post_value_factory,
+			Ushahidi_Validator_Post_ValueFactory $post_value_validator_factory)
 	{
 		$this->repo = $repo;
 		$this->attribute_repo = $attribute_repo;
+		$this->post_value_factory = $post_value_factory;
+		$this->post_value_validator_factory = $post_value_validator_factory;
 	}
 
 	public function check(Data $input)
@@ -53,13 +65,13 @@ class Ushahidi_Validator_Post_Update implements Validator
 			->rules('form_id', array(
 					array('numeric'),
 					array(array($this->repo, 'doesFormExist'), array(':value'))
-				));
+				))
+			->rules('values', [
+					[[$this, 'check_values'], [':validation', ':value', ':data']]
+				]);
 
-		// validate tags
+		// Validate tags
 		// Don't validate tags: we auto create missing tags so can't fail
-		// $this->check_tags($input->tags);
-		// validate values?
-		$this->check_values($input->values, $input->form_id);
 
 		// validate user changes
 		//$this->check_user($input->user_id, $input->user_email, $input->user_realname);
@@ -67,63 +79,22 @@ class Ushahidi_Validator_Post_Update implements Validator
 		return $this->valid->check();
 	}
 
-	protected function check_tags($tags)
-	{
-		foreach ($tags as $tag)
-		{
-			if (is_numeric($value) AND intval($value) > 0)
-			{
-				$tag = ORM::factory('Tag')
-				->where('id', '=', $value)
-				->find();
-			}
-			// Tag or slug string
-			else
-			{
-				$tag = ORM::factory('Tag')
-				->where('slug', '=', $value)
-				->or_where('tag', '=', $value)
-				->find();
-			}
-
-			// Auto create tags if it doesn't exist
-			if (! $tag->loaded())
-			{
-				$tag->tag = $value;
-				$tag->type = 'category';
-				$tag->check();
-				$tag->save();
-			}
-		}
-	}
-
-	protected function check_values($values, $form_id)
+	public function check_values(Validation $valid, $values, $data)
 	{
 		foreach ($values as $key => $value)
 		{
 			// Check attribute exists
-			$attribute = $this->attribute_repo->get($key, $form_id);
+			$attribute = $this->attribute_repo->get($key, $data['form_id']);
 			if (! $attribute)
 			{
-				$this->valid->rule('values.'.$key,
-					function(Validation $valid, $field, $value)
-					{
-						$this->valid->error('values.'. $key, 'attribute does not exist');
-					},
-					array(':validation', ':field', ':value')
-				);
+				$valid->error('values.'. $key, 'attribute does not exist');
+				return;
 			}
 
 			// Are there multiple values? Are they greater than cardinality limit?
 			if (count($value) > $attribute->cardinality AND $attribute->cardinality != 0)
 			{
-				$this->valid->rule('values.'.$key,
-					function(Validation $valid, $field, $value)
-					{
-						$valid->error($field, 'cardinality');
-					},
-					array(':validation', ':field', ':value')
-				);
+				$valid->error('values.'. $key, 'cardinality');
 			}
 
 			foreach($value as $k => $v)
@@ -136,28 +107,28 @@ class Ushahidi_Validator_Post_Update implements Validator
 						->get($id);
 
 					// Add error if id specified by doesn't exist
-					if (! $value_entity )
+					if (! $value_entity)
 					{
-						$this->valid->rule("values.$key.$k",
-							function(Validation $valid, $field, $value)
-							{
-								$valid->error($field, 'value id does not exist');
-							},
-							array(':validation', ':field', ':value')
-						);
+						$valid->error("values.$key.$k", 'value id does not exist');
 					}
 				}
 
-				// Run any attribute type specific validation
-				/*$this->valid->rule("values.$key.$k", [
-					[$this->post_value_factory->getValidator($attribute->type), 'check'],
-					[':value']
-				]);*/
+				// Run checks on individual values type specific validation
+				if ($validator = $this->post_value_validator_factory->getValidator($attribute->type))
+				{
+					if (! $validator->check(['value' => $value]))
+					{
+						foreach($validator->errors as $error)
+						{
+							$valid->error("values.$key.$k", $error);
+						}
+					}
+				}
 			}
 		}
 
 		// Validate required attributes
-		$required_attributes = $this->attribute_repo->getRequired($form_id);
+		$required_attributes = $this->attribute_repo->getRequired($data['form_id']);
 		foreach ($required_attributes as $attr)
 		{
 			$this->valid->rule('values.'.$attr->key, 'not_empty');
