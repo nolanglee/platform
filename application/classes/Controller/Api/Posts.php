@@ -225,7 +225,7 @@ class Controller_Api_Posts extends Ushahidi_Api {
 		try
 		{
 			$request = $parser($this->_request_payload);
-			$usecase->interact($post, $request);
+			$post = $usecase->interact($post, $request);
 		}
 		catch (Ushahidi\Exception\ValidatorException $e)
 		{
