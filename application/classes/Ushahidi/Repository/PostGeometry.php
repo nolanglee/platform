@@ -35,6 +35,16 @@ class Ushahidi_Repository_PostGeometry extends Ushahidi_Repository_PostValue
 		return $query;
 	}
 
+	// Override createValue to save 'value' using GeomFromText
+	public function createValue($value, $form_attribute_id, $post_id)
+	{
+		$input = compact('form_attribute_id', 'post_id');
+		$input['value'] = DB::expr('GeomFromText(:text)')->param(':text', $value);
+		$input['created'] = time();
+
+		return $this->insert($input);
+	}
+
 	// Override updateValue to save 'value' using GeomFromText
 	public function updateValue($id, $value, $form_attribute_id, $post_id)
 	{
