@@ -362,7 +362,7 @@ Feature: Testing the Posts API
 		And the response has a "tags.1.id" property
 		And the response has a "title" property
 		And the "title" property equals "Updated Test Post"
-		And the "values.last_location_point.lon" property equals "-85.39"
+		And the "values.last_location_point.0.value.lon" property equals "-85.39"
 		Then the guzzle status code should be 200
 
 	@update

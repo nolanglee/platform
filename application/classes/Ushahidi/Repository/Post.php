@@ -330,6 +330,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 
 	protected function updatePostValues($post_id, $values)
 	{
+		$saved_value_ids = [];
 		foreach ($values as $key => $value)
 		{
 			$attribute = $this->form_attribute_repo->getByKey($key);
@@ -353,10 +354,12 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		}
 
 		// Delete any old values that weren't passed through
-		foreach($saved_value_ids as $type => $ids)
-		{// @todo include other tables!?
+		foreach($this->post_value_factory->getTypes() as $type)
+		{
 			$repo = $this->post_value_factory
-				->getRepo($attribute->type);
+				->getRepo($type);
+
+			$ids = ! empty($saved_value_ids[$type]) ? $saved_value_ids[$type] : [0];
 
 			$repo->deleteNotIn($post_id, $ids);
 		}
