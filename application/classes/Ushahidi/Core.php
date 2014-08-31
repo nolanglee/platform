@@ -225,6 +225,7 @@ abstract class Ushahidi_Core {
 		$di->params['Ushahidi_Validator_Post_Update'] = [
 			'repo' => $di->lazyGet('repository.post'),
 			'attribute_repo' => $di->lazyGet('repository.form_attribute'),
+			'tag_repo' => $di->lazyGet('repository.tag'),
 			'post_value_factory' => $di->lazyGet('repository.post_value_factory'),
 			'post_value_validator_factory' => $di->lazyGet('validator.post.value_factory'),
 			];

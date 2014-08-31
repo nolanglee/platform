@@ -34,7 +34,7 @@ Feature: Testing the Posts API
 					  {"value":"http://facebook.com"}
 					]
 				},
-				"tags":["missing"]
+				"tags":["explosion"]
 			}
 			"""
 		When I request "/posts"
@@ -91,7 +91,7 @@ Feature: Testing the Posts API
 						{"value":"auckland"}
 					]
 				},
-				"tags":["missing"]
+				"tags":["explosion"]
 			}
 			"""
 		When I request "/posts"
@@ -118,7 +118,7 @@ Feature: Testing the Posts API
 						{"junk":"atlanta"}
 					]
 				},
-				"tags":["missing"]
+				"tags":["explosion"]
 			}
 			"""
 		When I request "/posts"
@@ -144,7 +144,7 @@ Feature: Testing the Posts API
 						{"id":7, "value":"http://google.com"}
 					]
 				},
-				"tags":["missing"]
+				"tags":["explosion"]
 			}
 			"""
 		When I request "/posts"
@@ -350,7 +350,7 @@ Feature: Testing the Posts API
 					"last_location_point":"POINT(-85.39 33.755)",
 					"missing_status":"believed_missing"
 				},
-				"tags":["missing","kenyan"]
+				"tags":["disaster","explosion"]
 			}
 			"""
 		And that its "id" is "1"
@@ -385,7 +385,7 @@ Feature: Testing the Posts API
 					"last_location":"atlanta",
 					"missing_status":"believed_missing"
 				},
-				"tags":["missing","kenyan"]
+				"tags":["disaster","explosion"]
 			}
 			"""
 		And that its "id" is "40"
@@ -418,7 +418,7 @@ Feature: Testing the Posts API
 					"last_location_point":"POINT(-85.39 33.755)",
 					"missing_status":"believed_missing"
 				},
-				"tags":["missing","kenyan"]
+				"tags":["disaster","explosion"]
 			}
 			"""
 		And that its "id" is "1"
@@ -455,7 +455,7 @@ Feature: Testing the Posts API
 					"last_location_point":"POINT(-85.39 33.755)",
 					"missing_status":"believed_missing"
 				},
-				"tags":["missing","kenyan"]
+				"tags":["disaster","explosion"]
 			}
 			"""
 		And that its "id" is "110"
@@ -483,7 +483,7 @@ Feature: Testing the Posts API
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta"
 				},
-				"tags":["missing","kenyan"]
+				"tags":["disaster","explosion"]
 			}
 			"""
 		And that its "id" is "1"
@@ -512,7 +512,7 @@ Feature: Testing the Posts API
 					"last_location":"atlanta",
 					"missing_status":"believed_missing"
 				},
-				"tags":["missing","kenyan"]
+				"tags":["disaster","explosion"]
 			}
 			"""
 		And that its "id" is "1"
@@ -743,7 +743,7 @@ Feature: Testing the Posts API
 					"last_location":"atlanta",
 					"missing_status":"believed_missing"
 				},
-				"tags":["missing"]
+				"tags":["explosion"]
 			}
 			"""
 		When I request "/posts"

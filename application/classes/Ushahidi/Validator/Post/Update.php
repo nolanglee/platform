@@ -12,6 +12,7 @@
 use Ushahidi\Data;
 use Ushahidi\Usecase\Post\UpdatePostRepository;
 use Ushahidi\Entity\FormAttributeRepository;
+use Ushahidi\Entity\TagRepository;
 
 use Ushahidi\Tool\Validator;
 
@@ -21,6 +22,7 @@ class Ushahidi_Validator_Post_Update implements Validator
 	protected $valid;
 
 	protected $attribute_repo;
+	protected $tag_repo;
 	protected $post_value_factory;
 	protected $post_value_validator_factory;
 
@@ -29,17 +31,20 @@ class Ushahidi_Validator_Post_Update implements Validator
 	 *
 	 * @param UpdatePostRepository                  $repo
 	 * @param FormAttributeRepository               $form_attribute_repo
+	 * @param TagRepository                         $tag_repo
 	 * @param Ushahidi_Repository_PostValueFactory  $post_value_factory
 	 * @param Ushahidi_Validator_Post_ValueFactory  $post_value_validator_factory
 	 */
 	public function __construct(
 			UpdatePostRepository $repo,
 			FormAttributeRepository $attribute_repo,
+			TagRepository $tag_repo,
 			Ushahidi_Repository_PostValueFactory $post_value_factory,
 			Ushahidi_Validator_Post_ValueFactory $post_value_validator_factory)
 	{
 		$this->repo = $repo;
 		$this->attribute_repo = $attribute_repo;
+		$this->tag_repo = $tag_repo;
 		$this->post_value_factory = $post_value_factory;
 		$this->post_value_validator_factory = $post_value_validator_factory;
 	}
@@ -68,6 +73,9 @@ class Ushahidi_Validator_Post_Update implements Validator
 				))
 			->rules('values', [
 					[[$this, 'check_values'], [':validation', ':value', ':data']]
+				])
+			->rules('tags', [
+					[[$this, 'check_tags'], [':validation', ':value']]
 				]);
 
 		// Validate tags
@@ -79,6 +87,17 @@ class Ushahidi_Validator_Post_Update implements Validator
 		return $this->valid->check();
 	}
 
+	public function check_tags(Validation $valid, $tags)
+	{
+		foreach ($tags as $key => $tag)
+		{
+			if (! ($tag_entity = $this->tag_repo->get($tag) OR $tag_entity = $this->tag_repo->getByTag($tag)))
+			{
+				$valid->error('tags.'. $key, 'tag ":tag" does not exist', [':tag' => $tag]);
+			}
+		}
+	}
+
 	public function check_values(Validation $valid, $values, $data)
 	{
 		foreach ($values as $key => $value)
@@ -87,7 +106,7 @@ class Ushahidi_Validator_Post_Update implements Validator
 			$attribute = $this->attribute_repo->get($key, $data['form_id']);
 			if (! $attribute)
 			{
-				$valid->error('values.'. $key, 'attribute does not exist');
+				$valid->error('values.'. $key, 'attribute ":key" does not exist', [':key' => $key]);
 				return;
 			}
 

@@ -379,11 +379,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		foreach ($tags as $tag)
 		{
 			// Find the tag by id or name
-			if (! ($tag_entity = $this->tag_repo->get($tag) OR $tag_entity = $this->tag_repo->getByTag($tag)))
-			{
-				// @todo create the tag
-				continue;
-			}
+			($tag_entity = $this->tag_repo->get($tag) OR $tag_entity = $this->tag_repo->getByTag($tag));
 
 			// Does the post already havet this tag?
 			if (! in_array($tag_entity->id, $existing))
