@@ -113,7 +113,10 @@ class Ushahidi_Validator_Post_Update implements Validator
 			// Are there multiple values? Are they greater than cardinality limit?
 			if (count($value) > $attribute->cardinality AND $attribute->cardinality != 0)
 			{
-				$valid->error('values.'. $key, 'cardinality');
+				$valid->error('values.'. $key, 'Too many values for :key (max: :cardinality)', [
+					':key' => $key,
+					':cardinality' => $attribute->cardinality
+				]);
 			}
 
 			foreach($value as $k => $v)
