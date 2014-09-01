@@ -56,5 +56,4 @@ class PostData extends Data
 
 		return new static($delta);
 	}
-
 }
