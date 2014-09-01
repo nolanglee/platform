@@ -242,6 +242,7 @@ abstract class Ushahidi_Core {
 		$di->set('validator.post.decimal', $di->lazyNew('Ushahidi_Validator_Post_Decimal'));
 		$di->set('validator.post.int', $di->lazyNew('Ushahidi_Validator_Post_Int'));
 		$di->set('validator.post.link', $di->lazyNew('Ushahidi_Validator_Post_Link'));
+		$di->set('validator.post.point', $di->lazyNew('Ushahidi_Validator_Post_Point'));
 		$di->set('validator.post.varchar', $di->lazyNew('Ushahidi_Validator_Post_Varchar'));
 
 		$di->set('validator.post.value_factory', $di->lazyNew('Ushahidi_Validator_Post_ValueFactory'));
@@ -252,6 +253,7 @@ abstract class Ushahidi_Core {
 					'decimal'  => $di->lazyGet('validator.post.decimal'),
 					'int'      => $di->lazyGet('validator.post.int'),
 					'link'     => $di->lazyGet('validator.post.link'),
+					'point'    => $di->lazyGet('validator.post.point'),
 					'varchar'  => $di->lazyGet('validator.post.varchar')
 				],
 			];
