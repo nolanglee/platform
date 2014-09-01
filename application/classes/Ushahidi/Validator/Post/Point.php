@@ -19,6 +19,7 @@ class Ushahidi_Validator_Post_Point /*implements Validator*/
 	{
 		$this->valid = Validation::factory($input)
 			->rules('value', array(
+				// @todo better error messages
 					array('is_array'),
 					array('array_key_exists', array('lat', ':value')),
 					array('array_key_exists', array('lon', ':value'))

@@ -316,13 +316,13 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 			// Update post-tags
 			$this->updatePostTags($id, $update['tags']);
 
-			// Update/save user
+			// @todo Update/save user
 			//$this->updatePostUser($id, $update->user);
 
 			// Update post-values
 			$this->updatePostValues($id, $update['values']);
 
-			// @todo save revision
+			// @todo Save revision
 			//$this->createRevision($id);
 		}
 		return $this->get($id);
