@@ -117,7 +117,6 @@ abstract class Ushahidi_Core {
 		$di->set('formatter.entity.media', $di->lazyNew('Ushahidi_Formatter_Media'));
 		$di->set('formatter.entity.post', $di->lazyNew('Ushahidi_Formatter_Post'));
 		$di->set('formatter.entity.post.value', $di->lazyNew('Ushahidi_Formatter_PostValue'));
-		$di->set('formatter.entity.post.point', $di->lazyNew('Ushahidi_Formatter_PostPoint'));
 		$di->set('formatter.entity.tag', $di->lazyNew('Ushahidi_Formatter_Tag'));
 		$di->set('formatter.output.json', $di->lazyNew('Ushahidi_Formatter_JSON'));
 		$di->set('formatter.output.jsonp', $di->lazyNew('Ushahidi_Formatter_JSONP'));
@@ -131,11 +130,6 @@ abstract class Ushahidi_Core {
 		];
 		$di->params['Ushahidi_Formatter_PostPoint'] = [
 			'decoder' => $di->lazyNew('Symm\Gisconverter\Decoders\WKT')
-		];
-		$di->params['Ushahidi_Formatter_PostValue'] = [
-			'map' => [
-				'point' => $di->get('formatter.entity.post.point'),
-			]
 		];
 
 		// Repositories
@@ -187,6 +181,10 @@ abstract class Ushahidi_Core {
 					'text'     => $di->lazyGet('repository.post.text'),
 					'varchar'  => $di->lazyGet('repository.post.varchar')
 				],
+			];
+
+		$di->params['Ushahidi_Repository_PostPoint'] = [
+			'decoder' => $di->lazyNew('Symm\Gisconverter\Decoders\WKT')
 			];
 
 		// Parsers

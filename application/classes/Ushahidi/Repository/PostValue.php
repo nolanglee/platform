@@ -42,7 +42,7 @@ abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository impleme
 	// PostValueRepository
 	public function get($id)
 	{
-		return new PostValue($this->selectOne(compact('id')));
+		return $this->getEntity($this->selectOne(compact('id')));
 	}
 
 	// GetValuesForPostRepository

@@ -347,7 +347,14 @@ Feature: Testing the Posts API
 					"date_of_birth":null,
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta",
-					"last_location_point":"POINT(-85.39 33.755)",
+					"last_location_point":[
+						{
+							"value": {
+								"lat": 33.755,
+								"lon": -85.39
+							}
+						}
+					],
 					"missing_status":"believed_missing"
 				},
 				"tags":["disaster","explosion"]
@@ -415,7 +422,14 @@ Feature: Testing the Posts API
 					"date_of_birth":null,
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta",
-					"last_location_point":"POINT(-85.39 33.755)",
+					"last_location_point":[
+						{
+							"value": {
+								"lat": 33.755,
+								"lon": -85.39
+							}
+						}
+					],
 					"missing_status":"believed_missing"
 				},
 				"tags":["disaster","explosion"]
@@ -452,7 +466,14 @@ Feature: Testing the Posts API
 					"date_of_birth":null,
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta",
-					"last_location_point":"POINT(-85.39 33.755)",
+					"last_location_point":[
+						{
+							"value": {
+								"lat": 33.755,
+								"lon": -85.39
+							}
+						}
+					],
 					"missing_status":"believed_missing"
 				},
 				"tags":["disaster","explosion"]
