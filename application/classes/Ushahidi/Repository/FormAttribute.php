@@ -23,19 +23,38 @@ class Ushahidi_Repository_FormAttribute extends Ushahidi_Repository implements F
 	// Ushahidi_Repository
 	protected function getEntity(Array $data = null)
 	{
-		return new FormAttribute($data);
+		if (!empty($data))
+		{
+			return new FormAttribute($data);
+		}
+
+		return FALSE;
 	}
 
 	// FormAttributeRepository
 	public function get($id)
 	{
-		return new FormAttribute($this->selectOne(compact('id')));
+		return $this->getEntity($this->selectOne(compact('id')));
 	}
 
 	// FormAttributeRepository
-	public function getByKey($key)
+	public function getByKey($key, $form_id = null)
 	{
-		return new FormAttribute($this->selectOne(compact('key')));
+		$where = compact('key');
+		if ($form_id)
+		{
+			$where['form_id'] = $form_id;
+		}
+
+		$result = $this->selectQuery($where)
+			->select('form_attributes.*')
+			->join('form_groups_form_attributes', 'INNER')
+				->on('form_attributes.id', '=', 'form_attribute_id')
+			->join('form_groups', 'INNER')
+				->on('form_groups_form_attributes.form_group_id', '=', 'form_groups.id')
+			->limit(1)
+			->execute($this->db);
+		return $this->getEntity($result->current());
 	}
 
 	// FormAttributeRepository

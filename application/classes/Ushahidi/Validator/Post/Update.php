@@ -103,17 +103,17 @@ class Ushahidi_Validator_Post_Update implements Validator
 		foreach ($values as $key => $value)
 		{
 			// Check attribute exists
-			$attribute = $this->attribute_repo->get($key, $data['form_id']);
+			$attribute = $this->attribute_repo->getByKey($key, $data['form_id']);
 			if (! $attribute)
 			{
-				$valid->error('values.'. $key, 'attribute ":key" does not exist', [':key' => $key]);
+				$valid->error('values', 'attribute ":key" does not exist', [':key' => $key]);
 				return;
 			}
 
 			// Are there multiple values? Are they greater than cardinality limit?
 			if (count($value) > $attribute->cardinality AND $attribute->cardinality != 0)
 			{
-				$valid->error('values.'. $key, 'Too many values for :key (max: :cardinality)', [
+				$valid->error('values', 'Too many values for :key (max: :cardinality)', [
 					':key' => $key,
 					':cardinality' => $attribute->cardinality
 				]);
@@ -126,23 +126,23 @@ class Ushahidi_Validator_Post_Update implements Validator
 				{
 					$value_entity = $this->post_value_factory
 						->getInstance($attribute->type)
-						->get($id);
+						->get($v['id']);
 
 					// Add error if id specified by doesn't exist
 					if (! $value_entity)
 					{
-						$valid->error("values.$key.$k", 'value id does not exist');
+						$valid->error("values", 'value id :id for field :key does not exist', [':key' => $key, ':id' => $v['id']]);
 					}
 				}
 
 				// Run checks on individual values type specific validation
 				if ($validator = $this->post_value_validator_factory->getValidator($attribute->type))
 				{
-					if (! $validator->check(['value' => $value]))
+					if (! $validator->check($v))
 					{
-						foreach($validator->errors as $error)
+						foreach($validator->errors() as $error)
 						{
-							$valid->error("values.$key.$k", $error);
+							$valid->error("values", $error, [':key' => $key]);
 						}
 					}
 				}
@@ -153,6 +153,7 @@ class Ushahidi_Validator_Post_Update implements Validator
 		$required_attributes = $this->attribute_repo->getRequired($data['form_id']);
 		foreach ($required_attributes as $attr)
 		{
+			// @todo this doesn't actually work..
 			$this->valid->rule('values.'.$attr->key, 'not_empty');
 		}
 	}

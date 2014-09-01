@@ -13,7 +13,7 @@
 
 // use Ushahidi\Tool\Validator;
 
-class Ushahidi_Validator_Post_Date /*implements Validator*/
+class Ushahidi_Validator_Post_Varchar /*implements Validator*/
 {
 	public function check($input)
 	{
