@@ -15,7 +15,7 @@ use Symm\Gisconverter\Decoders\WKT;
 use Symm\Gisconverter\Geometry\Point;
 use Symm\Gisconverter\Exceptions\InvalidText;
 
-class Ushahidi_Repository_PostPoint extends Ushahidi_Repository_PostGeometry
+class Ushahidi_Repository_PostPoint extends Ushahidi_Repository_PostValue
 {
 	protected $decoder;
 
@@ -50,6 +50,21 @@ class Ushahidi_Repository_PostPoint extends Ushahidi_Repository_PostGeometry
 		return new PostValue($data);
 	}
 
+	// Override selectQuery to fetch 'value' from db as text
+	protected function selectQuery(Array $where = [])
+	{
+		$query = parent::selectQuery($where);
+
+		// Get geometry value as text
+		$query->select(
+				$this->getTable().'.*',
+				// Fetch AsText(value) aliased to value
+				[DB::expr('AsText(value)'), 'value']
+			);
+
+		return $query;
+	}
+
 	// Override createValue to save 'value' using GeomFromText
 	public function createValue($value, $form_attribute_id, $post_id)
 	{
@@ -58,7 +73,7 @@ class Ushahidi_Repository_PostPoint extends Ushahidi_Repository_PostGeometry
 			$value = ['lon' => null, 'lat' => null];
 		}
 
-		$value = DB::expr('GeomFromText(\'POINT(:lon :lat)\')')->parameters($value);
+		$value = DB::expr('GeomFromText(\'POINT(lon lat)\')')->parameters($value);
 
 		return parent::createValue($value, $form_attribute_id, $post_id);
 	}
@@ -71,7 +86,7 @@ class Ushahidi_Repository_PostPoint extends Ushahidi_Repository_PostGeometry
 			$value = ['lon' => null, 'lat' => null];
 		}
 
-		$value = DB::expr('GeomFromText(\'POINT(:lon :lat)\')')->parameters($value);
+		$value = DB::expr('GeomFromText(\'POINT(lon lat)\')')->parameters($value);
 
 		return parent::updateValue($id, $value, $form_attribute_id, $post_id);
 	}
