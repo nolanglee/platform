@@ -12,6 +12,7 @@
 use Ushahidi\Entity\PostValue;
 use Ushahidi\Entity\PostValueRepository;
 use Ushahidi\Entity\GetValuesForPostRepository;
+use Ushahidi\Usecase\Post\UpdatePostValueRepository;
 
 abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository implements
 	PostValueRepository,
