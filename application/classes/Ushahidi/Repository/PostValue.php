@@ -13,7 +13,10 @@ use Ushahidi\Entity\PostValue;
 use Ushahidi\Entity\PostValueRepository;
 use Ushahidi\Entity\GetValuesForPostRepository;
 
-abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository implements PostValueRepository, GetValuesForPostRepository
+abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository implements
+	PostValueRepository,
+	GetValuesForPostRepository,
+	UpdatePostValueRepository
 {
 
 	// Ushahidi_Repository
@@ -82,6 +85,7 @@ abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository impleme
 		return $this->get($id);
 	}
 
+	// UpdatePostValueRepository
 	public function deleteNotIn($post_id, $ids)
 	{
 		DB::delete($this->getTable())
