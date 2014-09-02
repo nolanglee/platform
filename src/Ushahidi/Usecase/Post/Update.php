@@ -49,23 +49,22 @@ class Update
 		}
 
 		// Access checks
-		if (! $this->auth->isAllowed($post, 'update', $user_id))
-		{
-			throw new AuthorizerException(sprintf('User %s is not allowed to update post %s',
+		if (! $this->auth->isAllowed($post, 'update', $user_id)) {
+			throw new AuthorizerException(sprintf(
+				'User %s is not allowed to update post %s',
 				$user_id,
 				$post->id
-				));
+			));
 		}
 
 		// if changing user id/email/name
-		if (isset($update->user_id) || isset($update->user_email) || isset($update->user_realname))
-		{
-			if (! $this->auth->isAllowed($post, 'change_user', $user_id))
-			{
-				throw new AuthorizerException(sprintf('User %s is not allowed to update user details for post %s',
+		if (isset($update->user_id) || isset($update->user_email) || isset($update->user_realname)) {
+			if (! $this->auth->isAllowed($post, 'change_user', $user_id)) {
+				throw new AuthorizerException(sprintf(
+					'User %s is not allowed to update user details for post %s',
 					$user_id,
 					$post->id
-					));
+				));
 			}
 		}
 		// (or NEW post + anon user)
