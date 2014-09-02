@@ -13,6 +13,8 @@ namespace Ushahidi\Usecase\Post;
 
 use Ushahidi\Entity\Post;
 use Ushahidi\Tool\Validator;
+use Ushahidi\Tool\Authorizer;
+use Ushahidi\Exception\AuthorizerException;
 use Ushahidi\Exception\ValidatorException;
 
 class Update
