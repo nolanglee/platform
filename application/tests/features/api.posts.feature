@@ -401,7 +401,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
-	@update
+	@resetFixture @update
 	Scenario: Updating user info on a Post (as admin)
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -445,6 +445,7 @@ Feature: Testing the Posts API
 		Then the guzzle status code should be 200
 
 	@update
+	@resetFixture @update
 	Scenario: Updating user info on a Post (as user) gets error
 		Given that I want to update a "Post"
 		And that the request "Authorization" header is "Bearer testbasicuser"
@@ -485,7 +486,7 @@ Feature: Testing the Posts API
 		And the response has a "errors" property
 		Then the guzzle status code should be 400
 
-	@update
+	@resetFixture @update
 	Scenario: Updating a Post with partial data
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -513,7 +514,7 @@ Feature: Testing the Posts API
 		And the response does not have a "values.missing_status" property
 		Then the guzzle status code should be 200
 
-	@update
+	@resetFixture @update
 	Scenario: Updating a Post with non-existent Form
 		Given that I want to update a "Post"
 		And that the request "data" is:
@@ -750,8 +751,6 @@ Feature: Testing the Posts API
 			{
 				"form":1,
 				"title":"SUMMARY REPORT (تقرير ملخص)",
-				"author":"robbie",
-				"email":"robbie@ushahidi.com",
 				"type":"report",
 				"status":"draft",
 				"locale":"en_US",

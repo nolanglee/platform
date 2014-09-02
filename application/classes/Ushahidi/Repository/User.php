@@ -27,7 +27,12 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 	// Ushahidi_Repository
 	protected function getEntity(Array $data = null)
 	{
-		return new User($data);
+		if (!empty($data))
+		{
+			return new User($data);
+		}
+
+		return FALSE;
 	}
 
 	// UserRepository
@@ -60,9 +65,38 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 		return $this->selectCount(compact('email')) === 0;
 	}
 
+	//
+	public function isUniqueOrUnregisteredEmail($email)
+	{
+		$user = $this->getByEmail($email);
+
+		return ! $user OR ! $user->username;
+	}
+
 	// RegisterRepository
 	public function register($email, $username, $password)
 	{
 		return $this->insert(compact('email', 'username', 'password'));
+	}
+
+	// UpdatePostValueRepository
+	public function createUser($email, $realname)
+	{
+		$input = compact('email', 'realname');
+		$input['created'] = time();
+
+		return $this->insert($input);
+	}
+
+	// UpdatePostValueRepository
+	public function updateUser($id, $email, $realname)
+	{
+		$update = compact('email', 'realname');
+		$update['updated'] = time();
+		if ($id && $update)
+		{
+			$this->update(compact('id'), $update);
+		}
+		return $this->get($id);
 	}
 }

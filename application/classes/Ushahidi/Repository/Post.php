@@ -304,10 +304,12 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	{
 		if ($id && $update)
 		{
-			$post_update = $update;
-			unset($post_update['values'], $post_update['tags']);
+			// Update/save user
+			$update['user_id'] = $this->updatePostUser($id, $update['user_id'], $update['user_email'], $update['user_realname']);
 
 			// Update the post entry if it changed
+			$post_update = $update;
+			unset($post_update['values'], $post_update['tags'], $post_update['user_email'], $post_update['user_realname']);
 			if (! empty($post_update))
 			{
 				$this->update(compact('id'), $post_update);
@@ -315,9 +317,6 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 
 			// Update post-tags
 			$this->updatePostTags($id, $update['tags']);
-
-			// @todo Update/save user
-			//$this->updatePostUser($id, $update->user);
 
 			// Update post-values
 			$this->updatePostValues($id, $update['values']);
@@ -365,9 +364,18 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		}
 	}
 
-	protected function updatePostUser($post_id, $user)
+	protected function updatePostUser($post_id, $user_id, $user_email, $user_realname)
 	{
+		if ($user_id)
+		{
+			$this->user_repo->updateUser($user_id, $user_email, $user_realname);
+		}
+		else
+		{
+			$user_id = $this->user_repo->createUser($user_email, $user_realname);
+		}
 
+		return $user_id;
 	}
 
 	protected function updatePostTags($post_id, $tags)

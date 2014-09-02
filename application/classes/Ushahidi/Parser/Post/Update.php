@@ -45,14 +45,18 @@ class Ushahidi_Parser_Post_Update implements Parser
 		{
 			$data['user_id'] = $data['user'];
 		}
-		/*if (!empty($data['user']['email']))
+		if (!empty($data['user']['id']))
+		{
+			$data['user_id'] = $data['user']['id'];
+		}
+		if (!empty($data['user']['email']))
 		{
 			$data['user_email'] = $data['user']['email'];
 		}
 		if (!empty($data['user']['email']))
 		{
 			$data['user_realname'] = $data['user']['realname'];
-		}*/
+		}
 
 		// Parse tags
 		if (isset($data['tags']))
@@ -88,7 +92,7 @@ class Ushahidi_Parser_Post_Update implements Parser
 		}
 
 		// Ensure that all properties of a Post entity are defined by using Arr::extract
-		return new PostData(Arr::extract($data, ['form_id', 'title', 'content', 'status', 'slug', 'locale', 'tags', 'values', 'user_id'/*, 'user_email', 'user_realname'*/]));
+		return new PostData(Arr::extract($data, ['form_id', 'title', 'content', 'status', 'slug', 'locale', 'tags', 'values', 'user_id', 'user_email', 'user_realname']));
 	}
 
 	/**

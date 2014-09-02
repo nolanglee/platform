@@ -22,13 +22,14 @@ class Update
 
 	private $updated = [];
 
-	public function __construct(UpdatePostRepository $repo, Validator $valid)
+	public function __construct(UpdatePostRepository $repo, Validator $valid, Authorizer $auth)
 	{
 		$this->repo  = $repo;
 		$this->valid = $valid;
+		$this->auth  = $auth;
 	}
 
-	public function interact(Post $post, PostData $input)
+	public function interact(Post $post, PostData $input, $user_id)
 	{
 		// We only want to work with values that have been changed
 		// @todo figure out what to do about this.. something are always different
@@ -44,6 +45,28 @@ class Update
 		if (!$this->valid->check($update)) {
 			throw new ValidatorException("Failed to validate post", $this->valid->errors());
 		}
+
+		// Access checks
+		if (! $this->auth->isAllowed($post, 'update', $user_id))
+		{
+			throw new AuthorizerException(sprintf('User %s is not allowed to update post %s',
+				$user_id,
+				$post->id
+				));
+		}
+
+		// if changing user id/email/name
+		if (isset($update->user_id) || isset($update->user_email) || isset($update->user_realname))
+		{
+			if (! $this->auth->isAllowed($post, 'change_user', $user_id))
+			{
+				throw new AuthorizerException(sprintf('User %s is not allowed to update user details for post %s',
+					$user_id,
+					$post->id
+					));
+			}
+		}
+		// (or NEW post + anon user)
 
 		// Determine what changes to make in the post
 		$this->updated = $update->asArray();

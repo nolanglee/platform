@@ -95,6 +95,7 @@ $di->set('usecase.post.update', $di->lazyNew('\Ushahidi\Usecase\Post\Update'));
 $di->params['\Ushahidi\Usecase\Post\Update'] = [
 	'repo' => $di->lazyGet('repository.post'),
 	'valid' => $di->lazyGet('validator.post.update'),
+	'auth' => $di->lazyGet('tool.authorizer.post'),
 	];
 
 $di->set('usecase.tag.create', $di->lazyNew('\Ushahidi\Usecase\Tag\Create'));
