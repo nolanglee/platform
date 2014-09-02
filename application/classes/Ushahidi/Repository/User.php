@@ -76,7 +76,8 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 	// RegisterRepository
 	public function register($email, $username, $password)
 	{
-		return $this->insert(compact('email', 'username', 'password'));
+		$created = time();
+		return $this->insert(compact('email', 'username', 'password', 'created'));
 	}
 
 	// UpdatePostValueRepository
