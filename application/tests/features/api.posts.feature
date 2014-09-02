@@ -10,8 +10,8 @@ Feature: Testing the Posts API
 				"form":1,
 				"title":"Test post",
 				"user":{
-				  "realname": "Robbie Mackay",
-				  "email": "someotherrobbie@test.com"
+					"realname": "Robbie Mackay",
+					"email": "someotherrobbie@test.com"
 				},
 				"type":"report",
 				"status":"draft",
@@ -24,14 +24,14 @@ Feature: Testing the Posts API
 					"missing_date":"2012/09/25",
 					"last_location":"atlanta",
 					"last_location_point":{
-					  "lat":33.755,
-					  "lon":-84.39
+						"lat":33.755,
+						"lon":-84.39
 					},
 					"geometry_test":"POLYGON((0 0,1 1,2 2,0 0))",
 					"missing_status":"believed_missing",
 					"links":[
-					  {"value":"http://google.com"},
-					  {"value":"http://facebook.com"}
+						{"value":"http://google.com"},
+						{"value":"http://facebook.com"}
 					]
 				},
 				"tags":["explosion"]
@@ -190,8 +190,8 @@ Feature: Testing the Posts API
 				"status":"draft",
 				"locale":"en_US",
 				"user":{
-				  "realname": "Robbie Mackay",
-				  "email": "robbie@ushahidi.com"
+					"realname": "Robbie Mackay",
+					"email": "robbie@ushahidi.com"
 				},
 				"values":
 				{
@@ -221,7 +221,7 @@ Feature: Testing the Posts API
 				"status":"draft",
 				"locale":"en_US",
 				"user":{
-				  "id": 1
+					"id": 1
 				},
 				"values":
 				{
@@ -253,7 +253,7 @@ Feature: Testing the Posts API
 				"status":"draft",
 				"locale":"en_US",
 				"user":{
-				  "id": 1
+					"id": 1
 				},
 				"values":
 				{
@@ -413,7 +413,7 @@ Feature: Testing the Posts API
 				"status":"published",
 				"locale":"en_US",
 				"user":{
-				  "id": 4
+					"id": 4
 				},
 				"values":
 				{
@@ -444,7 +444,92 @@ Feature: Testing the Posts API
 		And the "user.id" property equals "4"
 		Then the guzzle status code should be 200
 
-	@update
+	@update @resetFixture
+	Scenario: Updating user info on a Post (as admin)
+		Given that I want to update a "Post"
+		And that the request "data" is:
+			"""
+			{
+				"form":1,
+				"title":"Updated Test Post",
+				"type":"report",
+				"status":"published",
+				"locale":"en_US",
+				"user":{
+					"email": "someuser@ushahidi.com",
+					"realname": "Some User"
+				},
+				"values":
+				{
+					"full_name":"David Kobia",
+					"description":"Skinny, homeless Kenyan last seen in the vicinity of the greyhound station",
+					"date_of_birth":null,
+					"missing_date":"2012/09/25",
+					"last_location":"atlanta",
+					"last_location_point":[
+						{
+							"value": {
+								"lat": 33.755,
+								"lon": -85.39
+							}
+						}
+					],
+					"missing_status":"believed_missing"
+				},
+				"tags":["disaster","explosion"]
+			}
+			"""
+		And that its "id" is "1"
+		When I request "/posts"
+		Then the response is JSON
+		And the response has a "id" property
+		And the type of the "id" property is "numeric"
+		And the "id" property equals "1"
+		And the type of the "user.id" property is "numeric"
+		Then the guzzle status code should be 200
+
+	@update @resetFixture
+	Scenario: Updating user info of registered user on a Post (as admin)
+		Given that I want to update a "Post"
+		And that the request "data" is:
+			"""
+			{
+				"form":1,
+				"title":"Updated Test Post",
+				"type":"report",
+				"status":"published",
+				"locale":"en_US",
+				"user":{
+					"id": 1,
+					"email": "someuser@ushahidi.com",
+					"realname": "Some User"
+				},
+				"values":
+				{
+					"full_name":"David Kobia",
+					"description":"Skinny, homeless Kenyan last seen in the vicinity of the greyhound station",
+					"date_of_birth":null,
+					"missing_date":"2012/09/25",
+					"last_location":"atlanta",
+					"last_location_point":[
+						{
+							"value": {
+								"lat": 33.755,
+								"lon": -85.39
+							}
+						}
+					],
+					"missing_status":"believed_missing"
+				},
+				"tags":["disaster","explosion"]
+			}
+			"""
+		And that its "id" is "1"
+		When I request "/posts"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 400
+
 	@resetFixture @update
 	Scenario: Updating user info on a Post (as user) gets error
 		Given that I want to update a "Post"
@@ -458,7 +543,7 @@ Feature: Testing the Posts API
 				"status":"published",
 				"locale":"en_US",
 				"user":{
-				  "id": 4
+					"id": 4
 				},
 				"values":
 				{
