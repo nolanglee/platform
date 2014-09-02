@@ -17,6 +17,7 @@ class Ushahidi_Parser_Post_Update implements Parser
 {
 	public function __invoke(Array $data)
 	{
+		// @todo should this be here? or only create?
 		if (empty($data['slug']) AND !empty($data['title']))
 		{
 			$data['slug'] = URL::title(trim($data['title']));
