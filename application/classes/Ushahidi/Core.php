@@ -157,7 +157,8 @@ abstract class Ushahidi_Core {
 				'form_attribute_repo' => $di->lazyGet('repository.form_attribute'),
 				'post_value_factory' => $di->lazyGet('repository.post_value_factory'),
 				'bounding_box_factory' => $di->newFactory('Util_BoundingBox'),
-				'tag_repo' => $di->lazyGet('repository.tag')
+				'tag_repo' => $di->lazyGet('repository.tag'),
+				'user_repo' => $di->lazyGet('repository.user')
 			];
 
 		$di->set('repository.post.datetime', $di->lazyNew('Ushahidi_Repository_PostDatetime'));

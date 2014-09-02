@@ -14,6 +14,7 @@ use Ushahidi\Entity\PostRepository;
 use Ushahidi\Usecase\Post\UpdatePostRepository;
 use Ushahidi\Entity\FormAttributeRepository;
 use Ushahidi\Entity\TagRepository;
+use Ushahidi\Entity\UserRepository;
 use Ushahidi\Entity\PostSearchData;
 use Aura\DI\InstanceFactory;
 
@@ -21,6 +22,9 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 {
 	protected $form_attribute_repo;
 	protected $post_value_factory;
+	protected $bounding_box_factory;
+	protected $tag_repo;
+	protected $user_repo;
 
 	/**
 	 * Construct
@@ -34,7 +38,8 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 			FormAttributeRepository $form_attribute_repo,
 			Ushahidi_Repository_PostValueFactory $post_value_factory,
 			InstanceFactory $bounding_box_factory,
-			TagRepository $tag_repo
+			TagRepository $tag_repo,
+			UserRepository $user_repo
 		)
 	{
 		parent::__construct($db);
@@ -43,6 +48,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		$this->post_value_factory = $post_value_factory;
 		$this->bounding_box_factory = $bounding_box_factory;
 		$this->tag_repo = $tag_repo;
+		$this->user_repo = $user_repo;
 	}
 
 	// Ushahidi_Repository
@@ -305,7 +311,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		if ($id && $update)
 		{
 			// Update/save user
-			$update['user_id'] = $this->updatePostUser($id, $update['user_id'], $update['user_email'], $update['user_realname']);
+			$update['user_id'] = $this->updatePostUser($id, Arr::extract($update, ['user_id', 'user_email', 'user_realname']));
 
 			// Update the post entry if it changed
 			$post_update = $update;
@@ -364,8 +370,9 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		}
 	}
 
-	protected function updatePostUser($post_id, $user_id, $user_email, $user_realname)
+	protected function updatePostUser($post_id, $user)
 	{
+		extract($user);
 		if ($user_id)
 		{
 			$this->user_repo->updateUser($user_id, $user_email, $user_realname);
