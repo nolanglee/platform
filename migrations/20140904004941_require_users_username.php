@@ -31,5 +31,4 @@ class RequireUsersUsername extends AbstractMigration
             ->removeIndex(['username'], ['unique' => true])
             ->update();
     }
-
 }

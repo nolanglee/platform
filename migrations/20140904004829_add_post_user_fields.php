@@ -27,5 +27,4 @@ class AddPostUserFields extends AbstractMigration
             ->addIndex(['author_email'])
             ->update();
     }
-
 }
