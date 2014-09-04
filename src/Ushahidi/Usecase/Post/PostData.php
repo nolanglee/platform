@@ -42,17 +42,32 @@ class PostData extends Data
 	{
 		// Get the difference of current data and comparison. If not all properties
 		// were defined in input, this will contain false positive (empty) values.
-		$base = $this->asArray();
 		// Exclude values and tags, since array_diff_assoc can't cope with arrays.
-		unset($base['values'], $base['tags'], $compare['values'], $compare['tags']);
-
-		$delta = array_diff_assoc($base, $compare);
+		$delta = $this->diff($this->asArray(), $compare, ['tags', 'values']);
 
 		// @todo recursive diff on values and tags
 		// For now, just assume they're always updated
-		$delta['values'] = $this->values;
-		$delta['tags']	 = $this->tags;
+		$delta['values'] = $this->diffValues($this->values, $compare['values']);
+		$delta['tags']	 = $this->diffTags($this->tags, $compare['tags']);
 
 		return new static($delta);
+	}
+
+	protected function diff($base, $compare, $excluding)
+	{
+		$base = array_diff_key($base, array_flip($excluding));
+		$compare = array_diff_key($compare, array_flip($excluding));
+
+		return array_diff_assoc($base, $compare);
+	}
+
+	protected function diffValues($base, $compare)
+	{
+		return $base;
+	}
+
+	protected function diffTags($base, $compare)
+	{
+		return $base;
 	}
 }
