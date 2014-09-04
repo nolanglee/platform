@@ -82,12 +82,9 @@ class Ushahidi_Validator_Post_Update implements Validator
 					[[$this, 'check_tags'], [':validation', ':value']]
 				])
 			->rules('user_id', [
-					// check the user exists
-					// @todo better error message
-					[[$this->user_repo, 'doesUserExist'], [':value']]
+					[[$this->user_repo, 'doesUserExist'], [':value']],
+					[[$this, 'onlyAuthorOrUserSet'], [':value', ':data']]
 				])
-			// @todo move user email/realname validation to somewhere shared between various use validators?
-			// @todo check user isn't registered (has username) if we have email/realname info
 			->rules('author_email', [
 					['Valid::email'],
 					[[$this->user_repo, 'isUniqueEmail'], [':value']]
@@ -170,6 +167,17 @@ class Ushahidi_Validator_Post_Update implements Validator
 				$this->error('values', 'field :key is required', [':key' => $key]);
 			}
 		}
+	}
+
+	/**
+	 * Check that only author or user info is set
+	 * @param  int $user_id
+	 * @param  array $data
+	 * @return Boolean
+	 */
+	public function onlyAuthorOrUserSet($user_id, $data)
+	{
+		return (empty($user_id) OR (empty($data['author_email']) AND empty($data['author_realname'])) );
 	}
 
 	public function errors($from = 'post')
