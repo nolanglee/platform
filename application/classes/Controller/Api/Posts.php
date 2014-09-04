@@ -234,6 +234,10 @@ class Controller_Api_Posts extends Ushahidi_Api {
 				':errors' => implode(', ', Arr::flatten($e->getErrors())),
 			));
 		}
+		catch (Ushahidi\Exception\AuthorizerException $e)
+		{
+			throw new HTTP_Exception_403($e->getMessage());
+		}
 
 		$this->_response_payload = $format($post);
 		$this->_response_payload['updated_fields'] = $usecase->getUpdated();

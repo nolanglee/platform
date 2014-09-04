@@ -565,7 +565,7 @@ Feature: Testing the Posts API
 		Then the guzzle status code should be 400
 
 	@resetFixture @update
-	Scenario: Updating user info on a Post (as user) should fail
+	Scenario: A normal user updating a post with a new user id should get access denied
 		Given that I want to update a "Post"
 		And that the request "Authorization" header is "Bearer testbasicuser"
 		And that the request "data" is:
@@ -603,7 +603,7 @@ Feature: Testing the Posts API
 		When I request "/posts"
 		Then the response is JSON
 		And the response has a "errors" property
-		Then the guzzle status code should be 400
+		Then the guzzle status code should be 403
 
 	@resetFixture @update
 	Scenario: Updating a Post with partial data
