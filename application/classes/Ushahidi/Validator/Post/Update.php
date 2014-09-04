@@ -113,7 +113,7 @@ class Ushahidi_Validator_Post_Update implements Validator
 		{
 			// Check attribute exists
 			$attribute = $this->attribute_repo->getByKey($key, $data['form_id']);
-			if (! $attribute)
+			if (! $attribute->id)
 			{
 				$valid->error('values', 'attribute ":key" does not exist', [':key' => $key]);
 				return;

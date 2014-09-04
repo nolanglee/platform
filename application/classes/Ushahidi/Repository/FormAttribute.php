@@ -23,12 +23,7 @@ class Ushahidi_Repository_FormAttribute extends Ushahidi_Repository implements F
 	// Ushahidi_Repository
 	protected function getEntity(Array $data = null)
 	{
-		if (!empty($data))
-		{
-			return new FormAttribute($data);
-		}
-
-		return FALSE;
+		return new FormAttribute($data);
 	}
 
 	// FormAttributeRepository
