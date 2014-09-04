@@ -80,7 +80,7 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 		return $this->insert(compact('email', 'username', 'password', 'created'));
 	}
 
-	// UpdatePostValueRepository
+	//
 	public function createUser($email, $realname)
 	{
 		$input = compact('email', 'realname');
@@ -89,7 +89,7 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 		return $this->insert($input);
 	}
 
-	// UpdatePostValueRepository
+	//
 	public function updateUser($id, $email, $realname)
 	{
 		$update = compact('email', 'realname');
