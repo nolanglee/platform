@@ -104,7 +104,7 @@ class Ushahidi_Validator_Post_Update implements Validator
 	{
 		foreach ($tags as $key => $tag)
 		{
-			if (! ($tag_entity = $this->tag_repo->get($tag) OR $tag_entity = $this->tag_repo->getByTag($tag)))
+			if (! $this->tag_repo->doesTagExist($tag))
 			{
 				$valid->error('tags.'. $key, 'tag ":tag" does not exist', [':tag' => $tag]);
 			}

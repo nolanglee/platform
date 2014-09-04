@@ -20,8 +20,20 @@ interface TagRepository
 	public function get($id);
 
 	/**
+	 * @param  string $tag
+	 * @return Ushahidi\Entity\Tag
+	 */
+	public function getByTag($tag);
+
+	/**
 	 * @param  Ushahidi\Entity\TagSearchData $data
 	 * @return [Ushahidi\Entity\Tag, ...]
 	 */
 	public function search(TagSearchData $data);
+
+	/**
+	 * @param  string $tag
+	 * @return Boolean
+	 */
+	public function doesTagExist($tagOrId);
 }
