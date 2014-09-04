@@ -21,15 +21,15 @@ class Ushahidi_Formatter_PostValue extends Ushahidi_Formatter_API
 
 	public function __invoke($entity)
 	{
-		if (isset($this->map[$entity->type]))
+		if (isset($this->map[$entity['type']]))
 		{
-			$formatter = $this->map[$entity->type];
+			$formatter = $this->map[$entity['type']];
 			return $formatter($entity);
 		}
 
 		return [
-			'id'    => $entity->id,
-			'value' => $entity->value
+			'id'    => $entity['id'],
+			'value' => $entity['value']
 		];
 	}
 }

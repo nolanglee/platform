@@ -56,7 +56,7 @@ abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository impleme
 
 		$results = $query->execute($this->db);
 
-		return $this->getCollection($results->as_array());
+		return $results->as_array(); //$this->getCollection($results->as_array());
 	}
 
 	// PostValueRepository
