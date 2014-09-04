@@ -26,7 +26,7 @@ interface UpdatePostValueRepository
 	 * @param  Int     $id
 	 * @param  Mixed   $value
 	 * @param  Int     $form_attribute_id
-	 * @param  Int     $post_id
+	 * @param  void
 	 */
 	public function updateValue($id, $value, $form_attribute_id, $post_id);
 

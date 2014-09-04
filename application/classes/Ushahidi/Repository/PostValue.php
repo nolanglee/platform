@@ -83,7 +83,6 @@ abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository impleme
 		{
 			$this->update(compact('id', 'post_id', 'form_attribute_id'), $update);
 		}
-		return $this->get($id);
 	}
 
 	// UpdatePostValueRepository
