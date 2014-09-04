@@ -166,8 +166,10 @@ class Ushahidi_Validator_Post_Update implements Validator
 		$required_attributes = $this->attribute_repo->getRequired($data['form_id']);
 		foreach ($required_attributes as $attr)
 		{
-			// @todo this doesn't actually work..
-			$this->valid->rule('values.'.$attr->key, 'not_empty');
+			if (! array_key_exists($attr->key, $values))
+			{
+				$this->error('values', 'field :key is required', [':key' => $key]);
+			}
 		}
 	}
 
