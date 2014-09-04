@@ -27,12 +27,7 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 	// Ushahidi_Repository
 	protected function getEntity(Array $data = null)
 	{
-		if (!empty($data))
-		{
-			return new User($data);
-		}
-
-		return FALSE;
+		return new User($data);
 	}
 
 	// UserRepository
