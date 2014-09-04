@@ -69,7 +69,8 @@ class Update
 		}
 
 		// Determine what changes to make in the post
-		// @todo figure out why is $update `PostData` till here? either it should stay `PostData`, or it should start as an array.
+		// @todo figure out why is $update `PostData` till here?
+		// either it should stay `PostData`, or it should start as an array.
 		$this->updated = $update->asArray();
 
 		// Update the post and get the updated post back
