@@ -33,6 +33,8 @@ class Update
 
 	public function interact(Post $post, PostData $input, $user_id)
 	{
+
+
 		// We only want to work with values that have been changed
 		// @todo figure out what to do about this.. something are always different
 		// because input data isn't an entity, and shouldn't have to be.
@@ -70,6 +72,7 @@ class Update
 		// (or NEW post + anon user)
 
 		// Determine what changes to make in the post
+		// @todo figure out why is $update `PostData` till here? either it should stay `PostData`, or it should start as an array.
 		$this->updated = $update->asArray();
 
 		// Update the post and get the updated post back
