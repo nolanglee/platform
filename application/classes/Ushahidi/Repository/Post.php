@@ -24,7 +24,6 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	protected $post_value_factory;
 	protected $bounding_box_factory;
 	protected $tag_repo;
-	protected $user_repo;
 
 	/**
 	 * Construct
@@ -38,8 +37,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 			FormAttributeRepository $form_attribute_repo,
 			Ushahidi_Repository_PostValueFactory $post_value_factory,
 			InstanceFactory $bounding_box_factory,
-			TagRepository $tag_repo,
-			UserRepository $user_repo
+			TagRepository $tag_repo
 		)
 	{
 		parent::__construct($db);
@@ -48,7 +46,6 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		$this->post_value_factory = $post_value_factory;
 		$this->bounding_box_factory = $bounding_box_factory;
 		$this->tag_repo = $tag_repo;
-		$this->user_repo = $user_repo;
 	}
 
 	// Ushahidi_Repository
