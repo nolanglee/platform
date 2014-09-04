@@ -84,16 +84,15 @@ class Ushahidi_Validator_Post_Update implements Validator
 			->rules('user_id', [
 					// check the user exists
 					// @todo better error message
-					[[$this->user_repo, 'get'], [':value']]
+					[[$this->user_repo, 'doesUserExist'], [':value']]
 				])
 			// @todo move user email/realname validation to somewhere shared between various use validators?
 			// @todo check user isn't registered (has username) if we have email/realname info
-			->rules('user_email', [
+			->rules('author_email', [
 					['Valid::email'],
-					// confirm email not already used (OR not registered)
-					[[$this->user_repo, 'isUniqueOrUnregisteredEmail'], [':value']]
+					[[$this->user_repo, 'isUniqueEmail'], [':value']]
 				])
-			->rules('user_realname', [
+			->rules('author_realname', [
 					['max_length', [':value', 150]],
 				]);
 

@@ -48,6 +48,12 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 		return $this->getEntity($this->selectOne(compact('email')));
 	}
 
+	// UserRepository
+	public function doesUserExist($id)
+	{
+		return $this->selectCount(compact('id')) !== 0;
+	}
+
 	// RegisterRepository
 	public function isUniqueUsername($username)
 	{
@@ -60,39 +66,10 @@ class Ushahidi_Repository_User extends Ushahidi_Repository implements
 		return $this->selectCount(compact('email')) === 0;
 	}
 
-	//
-	public function isUniqueOrUnregisteredEmail($email)
-	{
-		$user = $this->getByEmail($email);
-
-		return ! $user OR ! $user->username;
-	}
-
 	// RegisterRepository
 	public function register($email, $username, $password)
 	{
 		$created = time();
 		return $this->insert(compact('email', 'username', 'password', 'created'));
-	}
-
-	//
-	public function createUser($email, $realname)
-	{
-		$input = compact('email', 'realname');
-		$input['created'] = time();
-
-		return $this->insert($input);
-	}
-
-	//
-	public function updateUser($id, $email, $realname)
-	{
-		$update = compact('email', 'realname');
-		$update['updated'] = time();
-		if ($id && $update)
-		{
-			$this->update(compact('id'), $update);
-		}
-		return $this->get($id);
 	}
 }

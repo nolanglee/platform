@@ -9,10 +9,8 @@ Feature: Testing the Posts API
 			{
 				"form":1,
 				"title":"Test post",
-				"user":{
-					"realname": "Robbie Mackay",
-					"email": "someotherrobbie@test.com"
-				},
+				"author_realname": "Robbie Mackay",
+				"author_email": "someotherrobbie@test.com"
 				"type":"report",
 				"status":"draft",
 				"locale":"en_US",
@@ -189,10 +187,8 @@ Feature: Testing the Posts API
 				"type":"report",
 				"status":"draft",
 				"locale":"en_US",
-				"user":{
-					"realname": "Robbie Mackay",
-					"email": "robbie@ushahidi.com"
-				},
+				"author_realname": "Robbie Mackay",
+				"author_email": "robbie@ushahidi.com",
 				"values":
 				{
 					"full_name":"David Kobia",
@@ -445,7 +441,7 @@ Feature: Testing the Posts API
 		Then the guzzle status code should be 200
 
 	@update @resetFixture
-	Scenario: Updating user info on a Post (as admin)
+	Scenario: Updating author info on a Post (as admin)
 		Given that I want to update a "Post"
 		And that the request "data" is:
 			"""
@@ -455,10 +451,8 @@ Feature: Testing the Posts API
 				"type":"report",
 				"status":"published",
 				"locale":"en_US",
-				"user":{
-					"email": "someuser@ushahidi.com",
-					"realname": "Some User"
-				},
+				"author_realname": "Some User",
+				"author_email": "someuser@ushahidi.com",
 				"values":
 				{
 					"full_name":"David Kobia",
@@ -485,11 +479,12 @@ Feature: Testing the Posts API
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
 		And the "id" property equals "1"
-		And the type of the "user.id" property is "numeric"
+		And the "author_realname" property equals "Some User"
+		And the "author_email" property equals "someuser@ushahidi.com"
 		Then the guzzle status code should be 200
 
 	@update @resetFixture
-	Scenario: Updating user info of registered user on a Post (as admin)
+	Scenario: Update a post with user id and author info should fail
 		Given that I want to update a "Post"
 		And that the request "data" is:
 			"""
@@ -500,10 +495,49 @@ Feature: Testing the Posts API
 				"status":"published",
 				"locale":"en_US",
 				"user":{
-					"id": 1,
-					"email": "someuser@ushahidi.com",
-					"realname": "Some User"
+					"id": 1
 				},
+				"author_email": "someuser@ushahidi.com",
+				"author_realname": "Some User",
+				"values":
+				{
+					"full_name":"David Kobia",
+					"description":"Skinny, homeless Kenyan last seen in the vicinity of the greyhound station",
+					"date_of_birth":null,
+					"missing_date":"2012/09/25",
+					"last_location":"atlanta",
+					"last_location_point":[
+						{
+							"value": {
+								"lat": 33.755,
+								"lon": -85.39
+							}
+						}
+					],
+					"missing_status":"believed_missing"
+				},
+				"tags":["disaster","explosion"]
+			}
+			"""
+		And that its "id" is "1"
+		When I request "/posts"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 400
+
+	@update @resetFixture
+	Scenario: Updating a post with an already registered author email should fail
+		Given that I want to update a "Post"
+		And that the request "data" is:
+			"""
+			{
+				"form":1,
+				"title":"Updated Test Post",
+				"type":"report",
+				"status":"published",
+				"locale":"en_US",
+				"author_email": "robbie@ushahidi.com",
+				"author_realname": "Some User",
 				"values":
 				{
 					"full_name":"David Kobia",
@@ -531,7 +565,7 @@ Feature: Testing the Posts API
 		Then the guzzle status code should be 400
 
 	@resetFixture @update
-	Scenario: Updating user info on a Post (as user) gets error
+	Scenario: Updating user info on a Post (as user) should fail
 		Given that I want to update a "Post"
 		And that the request "Authorization" header is "Bearer testbasicuser"
 		And that the request "data" is:

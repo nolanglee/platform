@@ -17,8 +17,8 @@ class PostData extends Data
 {
 	public $form_id;
 	public $user_id;
-	public $user_email;
-	public $user_realname;
+	public $author_email;
+	public $author_realname;
 	public $title;
 	public $slug;
 	public $content;
@@ -31,7 +31,6 @@ class PostData extends Data
 
 	public $values = [];
 	public $tags = [];
-
 
 	/**
 	 * Compare with some existing data and get the delta between the two.

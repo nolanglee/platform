@@ -310,12 +310,9 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	{
 		if ($id && $update)
 		{
-			// Update/save user
-			$update['user_id'] = $this->updatePostUser($id, Arr::extract($update, ['user_id', 'user_email', 'user_realname']));
-
 			// Update the post entry if it changed
 			$post_update = $update;
-			unset($post_update['values'], $post_update['tags'], $post_update['user_email'], $post_update['user_realname']);
+			unset($post_update['values'], $post_update['tags']);
 			if (! empty($post_update))
 			{
 				$this->update(compact('id'), $post_update);
@@ -368,21 +365,6 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 
 			$repo->deleteNotIn($post_id, $ids);
 		}
-	}
-
-	protected function updatePostUser($post_id, $user)
-	{
-		extract($user);
-		if ($user_id)
-		{
-			$this->user_repo->updateUser($user_id, $user_email, $user_realname);
-		}
-		else
-		{
-			$user_id = $this->user_repo->createUser($user_email, $user_realname);
-		}
-
-		return $user_id;
 	}
 
 	protected function updatePostTags($post_id, $tags)

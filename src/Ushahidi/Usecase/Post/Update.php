@@ -33,8 +33,6 @@ class Update
 
 	public function interact(Post $post, PostData $input, $user_id)
 	{
-
-
 		// We only want to work with values that have been changed
 		// @todo figure out what to do about this.. something are always different
 		// because input data isn't an entity, and shouldn't have to be.
@@ -59,8 +57,8 @@ class Update
 			));
 		}
 
-		// if changing user id/email/name
-		if (isset($update->user_id) || isset($update->user_email) || isset($update->user_realname)) {
+		// if changing user id or author info
+		if (isset($update->user_id) || isset($update->author_email) || isset($update->author_realname)) {
 			if (! $this->auth->isAllowed($post, 'change_user', $user_id)) {
 				throw new AuthorizerException(sprintf(
 					'User %s is not allowed to update user details for post %s',
@@ -69,7 +67,6 @@ class Update
 				));
 			}
 		}
-		// (or NEW post + anon user)
 
 		// Determine what changes to make in the post
 		// @todo figure out why is $update `PostData` till here? either it should stay `PostData`, or it should start as an array.
