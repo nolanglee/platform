@@ -56,8 +56,8 @@ class Ushahidi_Formatter_Post extends Ushahidi_Formatter_API
 		$values_with_keys = [];
 		foreach($values as $value)
 		{
-			$key = $value['key'];
-			$cardinality = $value['cardinality'];
+			$key = $value->key;
+			$cardinality = $value->cardinality;
 			$formatted_value = $value_formatter($value);
 
 			if (! isset($values_with_keys[$key]))
