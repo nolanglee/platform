@@ -385,7 +385,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 				$tag_entity = $this->tag_repo->get($tag);
 			}
 
-			// Does the post already havet this tag?
+			// Does the post already have this tag?
 			if (! in_array($tag_entity->id, $existing))
 			{
 				// Add to insert query
