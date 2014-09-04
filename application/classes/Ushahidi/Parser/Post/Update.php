@@ -172,8 +172,6 @@ class Ushahidi_Parser_Post_Update implements Parser
 			}
 		}
 
-		// @todo custom parsing for ie. point values from lat/lon -> WKT
-
 		return $_values;
 	}
 }
