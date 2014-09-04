@@ -307,6 +307,8 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	{
 		if ($id && $update)
 		{
+			$update['updated'] = time();
+
 			// Update the post entry if it changed
 			$post_update = $update;
 			unset($post_update['values'], $post_update['tags']);
