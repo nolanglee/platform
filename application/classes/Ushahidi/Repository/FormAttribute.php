@@ -35,11 +35,7 @@ class Ushahidi_Repository_FormAttribute extends Ushahidi_Repository implements F
 	// FormAttributeRepository
 	public function getByKey($key, $form_id = null)
 	{
-		$where = compact('key');
-		if ($form_id)
-		{
-			$where['form_id'] = $form_id;
-		}
+		$where = array_filter(compact('key', 'form_id'));
 
 		$result = $this->selectQuery($where)
 			->select('form_attributes.*')

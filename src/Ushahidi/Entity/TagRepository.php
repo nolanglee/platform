@@ -35,5 +35,5 @@ interface TagRepository
 	 * @param  string $tag
 	 * @return Boolean
 	 */
-	public function doesTagExist($tagOrId);
+	public function doesTagExist($tag_or_id);
 }

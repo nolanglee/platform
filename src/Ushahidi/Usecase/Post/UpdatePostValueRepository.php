@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Admin Update Post Repository
+ * Ushahidi Platform Update Post Value Repository
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -25,10 +25,9 @@ interface UpdatePostValueRepository
 	 * Update an existing post value
 	 * @param  Int     $id
 	 * @param  Mixed   $value
-	 * @param  Int     $form_attribute_id
 	 * @param  void
 	 */
-	public function updateValue($id, $value, $form_attribute_id, $post_id);
+	public function updateValue($id, $value);
 
 
 	/**
@@ -36,5 +35,5 @@ interface UpdatePostValueRepository
 	 * @param  Integer $post_id
 	 * @param  Array   $ids
 	 */
-	public function deleteNotIn($post_id, $ids);
+	public function deleteNotIn($post_id, Array $ids);
 }

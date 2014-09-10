@@ -279,7 +279,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 	}
 
 	// UpdatePostRepository
-	public function doesLocaleAlreadyExist($locale, $parent_id, $type)
+	public function doesTranslationExist($locale, $parent_id, $type)
 	{
 		// If this isn't a translation of an existing post, skip
 		if ($type != 'translation')
@@ -373,7 +373,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 
 		$insert = DB::insert('posts_tags', ['post_id', 'tag_id']);
 
-		$tag_ids = [0];
+		$tag_ids = [];
 		$new_tags = FALSE;
 		foreach ($tags as $tag)
 		{
@@ -403,9 +403,12 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements PostReposi
 		}
 
 		// Remove any other tags
-		DB::delete('posts_tags')
-			->where('tag_id', 'NOT IN', $tag_ids)
-			->execute($this->db);
+		if (! empty($tag_ids))
+		{
+			DB::delete('posts_tags')
+				->where('tag_id', 'NOT IN', $tag_ids)
+				->execute($this->db);
+		}
 	}
 
 }

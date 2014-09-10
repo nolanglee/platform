@@ -44,9 +44,10 @@ abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository impleme
 	}
 
 	// PostValueRepository
-	public function get($id)
+	public function get($id, $post_id = null, $form_attribute_id = null)
 	{
-		return $this->getEntity($this->selectOne(compact('id')));
+		$where = array_filter(compact('id', 'post_id', 'form_attribute_id'));
+		return $this->getEntity($this->selectOne($where));
 	}
 
 	// GetValuesForPostRepository
@@ -76,17 +77,17 @@ abstract class Ushahidi_Repository_PostValue extends Ushahidi_Repository impleme
 	}
 
 	// UpdatePostValueRepository
-	public function updateValue($id, $value, $form_attribute_id, $post_id)
+	public function updateValue($id, $value)
 	{
 		$update = compact('value');
 		if ($id && $update)
 		{
-			$this->update(compact('id', 'post_id', 'form_attribute_id'), $update);
+			$this->update(compact('id'), $update);
 		}
 	}
 
 	// UpdatePostValueRepository
-	public function deleteNotIn($post_id, $ids)
+	public function deleteNotIn($post_id, Array $ids)
 	{
 		DB::delete($this->getTable())
 			->where('post_id', '=', $post_id)

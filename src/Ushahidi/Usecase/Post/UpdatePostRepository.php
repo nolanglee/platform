@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Admin Update Post Repository
+ * Ushahidi Platform Update Post Repository
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -31,7 +31,7 @@ interface UpdatePostRepository
 	 * @param  String $type
 	 * @return Boolean
 	 */
-	public function doesLocaleAlreadyExist($locale, $parent_id, $type);
+	public function doesTranslationExist($locale, $parent_id, $type);
 
 	/**
 	 * @param  Integer $id

@@ -20,19 +20,20 @@ class MovePostUsersToPost extends AbstractMigration
             WHERE username IS NULL"
         );
 
+        $update_posts = $pdo->prepare(
+            "UPDATE posts
+            SET
+                author_email = :email,
+                author_realname = :realname,
+                user_id = NULL
+            WHERE
+                id = :id"
+        );
+
         foreach ($rows as $row) {
             // Save author info onto post, and remove user_id
             // Using PDO prepared statement until https://github.com/robmorgan/phinx/pull/205 lands
-            $pdo->prepare(
-                "UPDATE posts
-                SET
-                    author_email = :email,
-                    author_realname = :realname,
-                    user_id = NULL
-                WHERE
-                    id = :id"
-            )
-            ->execute(
+            $update_posts->execute(
                 [
                     ':email' => $row['email'],
                     ':realname' => $row['realname'],
@@ -61,10 +62,25 @@ class MovePostUsersToPost extends AbstractMigration
 
         $pdo = $this->getAdapter()->getConnection();
 
+        $insert_users = $pdo->prepare("INSERT INTO users (email, realname) VALUES (:email, :realname)")
+            ->execute(
+                [
+                    ':email' => $row['author_email'],
+                    ':realname' => $row['author_realname']
+                ]
+            );
+
+        $update_posts = $pdo->prepare("UPDATE posts SET user_id = :user_id WHERE id = :id")
+            ->execute(
+                [
+                    ':user_id' => $user_id,
+                    ':id' => $row['id']
+                ]
+            );
+
         foreach ($rows as $row) {
             // Create unregistered users for posts
-            $pdo->prepare("INSERT INTO users (email, realname) VALUES (:email, :realname)")
-                ->execute(
+            $insert_users->execute(
                     [
                         ':email' => $row['author_email'],
                         ':realname' => $row['author_realname']
@@ -74,8 +90,7 @@ class MovePostUsersToPost extends AbstractMigration
             $user_id = $pdo->lastInsertId();
 
             // Set post user_id with new user id
-            $pdo->prepare("UPDATE posts SET user_id = :user_id WHERE id = :id")
-                ->execute(
+            $update_posts->execute(
                     [
                         ':user_id' => $user_id,
                         ':id' => $row['id']

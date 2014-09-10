@@ -69,7 +69,7 @@ class Ushahidi_Validator_Post_Update implements Validator
 					array('max_length', array(':value', 5)),
 					array('alpha_dash', array(':value', TRUE)),
 					// @todo check locale is valid
-					array(array($this->repo, 'doesLocaleAlreadyExist'), array(':value', $input->parent_id, $input->type))
+					array(array($this->repo, 'doesTranslationExist'), array(':value', $input->parent_id, $input->type))
 				))
 			->rules('form_id', array(
 					array('numeric'),
@@ -133,9 +133,10 @@ class Ushahidi_Validator_Post_Update implements Validator
 				// If id is specified, check post value entry exists
 				if (! empty($v['id']))
 				{
+					// Check that value with 'id' exists (and is for this post and attribute)
 					$value_entity = $this->post_value_factory
 						->getInstance($attribute->type)
-						->get($v['id']);
+						->get($v['id'], $data['id'], $attribute->id);
 
 					// Add error if id specified by doesn't exist
 					if (! $value_entity)

@@ -84,12 +84,15 @@ class Ushahidi_Repository_Tag extends Ushahidi_Repository implements
 	}
 
 	// TagRepository
-	public function doesTagExist($tagOrId)
+	public function doesTagExist($tag_or_id)
 	{
-		$byId = $this->get($tagOrId);
-		$byTag = $this->getByTag($tagOrId);
+		$query = $this->selectQuery()
+			->select([DB::expr('COUNT(*)'), 'total'])
+			->where('id', '=', $tag_or_id)
+			->or_where('tag', '=', $tag_or_id)
+			->execute($this->db);
 
-		return $byId->id OR $byTag->id;
+		return $query->get('total') > 0;
 	}
 
 	// CreateTagRepository
