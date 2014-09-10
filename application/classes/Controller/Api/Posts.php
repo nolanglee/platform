@@ -222,10 +222,13 @@ class Controller_Api_Posts extends Ushahidi_Api {
 			));
 		}
 
+		$request = $this->_request_payload;
+		$request['id'] = $this->request->param('id');
+
 		try
 		{
-			$request = $parser($this->_request_payload);
-			$post = $usecase->interact($post, $request, $this->user->id);
+			$request = $parser($request);
+			$post = $usecase->interact($request);
 		}
 		catch (Ushahidi\Exception\ValidatorException $e)
 		{

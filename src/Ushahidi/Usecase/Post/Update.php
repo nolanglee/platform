@@ -31,8 +31,10 @@ class Update
 		$this->auth  = $auth;
 	}
 
-	public function interact(Post $post, PostData $input, $user_id)
+	public function interact(PostData $input)
 	{
+		$post = $this->repo->get($input->id);
+
 		// We only want to work with values that have been changed
 		// @todo figure out what to do about this.. something are always different
 		// because input data isn't an entity, and shouldn't have to be.

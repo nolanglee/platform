@@ -85,7 +85,7 @@ class Ushahidi_Parser_Post_Update implements Parser
 		}
 
 		// Ensure that all properties of a Post entity are defined by using Arr::extract
-		return new PostData(Arr::extract($data, ['form_id', 'title', 'content', 'status', 'slug', 'locale', 'tags', 'values', 'user_id', 'author_email', 'author_realname']));
+		return new PostData(Arr::extract($data, ['id', 'form_id', 'title', 'content', 'status', 'slug', 'locale', 'tags', 'values', 'user_id', 'author_email', 'author_realname']));
 	}
 
 	/**
