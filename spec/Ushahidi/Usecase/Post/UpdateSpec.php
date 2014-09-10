@@ -28,7 +28,7 @@ class UpdateSpec extends ObjectBehavior
 		$raw_input  = ['title' => 'After Update', 'content' => 'Some content'];
 		$raw_update = ['title' => 'After Update'];
 
-		$user_id = 1;
+		$repo->get($input->id)->willReturn($post);
 
 		$post->asArray()->willReturn($raw_post);
 		$input->asArray()->willReturn($raw_input);
@@ -41,8 +41,8 @@ class UpdateSpec extends ObjectBehavior
 		$valid->check($update)->willReturn(true);
 
 		// auth check
-		$auth->isAllowed($post, 'update', $user_id)->willReturn(true);
-		$auth->isAllowed($post, 'change_user', $user_id)->willReturn(true);
+		$auth->isAllowed($post, 'update')->willReturn(true);
+		$auth->isAllowed($post, 'change_user')->willReturn(true);
 
 		// the repo will only receive changed values
 		$repo->updatePost($post->id, $raw_update)->shouldBeCalled();
@@ -51,6 +51,6 @@ class UpdateSpec extends ObjectBehavior
 		$post->setData($raw_update)->shouldBeCalled();
 
 		// after being updated, the same post will be returned
-		$this->interact($post, $input, $user_id)->shouldReturn($post);
+		$this->interact($input)->shouldReturn($post);
 	}
 }
