@@ -46,8 +46,6 @@ class PostData extends Data
 		// Exclude values and tags, since array_diff_assoc can't cope with arrays.
 		$delta = $this->diff($this->asArray(), $compare, ['tags', 'values']);
 
-		// @todo recursive diff on values and tags
-		// For now, just assume they're always updated
 		$delta['values'] = $this->diffValues($this->values, $compare['values']);
 		$delta['tags']	 = $this->diffTags($this->tags, $compare['tags']);
 
@@ -64,11 +62,15 @@ class PostData extends Data
 
 	protected function diffValues($base, $compare)
 	{
+		// @todo recursive diff on values
+		// For now, just assume they're always updated
 		return $base;
 	}
 
 	protected function diffTags($base, $compare)
 	{
+		// @todo recursive diff on tags
+		// For now, just assume they're always updated
 		return $base;
 	}
 }
