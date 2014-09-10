@@ -81,21 +81,21 @@ class MovePostUsersToPost extends AbstractMigration
         foreach ($rows as $row) {
             // Create unregistered users for posts
             $insert_users->execute(
-                    [
-                        ':email' => $row['author_email'],
-                        ':realname' => $row['author_realname']
-                    ]
-                );
+                [
+                    ':email' => $row['author_email'],
+                    ':realname' => $row['author_realname']
+                ]
+            );
 
             $user_id = $pdo->lastInsertId();
 
             // Set post user_id with new user id
             $update_posts->execute(
-                    [
-                        ':user_id' => $user_id,
-                        ':id' => $row['id']
-                    ]
-                );
+                [
+                    ':user_id' => $user_id,
+                    ':id' => $row['id']
+                ]
+            );
         }
     }
 }
