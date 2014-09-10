@@ -51,20 +51,20 @@ class Update
 		}
 
 		// Access checks
-		if (! $this->auth->isAllowed($post, 'update', $user_id)) {
+		if (! $this->auth->isAllowed($post, 'update')) {
 			throw new AuthorizerException(sprintf(
 				'User %s is not allowed to update post %s',
-				$user_id,
+				$this->auth->getUserId(),
 				$post->id
 			));
 		}
 
 		// if changing user id or author info
 		if (isset($update->user_id) || isset($update->author_email) || isset($update->author_realname)) {
-			if (! $this->auth->isAllowed($post, 'change_user', $user_id)) {
+			if (! $this->auth->isAllowed($post, 'change_user')) {
 				throw new AuthorizerException(sprintf(
 					'User %s is not allowed to update user details for post %s',
-					$user_id,
+					$this->auth->getUserId(),
 					$post->id
 				));
 			}
