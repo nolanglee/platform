@@ -22,7 +22,7 @@ class UpdateSpec extends ObjectBehavior
 		$this->shouldHaveType('Ushahidi\Usecase\Post\Update');
 	}
 
-	function it_can_update_a_post_with_valid_input($valid, $repo, $auth, Post $post, PostData $input, PostData $update)
+	function it_can_update_a_post_with_valid_input($valid, $repo, $auth, Post $post, PostData $input, PostData $update, Post $updated_post)
 	{
 		$raw_post   = ['title' => 'Before Update', 'content' => 'Some content'];
 		$raw_input  = ['title' => 'After Update', 'content' => 'Some content'];
@@ -46,11 +46,14 @@ class UpdateSpec extends ObjectBehavior
 
 		// the repo will only receive changed values
 		$repo->updatePost($post->id, $raw_update)->shouldBeCalled();
+		$repo->updatePost($post->id, $raw_update)->willReturn($updated_post);
 
 		// the persisted changes will be applied to the post
-		$post->setData($raw_update)->shouldBeCalled();
+		// @todo use setData instead of returning a new object
+		// then re-add this check
+		// $post->setData($raw_update)->shouldBeCalled();
 
 		// after being updated, the same post will be returned
-		$this->interact($input)->shouldReturn($post);
+		$this->interact($input)->shouldReturn($updated_post);
 	}
 }
