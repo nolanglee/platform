@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    commander (4.2.1)
+      highline (~> 1.6.11)
+    highline (1.6.21)
+    rainbow (2.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  commander
+  rainbow
