@@ -56,7 +56,7 @@ class UshahidiTestsCommand extends Command
         }
 
         // import the zombies
-        echo "\nImporting test data\n";
+        echo "Importing test data\n";
         $this->exec_env("mysql -u root zombie2x < $zombie_sql_file");
     }
 
