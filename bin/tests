@@ -11,10 +11,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class UshahidiTestsCommand extends Command
 {
     protected $dir;
+    protected $input;
+    protected $output;
 
     private $test_server_pid;
     private $test_database_sql_url = 'https://72c9192a7b87de5fc63a-f9fe2e6be12470a7bff22b7693bc7329.ssl.cf1.rackcdn.com/lamu-ci-zombie2x.sql';
@@ -30,16 +33,31 @@ class UshahidiTestsCommand extends Command
         chdir($this->dir);
     }
 
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->input = $input;
+        $this->output = $output;
+        $this->add_output_formatting();
+    }
+
     protected function install()
     {
         // change permissions
-        `chmod 0777 {$this->dir}/application/cache application/logs`;
+        foreach (array(
+            "{$this->dir}/application/cache",
+            "{$this->dir}/application/logs",
+        ) as $file) {
+            chmod($file, 0777);
+        }
 
         // move the behat config into place
-        `cp {$this->dir}/application/tests/behat.template application/tests/behat.yml`;
+        copy(
+            "{$this->dir}/application/tests/behat.template",
+            "{$this->dir}/application/tests/behat.yml"
+        );
 
         // configure mysql, set up testing databases
-        echo "Configuring databases\n";
+        $this->output->writeln("Configuring databases");
         $this->mysql_command('SET GLOBAL sql_mode = "STRICT_ALL_TABLES"');
         $this->mysql_command('DROP DATABASE IF EXISTS platform_test');
         $this->mysql_command('CREATE DATABASE platform_test');
@@ -51,13 +69,41 @@ class UshahidiTestsCommand extends Command
         $zombie_sql_file = '/tmp/ushahidi-zombie2x.sql';
         if (!file_exists($zombie_sql_file))
         {
-            echo "Downloading test data...\n";
-            `curl $test_database_sql_url > $zombie_sql_file`;
+            $this->download_file($this->test_database_sql_url, $zombie_sql_file);
         }
 
         // import the zombies
-        echo "Importing test data\n";
-        $this->exec_env("mysql -u root zombie2x < $zombie_sql_file");
+        $this->output->writeln("Importing test data");
+        `mysql -u root zombie2x < $zombie_sql_file`;
+    }
+
+    protected function download_file($remote_file, $local_file)
+    {
+        $this->output->writeln("Downloading $remote_file");
+
+        $outfile = fopen($local_file, 'wb');
+
+        $ch = curl_init();
+
+        $progress = new ProgressBar($this->output, 100);
+        $progress->setFormat('[%bar%] %percent:3s%% (%elapsed% / %estimated:-6s%)');
+
+        curl_setopt($ch, CURLOPT_FILE, $outfile);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_URL, $remote_file);
+        curl_setopt($ch, CURLOPT_NOPROGRESS, false);
+        curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function(
+            $ch, $total_down, $current_down, $total_up, $current_up
+        ) use ($progress) {
+            if ($total_down === 0) { return; }
+            $progress->setCurrent(intval(($current_down / $total_down) * 100));
+        });
+
+        curl_exec($ch);
+        $progress->finish();
+        $this->output->writeln('');
+        curl_close($ch);
+        fclose($outfile);
     }
 
     protected function test_server($state)
@@ -70,13 +116,13 @@ class UshahidiTestsCommand extends Command
                      ;
 
             $this->test_server_pid = $this->exec_env($command);
-            echo "PHP server started ({$this->test_server_pid})\n";
+            $this->output->writeln("PHP server started (pid: {$this->test_server_pid})");
             sleep(3);
         }
         else if ($state === 'down' && $this->test_server_pid)
         {
-            echo "\nKilling PHP Server ({$this->test_server_pid})\n";
-            `kill {$this->test_server_pid}`;
+            $this->output->writeln("Terminating PHP Server (pid: {$this->test_server_pid})");
+            posix_kill($this->test_server_pid, SIGTERM);
             $this->test_server_pid = null;
         }
     }
@@ -104,14 +150,15 @@ class UshahidiTestsCommand extends Command
         `mysql -u root -e "$command";`;
     }
 
-    protected function add_formatting(OutputInterface $output)
+    protected function add_output_formatting()
     {
-        $style_pass = new OutputFormatterStyle('white', 'green', array('bold'));
-        $style_fail = new OutputFormatterStyle('white', 'red', array('bold'));
-        $style_info = new OutputFormatterStyle('white', 'cyan', array('bold'));
-        $output->getFormatter()->setStyle('pass', $style_pass);
-        $output->getFormatter()->setStyle('fail', $style_fail);
-        $output->getFormatter()->setStyle('info', $style_info);
+        foreach (array(
+            'pass' => new OutputFormatterStyle('white', 'green', array('bold')),
+            'fail' => new OutputFormatterStyle('white', 'red',   array('bold')),
+            'info' => new OutputFormatterStyle('white', 'cyan',  array('bold')),
+        ) as $tag => $style) {
+            $this->output->getFormatter()->setStyle($tag, $style);
+        }
     }
 }
 
@@ -133,7 +180,11 @@ class UshahidiTestsRunCommand extends UshahidiTestsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->add_formatting($output);
+        parent::execute($input, $output);
+
+        $this->output->writeln(
+            "\n<pass> Ushahidi Platform Tests </pass>\n"
+        );
 
         $no_install = $input->getOption('no-install');
         if (!$no_install) { $this->install(); }
@@ -168,14 +219,13 @@ class UshahidiTestsRunCommand extends UshahidiTestsCommand
         $this->test_server('down');
 
         // output a single pass/fail message
-        echo "\n";
         if ($tests_pass)
         {
-            $output->writeln("<pass> All tests ran successfully! </pass>\n");
+            $output->writeln("\n<pass> All tests ran successfully! </pass>\n");
         }
         else
         {
-            $output->writeln("<fail> Some tests failed! </fail>\n");
+            $output->writeln("\n<fail> Some tests failed! </fail>\n");
         }
 
         // return a single exit code from the tests above
@@ -195,6 +245,7 @@ class UshahidiTestsInstallCommand extends UshahidiTestsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        parent::execute($input, $output);
         $this->install();
     }
 }
