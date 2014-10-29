@@ -43,10 +43,10 @@ class UshahidiTestsCommand extends Command
     protected function install()
     {
         // change permissions
-        foreach (array(
+        foreach ([
             "{$this->dir}/application/cache",
             "{$this->dir}/application/logs",
-        ) as $file) {
+        ] as $file) {
             chmod($file, 0777);
         }
 
@@ -152,11 +152,11 @@ class UshahidiTestsCommand extends Command
 
     protected function add_output_formatting()
     {
-        foreach (array(
-            'pass' => new OutputFormatterStyle('white', 'green', array('bold')),
-            'fail' => new OutputFormatterStyle('white', 'red',   array('bold')),
-            'info' => new OutputFormatterStyle('white', 'cyan',  array('bold')),
-        ) as $tag => $style) {
+        foreach ([
+            'pass' => new OutputFormatterStyle('white', 'green', ['bold']),
+            'fail' => new OutputFormatterStyle('white', 'red',   ['bold']),
+            'info' => new OutputFormatterStyle('white', 'cyan',  ['bold']),
+        ] as $tag => $style) {
             $this->output->getFormatter()->setStyle($tag, $style);
         }
     }
@@ -196,7 +196,7 @@ class UshahidiTestsRunCommand extends UshahidiTestsCommand
         $tests_pass = true;
 
         // run phpspec
-        $output->writeln("\n<info> - Running Phpspec tests - </info>\n");
+        $output->writeln("\n<info> - Running Phpspec tests - </info>");
         $phpspec_command = "{$this->dir}/bin/phpspec run --format dot --verbose";
         $tests_pass = $tests_pass && ($this->exec_env($phpspec_command, true) === 0);
 
