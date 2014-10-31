@@ -197,6 +197,7 @@ class UshahidiTestsRunCommand extends UshahidiTestsCommand
 
         // we're optimistic
         $tests_pass = true;
+        $test_start_time = time();
 
         // run phpspec
         $output->writeln("\n<info> - Running Phpspec tests - </info>");
@@ -223,14 +224,20 @@ class UshahidiTestsRunCommand extends UshahidiTestsCommand
         // bring down the test server
         $this->test_server('down');
 
+        $elapsed_time = time() - $test_start_time;
+
         // output a single pass/fail message
         if ($tests_pass)
         {
-            $output->writeln("\n<pass> All tests ran successfully! </pass>\n");
+            $output->writeln(
+                "\n<pass> All tests ran successfully! </pass> ($elapsed_time seconds)\n"
+            );
         }
         else
         {
-            $output->writeln("\n<fail> Some tests failed! </fail>\n");
+            $output->writeln(
+                "\n<fail> Some tests failed! </fail>\n"
+            );
         }
 
         // return a single exit code from the tests above
