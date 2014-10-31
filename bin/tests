@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class UshahidiTestsCommand extends Command
+abstract class UshahidiTestsCommand extends Command
 {
     protected $dir;
     protected $input;
