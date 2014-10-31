@@ -127,12 +127,14 @@ abstract class UshahidiTestsCommand extends Command
         }
     }
 
-    protected function exec_env($command, $return_exit_code = false)
+    protected function exec_env($command, $return_exit_code = false, $env_vars = array())
     {
-        foreach ($this->env_variables as $name => $value)
-        {
-            putenv("$name=$value");
-        }
+        $env_vars = $env_vars ?: $this->env_variables;
+        array_walk($env_vars, function(&$value, $key) {
+            $value = "export $key=$value";
+        });
+
+        $command = implode(';', $env_vars) . ";$command";
 
         if ($return_exit_code)
         {
