@@ -84,6 +84,8 @@ abstract class UshahidiTestsCommand extends Command
 
         $ch = curl_init();
 
+        var_dump('curl version', curl_version());
+
         $progress = new ProgressBar($this->output, 100);
         $progress->setFormat('[%bar%] %percent:3s%% (%elapsed% / %estimated:-6s%)');
 
