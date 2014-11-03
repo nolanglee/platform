@@ -82,20 +82,24 @@ abstract class UshahidiTestsCommand extends Command
 
         $outfile = fopen($local_file, 'wb');
 
-        $ch = curl_init();
-
-        var_dump('curl version', curl_version());
-
         $progress = new ProgressBar($this->output, 100);
         $progress->setFormat('[%bar%] %percent:3s%% (%elapsed% / %estimated:-6s%)');
+
+        $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_FILE, $outfile);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_URL, $remote_file);
         curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-        curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function(
-            $ch, $total_down, $current_down, $total_up, $current_up
-        ) use ($progress) {
+        curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function() use ($progress) {
+            // curl versions 7.32 and below do not pass the
+            // $ch handler as the first argument to this function
+            $args = func_get_args();
+            if (count($args) >= 5) { array_shift($args); }
+
+            $total_down   = $args[0];
+            $current_down = $args[1];
+
             if ($total_down === 0) { return; }
             $progress->setCurrent(intval(($current_down / $total_down) * 100));
         });
