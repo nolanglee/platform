@@ -12,6 +12,10 @@
  */
 
 use League\OAuth2\Server\Storage\SessionInterface;
+use League\OAuth2\Server\Entity\AccessTokenEntity;
+use League\OAuth2\Server\Entity\AuthCodeEntity;
+use League\OAuth2\Server\Entity\ScopeEntity;
+use League\OAuth2\Server\Entity\SessionEntity;
 
 class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 {
@@ -25,12 +29,12 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 *  VALUE (:clientId, :ownerType, :ownerId)
 	 * </code>
 	 *
-	 * @param  string $clientId  The client ID
 	 * @param  string $ownerType The type of the session owner (e.g. "user")
 	 * @param  string $ownerId   The ID of the session owner (e.g. "123")
+	 * @param  string $clientId  The client ID
 	 * @return int               The session ID
 	 */
-	public function createSession($clientId, $ownerType, $ownerId)
+	public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
 	{
 		$data = array(
 			'client_id'  => $clientId,
@@ -334,13 +338,13 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 * )
 	 * </code>
 	 *
-	 * @param  int    $accessTokenId The access token ID
+	 * @param  AccessTokenEntity    $accessToken The access token entity
 	 * @return array
 	 */
-	public function getAccessToken($accessTokenId)
+	public function getByAccessToken(AccessTokenEntity $accessToken)
 	{
 		$where = array(
-			'id' => $accessTokenId,
+			'id' => $accessToken->getId(),
 			);
 		$query = $this->select('oauth_session_access_tokens', $where);
 		return $this->select_one_result($query) ?: array();
@@ -392,13 +396,13 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 * )
 	 * </code>
 	 *
-	 * @param  int   $oauthSessionAuthCodeId The session ID
+	 * @param  AuthCodeEntity   $authCode Auth code entity
 	 * @return array
 	 */
-	public function getAuthCodeScopes($oauthSessionAuthCodeId)
+	public function getByAuthCode(AuthCodeEntity $authCode)
 	{
 		$where = array(
-			'oauth_session_authcode_id' => $oauthSessionAuthCodeId,
+			'oauth_session_authcode_id' => $authCode->getId(),
 			);
 		$query = $this->select('oauth_session_authcode_scopes', $where)->select('scope_id');
 		return $this->select_results($query) ?: array();
@@ -413,15 +417,15 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 * INSERT INTO `oauth_session_token_scopes` (`session_access_token_id`, `scope_id`) VALUE (:accessTokenId, :scopeId)
 	 * </code>
 	 *
-	 * @param  int    $accessTokenId The ID of the access token
-	 * @param  int    $scopeId       The ID of the scope
+	 * @param  SessionEntity  $session 	entity of current session
+	 * @param  ScopeEntity    $scope 	current scope entity
 	 * @return void
 	 */
-	public function associateScope($accessTokenId, $scopeId)
+	public function associateScope(SessionEntity $session, ScopeEntity $scope)
 	{
 		$data = array(
-			'session_access_token_id' => $accessTokenId,
-			'scope_id'                => $scopeId,
+			'session_access_token_id' => $session->accessToken->getId(),
+			'scope_id'                => $scope->getId(),
 			);
 		$this->insert('oauth_session_token_scopes', $data);
 	}
@@ -453,10 +457,11 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 * )
 	 * </code>
 	 *
-	 * @param  string $accessToken The access token
+	 * @param  SessionEntity $session current session entity
 	 * @return array
 	 */
-	public function getScopes($accessToken)
+	//public function getScopes($accessToken)
+	public function getScopes(SessionEntity $session)
 	{
 		$query = DB::query(Database::SELECT, '
 		SELECT oauth_scopes.*
@@ -466,7 +471,7 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 		  JOIN oauth_scopes
 		    ON oauth_scopes.id = oauth_session_token_scopes.scope_id
 		 WHERE access_token = :accessToken')
-			->param(':accessToken', $accessToken);
+			->param(':accessToken', $session->accessToken->getId());
 		return $this->select_results($query) ?: array();
 	}
 }

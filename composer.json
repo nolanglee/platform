@@ -45,7 +45,7 @@
     "require": {
         "aura/di": "2.0.*@dev",
         "bodom78/kohana-imagefly": "dev-master",
-        "league/oauth2-server": "~3.2.4",
+        "league/oauth2-server": "~4.0.1",
         "league/flysystem": "0.4.*",
         "ircmaxell/password-compat": "~1.0.3",
         "kohana/core" : "3.3.*@dev",
@@ -54,6 +54,7 @@
         "kohana/image" : "3.3.*@dev",
         "kohana/minion" : "3.3.*@dev",
         "ohanzee/database": "~0.1.2",
+        "symfony/class-loader": "2.5.6", 
         "robmorgan/phinx": "~0.3.8",
         "shadowhand/email": "~2.0.1",
         "symm/gisconverter": "~1.0.5",

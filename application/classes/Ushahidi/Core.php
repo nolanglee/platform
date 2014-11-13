@@ -58,21 +58,21 @@ abstract class Ushahidi_Core {
 
 		// OAuth servers
 		$di->set('oauth.server.auth', function() use ($di) {
-			$server = $di->newInstance('League\OAuth2\Server\Authorization');
-			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\AuthCode'));
-			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\RefreshToken'));
-			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\Password'));
-			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\ClientCredentials'));
+			$server = $di->newInstance('League\OAuth2\Server\AuthorizationServer');
+			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\AuthCodeGrant'));
+			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\RefreshTokenGrant'));
+			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\PasswordGrant'));
+			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\ClientCredentialsGrant'));
 			return $server;
 		});
-		$di->set('oauth.server.resource', $di->lazyNew('League\OAuth2\Server\Resource'));
+		$di->set('oauth.server.resource', $di->lazyNew('League\OAuth2\Server\ResourceServer'));
 
 		// Use Kohana requests for OAuth server requests
-		$di->setter['League\OAuth2\Server\Resource']['setRequest'] = $di->lazyNew('OAuth2_Request');
-		$di->setter['League\OAuth2\Server\Authorization']['setRequest'] = $di->lazyNew('OAuth2_Request');
+		$di->setter['League\OAuth2\Server\ResourceServer']['setRequest'] = $di->lazyNew('OAuth2_Request');
+		$di->setter['League\OAuth2\Server\AuthorizationServer']['setRequest'] = $di->lazyNew('OAuth2_Request');
 
 		// Custom password authenticator
-		$di->setter['League\OAuth2\Server\Grant\Password']['setVerifyCredentialsCallback'] = function($username, $password) {
+		$di->setter['League\OAuth2\Server\Grant\PasswordGrant']['setVerifyCredentialsCallback'] = function($username, $password) {
 			$usecase = service('usecase.user.login');
 			// todo: parse this? inject it?
 			$data    = new Ushahidi\Core\Usecase\User\LoginData(compact('username', 'password'));
@@ -87,13 +87,13 @@ abstract class Ushahidi_Core {
 		};
 
 		// Custom storage interfaces for OAuth servers
-		$di->params['League\OAuth2\Server\Authorization'] = [
+		$di->params['League\OAuth2\Server\AuthorizationServer'] = [
 			'client'  => $di->lazyGet('repository.oauth.client'),
 			'session' => $di->lazyGet('repository.oauth.session'),
 			'scope'   => $di->lazyGet('repository.oauth.scope'),
 			];
-		$di->params['League\OAuth2\Server\Resource'] = [
-			'session' => $di->lazyNew('OAuth2_Storage_Session'),
+		$di->params['League\OAuth2\Server\ResourceServer'] = [
+			'sessionStorage' => $di->lazyNew('OAuth2_Storage_Session'),
 			];
 		$di->params['OAuth2_Storage'] = [
 			'db' => $di->lazyGet('kohana.db'),

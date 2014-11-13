@@ -12,7 +12,9 @@
  * @link       http://github.com/php-loep/oauth2-server
  */
 
-abstract class OAuth2_Storage {
+use League\OAuth2\Server\Storage\AbstractStorage;
+
+abstract class OAuth2_Storage extends AbstractStorage {
 
 	protected $db = 'default';
 
