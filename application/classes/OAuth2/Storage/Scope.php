@@ -16,7 +16,6 @@ use League\OAuth2\Server\Storage\ScopeInterface;
 class OAuth2_Storage_Scope extends OAuth2_Storage implements ScopeInterface
 {
 	/**
-	 * @todo  actually return ScopeEntity object instrad of query result
 	 * Return information about a scope
 	 *
 	 * Example SQL query:
@@ -42,15 +41,24 @@ class OAuth2_Storage_Scope extends OAuth2_Storage implements ScopeInterface
 	 * @param  string     $clientId  The client ID (default = "null")
 	 * @return \League\OAuth2\Server\Entity\ScopeEntity
 	 */
-	
-	public function getScope($scope, $grantType = null, $clientId = null, )
+	public function get($scope, $grantType = null, $clientId = null)
 	{
 		// NOTE: this implementation does not implement any grant type checks!
 
 		$where = array(
 			'scope' => $scope,
 			);
+
 		$query = $this->select('oauth_scopes', $where);
-		return $this->select_one_result($query);
+		$result = $this->select_one_result($query);
+
+		if (!$result) {
+            return null;
+        }
+
+        return (new ScopeEntity($this->server))->hydrate([
+            'id'            =>  $result['id'],
+            'description'   =>  $result['name'],
+        ]);
 	}
 }
