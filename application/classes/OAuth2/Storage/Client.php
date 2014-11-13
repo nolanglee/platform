@@ -101,7 +101,6 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 	}
 
 	/**
-	 * @todo  actually return ClientEntity object instrad of query result
 	 * get client associated with current session
 	 * @param  SessionEntity $session
 	 * @return League\OAuth2\Server\Entity\ClientEntity
@@ -112,7 +111,17 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 			'id' => $session->getId(),
 			);
 		$query = $this->select('oauth_sessions', $where);
-		return $this->select_one_result($query) ?: [];
+
+        if ($result) {
+            $client = new ClientEntity($this->server);
+            $client->hydrate([
+                'id'    =>  $result[0]['id']
+            ]);
+
+            return $client;
+        }
+
+        return null;
 	}
 
 	private function get_internal_client_id()
