@@ -12,6 +12,7 @@
  */
 
 use League\OAuth2\Server\Storage\ClientInterface;
+use League\OAuth2\Server\Entity\SessionEntity;
 
 class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 {
@@ -58,7 +59,7 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 	 * @param  string     $grantType    The grant type used in the request (default = "null")
 	 * @return bool|array               Returns false if the validation fails, array on success
 	 */
-	public function getClient($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
+	public function get($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
 	{
 		// NOTE: this implementation does not implement any grant type checks!
 
@@ -97,6 +98,21 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 			->param(':redirectUri', $redirectUri);
 
 		return $this->select_one_result($query);
+	}
+
+	/**
+	 * @todo  actually return ClientEntity object instrad of query result
+	 * get client associated with current session
+	 * @param  SessionEntity $session
+	 * @return League\OAuth2\Server\Entity\ClientEntity
+	 */
+	public function getBySession(SessionEntity $session)
+	{
+		$where = array(
+			'id' => $session->getId(),
+			);
+		$query = $this->select('oauth_sessions', $where);
+		return $this->select_one_result($query) ?: [];
 	}
 
 	private function get_internal_client_id()

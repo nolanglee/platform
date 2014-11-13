@@ -16,6 +16,7 @@ use League\OAuth2\Server\Storage\ScopeInterface;
 class OAuth2_Storage_Scope extends OAuth2_Storage implements ScopeInterface
 {
 	/**
+	 * @todo  actually return ScopeEntity object instrad of query result
 	 * Return information about a scope
 	 *
 	 * Example SQL query:
@@ -37,11 +38,12 @@ class OAuth2_Storage_Scope extends OAuth2_Storage implements ScopeInterface
 	 * </code>
 	 *
 	 * @param  string     $scope     The scope
-	 * @param  string     $clientId  The client ID (default = "null")
 	 * @param  string     $grantType The grant type used in the request (default = "null")
-	 * @return bool|array If the scope doesn't exist return false
+	 * @param  string     $clientId  The client ID (default = "null")
+	 * @return \League\OAuth2\Server\Entity\ScopeEntity
 	 */
-	public function getScope($scope, $clientId = null, $grantType = null)
+	
+	public function getScope($scope, $grantType = null, $clientId = null, )
 	{
 		// NOTE: this implementation does not implement any grant type checks!
 

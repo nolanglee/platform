@@ -339,7 +339,8 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 * </code>
 	 *
 	 * @param  AccessTokenEntity    $accessToken The access token entity
-	 * @return array
+	 * @return \League\OAuth2\Server\Entity\SessionEntity
+	 * @todo  actually return SessionEntity
 	 */
 	public function getByAccessToken(AccessTokenEntity $accessToken)
 	{
@@ -397,7 +398,8 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 * </code>
 	 *
 	 * @param  AuthCodeEntity   $authCode Auth code entity
-	 * @return array
+	 * @return \League\OAuth2\Server\Entity\SessionEntity
+	 * @todo  return SessionEntity
 	 */
 	public function getByAuthCode(AuthCodeEntity $authCode)
 	{
@@ -458,9 +460,10 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 	 * </code>
 	 *
 	 * @param  SessionEntity $session current session entity
-	 * @return array
+	 * @return array Array of \League\OAuth2\Server\Entity\ScopeEntity
+	 * @todo   actually form array of ScopeEntity objects
 	 */
-	//public function getScopes($accessToken)
+
 	public function getScopes(SessionEntity $session)
 	{
 		$query = DB::query(Database::SELECT, '
