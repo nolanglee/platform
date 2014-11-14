@@ -168,9 +168,11 @@ abstract class Ushahidi_Rest extends Controller {
 		$require_header = $this->request->method() !== Request::GET;
 		$required_scope = $this->_scope();
 
+		$headers = $this->request->headers();
+
 		try
 		{
-			$server->isValid($require_header);
+			$server->isValidRequest($require_header);
 			if ($required_scope)
 			{
 				$server->hasScope($required_scope, true);

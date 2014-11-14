@@ -11,6 +11,8 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
+use Symfony\Component\HttpFoundation\Request;
+
 abstract class Ushahidi_Core {
 
 	/**
@@ -30,6 +32,9 @@ abstract class Ushahidi_Core {
 		});
 		$di->set('kohana.media.dir', function() use ($di) {
 			return Kohana::$config->load('media.media_upload_dir');
+		});
+		$di->set('symfony.http.request', function() use ($di) {
+			return Request::createFromGlobals();
 		});
 
 		// ACL
@@ -68,8 +73,8 @@ abstract class Ushahidi_Core {
 		$di->set('oauth.server.resource', $di->lazyNew('League\OAuth2\Server\ResourceServer'));
 
 		// Use Kohana requests for OAuth server requests
-		$di->setter['League\OAuth2\Server\ResourceServer']['setRequest'] = $di->lazyNew('OAuth2_Request');
-		$di->setter['League\OAuth2\Server\AuthorizationServer']['setRequest'] = $di->lazyNew('OAuth2_Request');
+		$di->setter['League\OAuth2\Server\ResourceServer']['setRequest'] = $di->lazyGet('symfony.http.request');
+		$di->setter['League\OAuth2\Server\AuthorizationServer']['setRequest'] = $di->lazyGet('symfony.http.request');
 
 		// Custom password authenticator
 		$di->setter['League\OAuth2\Server\Grant\PasswordGrant']['setVerifyCredentialsCallback'] = function($username, $password) {
