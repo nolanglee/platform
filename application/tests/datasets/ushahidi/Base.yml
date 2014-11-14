@@ -909,6 +909,7 @@ oauth_session_token_scopes:
 oauth_session_refresh_tokens:
 oauth_session_authcodes:
 oauth_session_authcode_scopes:
+oauth_session_scopes:
 # media
 media:
   -
