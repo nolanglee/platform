@@ -10,7 +10,7 @@ class PopulateOauthScopes extends AbstractMigration
      */
     public function up()
     {
-        $this->execute("INSERT INTO oauth_scopes (scope, name)
+        $this->execute("INSERT INTO oauth_scopes (id, description)
             VALUES
                 ('api', 'api'),
                 ('posts', 'posts'),
@@ -32,7 +32,7 @@ class PopulateOauthScopes extends AbstractMigration
     public function down()
     {
         $this->execute("DELETE FROM oauth_scopes
-            WHERE scope IN (
+            WHERE id IN (
                 'api',
                 'posts',
                 'forms',

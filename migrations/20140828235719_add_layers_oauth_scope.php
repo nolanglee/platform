@@ -10,7 +10,7 @@ class AddLayersOauthScope extends AbstractMigration
      */
     public function up()
     {
-        $this->execute("INSERT INTO oauth_scopes (scope, name) VALUES ('layers', 'layers')");
+        $this->execute("INSERT INTO oauth_scopes (id, description) VALUES ('layers', 'layers')");
     }
 
     /**
@@ -18,6 +18,6 @@ class AddLayersOauthScope extends AbstractMigration
      */
     public function down()
     {
-        $this->execute("DELETE FROM oauth_scopes WHERE scope = 'layers'");
+        $this->execute("DELETE FROM oauth_scopes WHERE id = 'layers'");
     }
 }

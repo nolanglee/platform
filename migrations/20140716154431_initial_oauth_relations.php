@@ -7,19 +7,18 @@ class InitialOauthRelations extends AbstractMigration
     private $foreign_keys = [
         // Define all foreign keys here, in format:
         // [local table, local column, remote table, remote column]
+        ['oauth_access_token_scopes', 'access_token', 'oauth_access_tokens', 'access_token'],
+        ['oauth_access_token_scopes', 'scope', 'oauth_scopes', 'id'],
+        ['oauth_access_tokens', 'session_id', 'oauth_sessions', 'id'],
+        ['oauth_auth_code_scopes', 'auth_code', 'oauth_auth_codes', 'auth_code'],
+        ['oauth_auth_code_scopes', 'scope', 'oauth_scopes', 'id'],
+        ['oauth_auth_codes', 'session_id', 'oauth_sessions', 'id'],
         ['oauth_client_endpoints', 'client_id', 'oauth_clients', 'id'],
+        ['oauth_refresh_tokens', 'access_token', 'oauth_access_tokens', 'access_token'],
+        ['oauth_session_scopes', 'scope', 'oauth_scopes', 'id'],
+        ['oauth_session_scopes', 'session_id', 'oauth_sessions', 'id'],
         ['oauth_sessions', 'client_id', 'oauth_clients', 'id'],
-        ['oauth_session_access_tokens', 'session_id', 'oauth_sessions', 'id'],
-        ['oauth_session_authcodes', 'session_id', 'oauth_sessions', 'id'],
-        ['oauth_session_redirects', 'session_id', 'oauth_sessions', 'id'],
-        ['oauth_session_refresh_tokens', 'session_access_token_id', 'oauth_session_access_tokens', 'id'],
-        
-        ['oauth_session_refresh_tokens', 'client_id', 'oauth_clients', 'id'],
-        ['oauth_session_token_scopes', 'session_access_token_id', 'oauth_session_access_tokens', 'id'],
-        ['oauth_session_token_scopes', 'scope_id', 'oauth_scopes', 'id'],
-        ['oauth_session_authcode_scopes', 'oauth_session_authcode_id', 'oauth_session_authcodes', 'id'],
-        ['oauth_session_authcode_scopes', 'scope_id', 'oauth_scopes', 'id'],
-        ];
+    ];
 
     /**
      * Migrate Up.
