@@ -76,10 +76,10 @@ abstract class Ushahidi_Core {
 			$server->addGrantType($di->newInstance('League\OAuth2\Server\Grant\ClientCredentialsGrant'));
 			return $server;
 		});
-		$di->set('oauth.server.resource', $di->lazyNew('League\OAuth2\Server\ResourceServer'));
+		$di->set('oauth.server.resource', $di->lazyNew('OAuth2_ResourceServer'));
 
 		// Use Kohana requests for OAuth server requests
-		$di->setter['League\OAuth2\Server\ResourceServer']['setRequest'] = $di->lazyGet('symfony.http.request');
+		$di->setter['OAuth2_ResourceServer']['setRequest'] = $di->lazyGet('symfony.http.request');
 		$di->setter['League\OAuth2\Server\AuthorizationServer']['setRequest'] = $di->lazyGet('symfony.http.request');
 
 		// Custom password authenticator
@@ -104,7 +104,7 @@ abstract class Ushahidi_Core {
 			'scope'   => $di->lazyGet('repository.oauth.scope'),
 			];
 			
-		$di->params['League\OAuth2\Server\ResourceServer'] = [
+		$di->params['OAuth2_ResourceServer'] = [
 			'sessionStorage' 	 => $di->lazyNew('OAuth2_Storage_Session'),
 			'clientStorage' 	 => $di->lazyNew('OAuth2_Storage_Client'),
 			'scopeStorage'		 => $di->lazyNew('OAuth2_Storage_Scope'),

@@ -206,22 +206,8 @@ class Ushahidi_Api extends Controller {
 
 		try
 		{
-			/**
-			 * @todo  need to rework this part 
-			 */
 			$server->isValidRequest($require_header);
-
-			$session = $server->getSessionStorage()
-							->getByAccessToken($server->getAccessToken());
-
-			if ($session === null)
-			{
-				//throw exception
-			}
-
-			$scopes = $session->getScopes($session);
-
-			if (!in_array($this->_scope_required, $scopes))
+			if (!$server->hasScope($this->_scope_required))
 			{
 				//throw exception
 			}
@@ -258,10 +244,7 @@ class Ushahidi_Api extends Controller {
 			throw $exception;
 		}
 
-		/**
-		 * @todo  need to make session available before try/catch block
-		 */
-		$this->user = ORM::factory('User', $session->getOwnerId()); 
+		$this->user = ORM::factory('User', $server->getOwnerId());
 		$resource   = $this->resource();
 		$method     = $this->_get_access_method();
 
