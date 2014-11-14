@@ -22,7 +22,6 @@ class OAuth2_Storage_Scope extends OAuth2_Storage implements ScopeInterface
 	public function get($scope, $grantType = null, $clientId = null)
 	{
 		// NOTE: this implementation does not implement any grant type checks!
-
 		$where = array(
 			'id' => $scope,
 			);
