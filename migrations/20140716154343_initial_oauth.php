@@ -84,7 +84,7 @@ class InitialOauth extends AbstractMigration
                 'comment' => 'user, client',
                 ])
             ->addColumn('owner_id', 'string')
-            ->addColumn('client_redirect_uri', 'string')
+            ->addColumn('client_redirect_uri', 'string', ['null' => true])
             ->addIndex(['owner_type'])
             ->addIndex(['owner_id'])
             ->create();
