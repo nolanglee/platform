@@ -49,14 +49,13 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
 		 WHERE oauth_access_token_scopes.scope = oauth_scopes.id
 		   AND access_token = :accessToken');
 
-		$query->param(':accessToken', $session->getId());
+		$query->param(':accessToken', $token->getId());
 
  		$result = $this->select_results($query);
 
-
         $response = [];
 
-        if (sizeof($result) > 0) {
+        if ($result and sizeof($result) > 0) {
             foreach ($result as $row) {
                 $scope = (new ScopeEntity($this->server))->hydrate([
                     'id'            =>  $row['id'],

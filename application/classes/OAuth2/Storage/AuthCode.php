@@ -61,7 +61,7 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
 
         $response = [];
 
-        if (sizeof($result) > 0) {
+        if ($result and sizeof($result) > 0) {
             foreach ($result as $row) {
                 $scope = (new ScopeEntity($this->server))->hydrate([
                     'id'            =>  $row['id'],

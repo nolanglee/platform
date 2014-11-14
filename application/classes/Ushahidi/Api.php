@@ -206,8 +206,25 @@ class Ushahidi_Api extends Controller {
 
 		try
 		{
-			$server->isValid($require_header);
-			$server->hasScope($this->_scope_required, true);
+			/**
+			 * @todo  need to rework this part 
+			 */
+			$server->isValidRequest($require_header);
+
+			$session = $server->getSessionStorage()
+							->getByAccessToken($server->getAccessToken());
+
+			if ($session === null)
+			{
+				//throw exception
+			}
+
+			$scopes = $session->getScopes($session);
+
+			if (!in_array($this->_scope_required, $scopes))
+			{
+				//throw exception
+			}
 		}
 		catch (League\OAuth2\Server\Exception\OAuth2Exception $e)
 		{
@@ -241,7 +258,10 @@ class Ushahidi_Api extends Controller {
 			throw $exception;
 		}
 
-		$this->user = ORM::factory('User', $server->getOwnerId());
+		/**
+		 * @todo  need to make session available before try/catch block
+		 */
+		$this->user = ORM::factory('User', $session->getOwnerId()); 
 		$resource   = $this->resource();
 		$method     = $this->_get_access_method();
 

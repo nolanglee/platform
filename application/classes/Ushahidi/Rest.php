@@ -172,10 +172,24 @@ abstract class Ushahidi_Rest extends Controller {
 
 		try
 		{
+			/**
+			 * @todo  need to rework this part 
+			 */
 			$server->isValidRequest($require_header);
-			if ($required_scope)
+
+			$session = $server->getSessionStorage()
+							->getByAccessToken($server->getAccessToken());
+
+			if ($session === null)
 			{
-				$server->hasScope($required_scope, true);
+				//throw exception
+			}
+
+			$scopes = $session->getScopes($session);
+
+			if ($required_scope and !in_array($required_scope, $scopes))
+			{
+				//throw exception
 			}
 		}
 		catch (OAuth2Exception $e)
