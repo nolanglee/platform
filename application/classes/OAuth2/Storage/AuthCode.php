@@ -89,13 +89,7 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
      * {@inheritdoc}
      */
     public function delete(AuthCodeEntity $token)
-    {
-        $data = array(
-            'client_id'  => $clientId,
-            'owner_type' => $ownerType,
-            'owner_id'   => $ownerId,
-            );
-        
-        $this->delete('oauth_auth_codes', ['auth_code'=>$token->getId()]);
+    {   
+        $this->_delete('oauth_auth_codes', ['auth_code'=>$token->getId()]);
     }
 }

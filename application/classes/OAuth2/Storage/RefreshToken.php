@@ -55,6 +55,6 @@ class OAuth2_Storage_RefreshToken extends OAuth2_Storage implements ClientInterf
      */
     public function delete(RefreshTokenEntity $token)
     {
-        $this->delete('oauth_session_refresh_tokens', ['refresh_token' => $token->getId()]);
+        $this->_delete('oauth_session_refresh_tokens', ['refresh_token' => $token->getId()]);
     }
 }

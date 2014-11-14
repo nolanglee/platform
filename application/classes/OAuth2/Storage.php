@@ -82,7 +82,7 @@ abstract class OAuth2_Storage extends AbstractStorage {
 		return $count;
 	}
 	
-	protected function delete($table, array $where)
+	protected function _delete($table, array $where) //need better name
 	{
 		$query = DB::delete($table);
 		$this->apply_where_to_query($query, $where);

@@ -92,10 +92,12 @@ abstract class Ushahidi_Core {
 			'session' => $di->lazyGet('repository.oauth.session'),
 			'scope'   => $di->lazyGet('repository.oauth.scope'),
 			];
+			
 		$di->params['League\OAuth2\Server\ResourceServer'] = [
 			'sessionStorage' 	 => $di->lazyNew('OAuth2_Storage_Session'),
 			'clientStorage' 	 => $di->lazyNew('OAuth2_Storage_Client'),
 			'scopeStorage'		 => $di->lazyNew('OAuth2_Storage_Scope'),
+			'accessTokenStorage' => $di->lazyNew('OAuth2_Storage_AccessToken'),
 			/**
 			 * @todo  create access token class
 			 */
