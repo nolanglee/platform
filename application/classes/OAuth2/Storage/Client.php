@@ -13,59 +13,15 @@
 
 use League\OAuth2\Server\Storage\ClientInterface;
 use League\OAuth2\Server\Entity\SessionEntity;
+use League\OAuth2\Server\Entity\ClientEntity;
 
 class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 {
-	/**
-	 * Validate a client
-	 *
-	 * Example SQL query:
-	 *
-	 * <code>
-	 * # Client ID + redirect URI
-	 * SELECT oauth_clients.id, oauth_clients.secret, oauth_client_endpoints.redirect_uri, oauth_clients.name,
-	 * oauth_clients.auto_approve
-	 *  FROM oauth_clients LEFT JOIN oauth_client_endpoints ON oauth_client_endpoints.client_id = oauth_clients.id
-	 *  WHERE oauth_clients.id = :clientId AND oauth_client_endpoints.redirect_uri = :redirectUri
-	 *
-	 * # Client ID + client secret
-	 * SELECT oauth_clients.id, oauth_clients.secret, oauth_clients.name, oauth_clients.auto_approve FROM oauth_clients 
-	 * WHERE oauth_clients.id = :clientId AND oauth_clients.secret = :clientSecret
-	 *
-	 * # Client ID + client secret + redirect URI
-	 * SELECT oauth_clients.id, oauth_clients.secret, oauth_client_endpoints.redirect_uri, oauth_clients.name,
-	 * oauth_clients.auto_approve FROM oauth_clients LEFT JOIN oauth_client_endpoints 
-	 * ON oauth_client_endpoints.client_id = oauth_clients.id
-	 * WHERE oauth_clients.id = :clientId AND oauth_clients.secret = :clientSecret AND
-	 * oauth_client_endpoints.redirect_uri = :redirectUri
-	 * </code>
-	 *
-	 * Response:
-	 *
-	 * <code>
-	 * Array
-	 * (
-	 *     [client_id] => (string) The client ID
-	 *     [client secret] => (string) The client secret
-	 *     [redirect_uri] => (string) The redirect URI used in this request
-	 *     [name] => (string) The name of the client
-	 *     [auto_approve] => (bool) Whether the client should auto approve
-	 * )
-	 * </code>
-	 *
-	 * @param  string     $clientId     The client's ID
-	 * @param  string     $clientSecret The client's secret (default = "null")
-	 * @param  string     $redirectUri  The client's redirect URI (default = "null")
-	 * @param  string     $grantType    The grant type used in the request (default = "null")
-	 * @return bool|array               Returns false if the validation fails, array on success
-	 */
-	public function get($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
-	{
-		// NOTE: this implementation does not implement any grant type checks!
-
-		if (!$clientSecret AND !$redirectUri)
-			return FALSE;
-
+    /**
+     * {@inheritdoc}
+     */
+    public function get($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
+    {
 		if ($redirectUri AND $clientId === $this->get_internal_client_id())
 		{
 			// The internal client only supports local redirects, so we strip the
@@ -79,85 +35,102 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 			$redirectUri = preg_replace("~^{$baseUrl}~", '/', $redirectUri);
 		}
 
-		if ($clientSecret AND $redirectUri)
-		{
-			$query = $this->query_secret_and_redirect_uri($clientId, $clientSecret, $redirectUri);
-		}
-		else if ($clientSecret)
-		{
-			$query = $this->query_secret($clientId, $clientSecret);
-		}
-		else if ($redirectUri)
-		{
-			$query = $this->query_redirect_uri($clientId, $redirectUri);
-		}
+       	if ($clientSecret !== null and $redirectUri !== null)
+       	{
+            $query = $this->query_secret_and_redirect_uri()
+						->param(':clientId', $clientId)
+            			->param(':secret', $clientSecret)
+						->param(':redirectUri', $redirectUri);
+       	}
+        else if ($clientSecret !== null) 
+        {
+            $query = $this->query_secret()
+						->param(':clientId', $clientId)
+            			->param(':secret', $clientSecret);
+        }
+        else if ($redirectUri !== null) 
+        {
+            $query = $this->query_redirect_uri()
+						->param(':clientId', $clientId)
+						->param(':redirectUri', $redirectUri);
+        }
 
-		$query
-			->param(':clientId', $clientId)
-			->param(':clientSecret', $clientSecret)
-			->param(':redirectUri', $redirectUri);
+        $result = $this->select_one_result($query);
 
-		return $this->select_one_result($query);
-	}
-
-	/**
-	 * get client associated with current session
-	 * @param  SessionEntity $session
-	 * @return League\OAuth2\Server\Entity\ClientEntity
-	 */
-	public function getBySession(SessionEntity $session)
-	{
-		$where = array(
-			'id' => $session->getId(),
-			);
-		$query = $this->select('oauth_sessions', $where);
-
-        if ($result) {
+        if ($result)
+        {
             $client = new ClientEntity($this->server);
             $client->hydrate([
-                'id'    =>  $result[0]['id']
+                'id'    =>  $result['id'],
+                'name'  =>  $result['name'],
             ]);
 
             return $client;
         }
 
         return null;
-	}
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBySession(SessionEntity $session)
+    {
+    	$query = DB::query(Database::SELECT, '
+				SELECT oauth_clients.id, oauth_clients.name
+				  FROM oauth_clients, oauth_sessions
+				 WHERE oauth_sessions.client_id = oauth_clients.id
+				   AND oauth_sessions.id = :sessionId');
+
+    	$query->param(':sessionId', $session->getId());
+
+    	$result = $this->select_one_result($query);
+
+        if ($result) {
+            $client = new ClientEntity($this->server);
+            $client->hydrate([
+                'id'    =>  $result['id'],
+                'name'  =>  $result['name'],
+            ]);
+
+            return $client;
+        }
+
+        return null;
+    }
+
+    private function query_secret_and_redirect_uri()
+    {
+    	return DB::query(Database::SELECT, '
+		SELECT oauth_clients.*, oauth_client_endpoints.*
+		  FROM oauth_clients, oauth_client_endpoints
+		 WHERE oauth_clients.id = :clientId
+		   AND oauth_clients.id = oauth_client_endpoints.client_id
+		   AND oauth_client_redirect_uris.redirect_uri = :redirectUri
+		   AND oauth_clients.secret = :secret');
+    }
+
+    private function query_secret()
+    {
+    	return DB::query(Database::SELECT, '
+		SELECT oauth_clients.*
+		  FROM oauth_clients
+		 WHERE oauth_clients.id = :clientId
+		   AND oauth_clients.secret = :secret');
+    }
+
+    private function query_redirect_uri()
+    {
+    	return DB::query(Database::SELECT, '
+		SELECT oauth_clients.*, oauth_client_endpoints.*
+		  FROM oauth_clients, oauth_client_endpoints
+		 WHERE oauth_clients.id = :clientId
+		   AND oauth_clients.id = oauth_client_endpoints.client_id
+		   AND oauth_client_redirect_uris.redirect_uri = :redirectUri');
+    }
 
 	private function get_internal_client_id()
 	{
 		return Kohana::$config->load('ushahidiui.oauth.client');
-	}
-
-	private function query_secret_and_redirect_uri()
-	{
-		return DB::query(Database::SELECT, '
-		SELECT oauth_clients.id, oauth_clients.secret, oauth_client_endpoints.redirect_uri, oauth_clients.name, oauth_clients.auto_approve
-		  FROM oauth_clients
-		  LEFT JOIN oauth_client_endpoints
-		    ON oauth_client_endpoints.client_id = oauth_clients.id
-		 WHERE oauth_clients.id = :clientId
-		   AND oauth_clients.secret = :clientSecret
-		   AND oauth_client_endpoints.redirect_uri = :redirectUri');
-	}
-
-	private function query_secret()
-	{
-		return DB::query(Database::SELECT, '
-		SELECT oauth_clients.id, oauth_clients.secret, "" AS redirect_uri, oauth_clients.name, oauth_clients.auto_approve
-		  FROM oauth_clients
-		 WHERE oauth_clients.id = :clientId
-		   AND oauth_clients.secret = :clientSecret');
-	}
-
-	private function query_redirect_uri()
-	{
-		return DB::query(Database::SELECT, '
-		SELECT oauth_clients.id, oauth_clients.secret, oauth_client_endpoints.redirect_uri, oauth_clients.name, oauth_clients.auto_approve
-		  FROM oauth_clients
-		  LEFT JOIN oauth_client_endpoints
-		    ON oauth_client_endpoints.client_id = oauth_clients.id
-		 WHERE oauth_clients.id = :clientId
-		   AND oauth_client_endpoints.redirect_uri = :redirectUri');
 	}
 }
