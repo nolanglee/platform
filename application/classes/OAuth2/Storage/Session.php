@@ -34,7 +34,7 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 
 		$query->param(':accessToken', $accessToken->getId());
 
-		$result = $this->select_one_result($query);
+		$result = $this->fetchSingleResult($query);
 
         if ($result) {
             $session = new SessionEntity($this->server);
@@ -60,7 +60,7 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 
 		$query->param(':authCode', $authCode->getId());
 
-		$result = $this->select_one_result($query);
+		$result = $this->fetchSingleResult($query);
 
         if ($result) {
             $session = new SessionEntity($this->server);
@@ -88,14 +88,14 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 
 		$query->param(':session', $session->getId());
 
- 		$result = $this->select_results($query);
+ 		$result = $this->fetchResults($query);
 
         $scopes = [];
 
         foreach ($result as $scope) {
             $scopes[] = (new ScopeEntity($this->server))->hydrate([
-                'id'            =>  $scope['id'],
-                'description'   =>  $scope['description'],
+                'id'          =>  $scope['id'],
+                'description' =>  $scope['description'],
             ]);
         }
 
@@ -107,10 +107,10 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
      */
     public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
     {
-		return $this->insert('oauth_sessions', [
-                            'owner_type'  => $ownerType,
-                            'owner_id'    => $ownerId,
-                            'client_id'   => $clientId,
+		return $this->executeInsert('oauth_sessions', [
+                            'owner_type' => $ownerType,
+                            'owner_id'   => $ownerId,
+                            'client_id'  => $clientId,
                         ]);
     }
 
@@ -119,9 +119,9 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
      */
     public function associateScope(SessionEntity $session, ScopeEntity $scope)
     {
-		$this->insert('oauth_session_scopes', [
-                                'session_id'    =>  $session->getId(),
-                                'scope'         =>  $scope->getId(),
+		$this->executeInsert('oauth_session_scopes', [
+                                'session_id' =>  $session->getId(),
+                                'scope'      =>  $scope->getId(),
                             ]);
     }
 }

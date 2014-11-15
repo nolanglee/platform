@@ -19,7 +19,7 @@ use League\OAuth2\Server\Storage\SessionInterface;
  */
 class OAuth2_ResourceServer extends ResourceServer 
 {
-	protected $currentSession = null;
+	protected $currentSession;
 
 	public function getCurrentSession() 
 	{

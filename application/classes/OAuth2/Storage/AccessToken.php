@@ -24,8 +24,8 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
      */
     public function get($token)
     {
-		$query = $this->select('oauth_access_tokens', ['access_token' => $token]);
-		$result = $this->select_one_result($query);
+		$query = $this->createSelectQuery('oauth_access_tokens', ['access_token' => $token]);
+		$result = $this->fetchSingleResult($query);
 
         if ($result) {
             $token = (new AccessTokenEntity($this->server))
@@ -51,15 +51,15 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
 
 		$query->param(':accessToken', $token->getId());
 
- 		$result = $this->select_results($query);
+ 		$result = $this->fetchResults($query);
 
         $response = [];
 
         if ($result and sizeof($result) > 0) {
             foreach ($result as $row) {
                 $scope = (new ScopeEntity($this->server))->hydrate([
-                    'id'            =>  $row['id'],
-                    'description'   =>  $row['description'],
+                    'id'          =>  $row['id'],
+                    'description' =>  $row['description'],
                 ]);
                 $response[] = $scope;
             }
@@ -73,10 +73,10 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
      */
     public function create($token, $expireTime, $sessionId)
     {
-		return $this->insert('oauth_access_tokens', [
-                        'access_token'  =>  $token,
-                        'session_id'    =>  $sessionId,
-                        'expire_time'   =>  $expireTime,
+		return $this->executeInsert('oauth_access_tokens', [
+                        'access_token' =>  $token,
+                        'session_id'   =>  $sessionId,
+                        'expire_time'  =>  $expireTime,
                     ]);
     }
 
@@ -85,9 +85,9 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
      */
     public function associateScope(AbstractTokenEntity $token, ScopeEntity $scope)
     {
-		return $this->insert('oauth_access_token_scopes', [
-                        'access_token'  =>  $token->getId(),
-                        'scope' 		=>  $scope->getId(),
+		return $this->executeInsert('oauth_access_token_scopes', [
+                        'access_token' =>  $token->getId(),
+                        'scope'        =>  $scope->getId(),
                     ]);
     }
 
@@ -96,6 +96,6 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
      */
     public function delete(AbstractTokenEntity $token)
     {		 
-    	$this->_delete('oauth_access_token_scopes', ['access_token' => $token->getId()]);
+    	$this->executeDelete('oauth_access_token_scopes', ['access_token' => $token->getId()]);
     }
 }

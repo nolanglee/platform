@@ -22,16 +22,16 @@ class OAuth2_Storage_Scope extends OAuth2_Storage implements ScopeInterface
 	public function get($scope, $grantType = null, $clientId = null)
 	{
 		// NOTE: this implementation does not implement any grant type checks!
-		$query = $this->select('oauth_scopes', ['id' => $scope]);
-		$result = $this->select_one_result($query);
+		$query = $this->createSelectQuery('oauth_scopes', ['id' => $scope]);
+		$result = $this->fetchSingleResult($query);
 
 		if (!$result) {
             return null;
         }
 
         return (new ScopeEntity($this->server))->hydrate([
-            'id'            =>  $result['id'],
-            'description'   =>  $result['description'],
+            'id'          =>  $result['id'],
+            'description' =>  $result['description'],
         ]);
 	}
 }

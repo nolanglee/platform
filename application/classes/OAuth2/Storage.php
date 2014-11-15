@@ -26,7 +26,7 @@ abstract class OAuth2_Storage extends AbstractStorage {
 		}
 	}
 
-	private function apply_where_to_query(Database_Query $query, array $where)
+	private function applyWhereToQuery(Database_Query $query, array $where)
 	{
 		foreach ($where as $col => $value)
 		{
@@ -35,36 +35,36 @@ abstract class OAuth2_Storage extends AbstractStorage {
 		return $query;
 	}
 
-	protected function select_results(Database_Query $query)
+	protected function fetchResults(Database_Query $query)
 	{
 		$results = $query->execute($this->db);
 		return count($results) ? $results->as_array() : FALSE;
 	}
 
-	protected function select_one_result(Database_Query $query)
+	protected function fetchSingleResult(Database_Query $query)
 	{
 		$results = $query->execute($this->db);
 		return count($results) ? $results->current() : FALSE;
 	}
 
-	protected function select_one_column(Database_Query $query, $column)
+	protected function fetchSingleColumn(Database_Query $query, $column)
 	{
 		$results = $query->execute($this->db);
 		return count($results) ? $results->get($column) : FALSE;
 	}
 
-	protected function select($table, array $where = NULL)
+	protected function createSelectQuery($table, array $where = NULL)
 	{
 		$query = DB::select()
 			->from($table);
 		if ($where)
 		{
-			$this->apply_where_to_query($query, $where);
+			$this->applyWhereToQuery($query, $where);
 		}
 		return $query;
 	}
 
-	protected function insert($table, array $data)
+	protected function executeInsert($table, array $data)
 	{
 		$query = DB::insert($table)
 			->columns(array_keys($data))
@@ -73,19 +73,19 @@ abstract class OAuth2_Storage extends AbstractStorage {
 		return $id;
 	}
 
-	protected function update($table, array $data, array $where)
+	protected function executeUpdate($table, array $data, array $where)
 	{
 		$query = DB::update($table)
 			->set($data);
-		$this->apply_where_to_query($query, $where);
+		$this->applyWhereToQuery($query, $where);
 		$count = $query->execute($this->db);
 		return $count;
 	}
 	
-	protected function _delete($table, array $where) //need better name
+	protected function executeDelete($table, array $where)
 	{
 		$query = DB::delete($table);
-		$this->apply_where_to_query($query, $where);
+		$this->applyWhereToQuery($query, $where);
 		$count = $query->execute($this->db);
 		return $count;
 	}

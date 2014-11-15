@@ -22,8 +22,8 @@ class OAuth2_Storage_RefreshToken extends OAuth2_Storage implements ClientInterf
      */
     public function get($token)
     {
-        $query = $this->select('oauth_refresh_tokens', ['refresh_token'=>$token]);
-        $result = $this->select_one_result($query);
+        $query = $this->createSelectQuery('oauth_refresh_tokens', ['refresh_token'=>$token]);
+        $result = $this->fetchSingleResult($query);
 
         if ($result) {
             $token = (new RefreshTokenEntity($this->server))
@@ -42,7 +42,7 @@ class OAuth2_Storage_RefreshToken extends OAuth2_Storage implements ClientInterf
      */
     public function create($token, $expireTime, $accessToken)
     {
-        return $this->insert('oauth_refresh_tokens', [
+        return $this->executeInsert('oauth_refresh_tokens', [
                         'refresh_token' =>  $token,
                         'access_token'  =>  $accessToken,
                         'expire_time'   =>  $expireTime,
@@ -55,6 +55,6 @@ class OAuth2_Storage_RefreshToken extends OAuth2_Storage implements ClientInterf
      */
     public function delete(RefreshTokenEntity $token)
     {
-        $this->_delete('oauth_session_refresh_tokens', ['refresh_token' => $token->getId()]);
+        $this->executeDelete('oauth_session_refresh_tokens', ['refresh_token' => $token->getId()]);
     }
 }

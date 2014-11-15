@@ -55,14 +55,14 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 						->param(':redirectUri', $redirectUri);
         }
 
-        $result = $this->select_one_result($query);
+        $result = $this->fetchSingleResult($query);
 
         if ($result)
         {
             $client = new ClientEntity($this->server);
             $client->hydrate([
-                'id'    =>  $result['id'],
-                'name'  =>  $result['name'],
+                'id'   =>  $result['id'],
+                'name' =>  $result['name'],
             ]);
 
             return $client;
@@ -84,13 +84,13 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 
     	$query->param(':sessionId', $session->getId());
 
-    	$result = $this->select_one_result($query);
+    	$result = $this->fetchSingleResult($query);
 
         if ($result) {
             $client = new ClientEntity($this->server);
             $client->hydrate([
-                'id'    =>  $result['id'],
-                'name'  =>  $result['name'],
+                'id'   =>  $result['id'],
+                'name' =>  $result['name'],
             ]);
 
             return $client;

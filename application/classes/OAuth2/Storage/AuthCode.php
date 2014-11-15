@@ -21,7 +21,7 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
                     ->param(':time', time());
 
 
-        $result = $this->select_one_result($query);
+        $result = $this->fetchSingleResult($query);
 
         if ($result) {
             $token = new AuthCodeEntity($this->server);
@@ -36,11 +36,11 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
 
     public function create($token, $expireTime, $sessionId, $redirectUri)
     {
-        return $this->insert('oauth_auth_codes', [
-                        'auth_code'         =>  $token,
-                        'client_redirect_uri'  =>  $redirectUri,
-                        'session_id'    =>  $sessionId,
-                        'expire_time'   =>  $expireTime,
+        return $this->executeInsert('oauth_auth_codes', [
+                        'auth_code'           =>  $token,
+                        'client_redirect_uri' =>  $redirectUri,
+                        'session_id'          =>  $sessionId,
+                        'expire_time'         =>  $expireTime,
                     ]);
     }
 
@@ -57,15 +57,15 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
                     ->param(':tokenId', $token->getId());
 
 
-        $result = $this->select_results($query);
+        $result = $this->fetchResults($query);
 
         $response = [];
 
         if ($result and sizeof($result) > 0) {
             foreach ($result as $row) {
                 $scope = (new ScopeEntity($this->server))->hydrate([
-                    'id'            =>  $row['id'],
-                    'description'   =>  $row['description'],
+                    'id'          =>  $row['id'],
+                    'description' =>  $row['description'],
                 ]);
                 $response[] = $scope;
             }
@@ -79,7 +79,7 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
      */
     public function associateScope(AuthCodeEntity $token, ScopeEntity $scope)
     {
-        return $this->insert('oauth_auth_code_scopes', 
+        return $this->executeInsert('oauth_auth_code_scopes', 
                         'auth_code' =>  $token->getId(),
                         'scope'     =>  $scope->getId(),
                     ]);
@@ -90,6 +90,6 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
      */
     public function delete(AuthCodeEntity $token)
     {   
-        $this->_delete('oauth_auth_codes', ['auth_code'=>$token->getId()]);
+        $this->executeDelete('oauth_auth_codes', ['auth_code'=>$token->getId()]);
     }
 }
