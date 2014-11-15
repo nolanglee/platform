@@ -35,20 +35,20 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 			$redirectUri = preg_replace("~^{$baseUrl}~", '/', $redirectUri);
 		}
 
-       	if ($clientSecret !== null and $redirectUri !== null)
+       	if ($clientSecret and $redirectUri)
        	{
             $query = $this->query_secret_and_redirect_uri()
 						->param(':clientId', $clientId)
             			->param(':secret', $clientSecret)
 						->param(':redirectUri', $redirectUri);
        	}
-        else if ($clientSecret !== null) 
+        else if ($clientSecret) 
         {
             $query = $this->query_secret()
 						->param(':clientId', $clientId)
             			->param(':secret', $clientSecret);
         }
-        else if ($redirectUri !== null) 
+        else if ($redirectUri) 
         {
             $query = $this->query_redirect_uri()
 						->param(':clientId', $clientId)
@@ -102,11 +102,11 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
     private function query_secret_and_redirect_uri()
     {
     	return DB::query(Database::SELECT, '
-		SELECT oauth_clients.*, oauth_client_endpoints.*
-		  FROM oauth_clients, oauth_client_endpoints
+		SELECT oauth_clients.*, oauth_client_endpoints.client_id, oauth_client_endpoints.redirect_uri
+		  FROM oauth_clients, oauth_client_endpoints oce
 		 WHERE oauth_clients.id = :clientId
 		   AND oauth_clients.id = oauth_client_endpoints.client_id
-		   AND oauth_client_redirect_uris.redirect_uri = :redirectUri
+		   AND oauth_client_endpoints.redirect_uri = :redirectUri
 		   AND oauth_clients.secret = :secret');
     }
 
@@ -122,11 +122,11 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
     private function query_redirect_uri()
     {
     	return DB::query(Database::SELECT, '
-		SELECT oauth_clients.*, oauth_client_endpoints.*
+		SELECT oauth_clients.*, oauth_client_endpoints.client_id, oauth_client_endpoints.redirect_uri
 		  FROM oauth_clients, oauth_client_endpoints
 		 WHERE oauth_clients.id = :clientId
 		   AND oauth_clients.id = oauth_client_endpoints.client_id
-		   AND oauth_client_redirect_uris.redirect_uri = :redirectUri');
+		   AND oauth_client_endpoints.redirect_uri = :redirectUri');
     }
 
 	private function get_internal_client_id()
