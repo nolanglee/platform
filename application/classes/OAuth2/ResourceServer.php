@@ -55,7 +55,7 @@ class OAuth2_ResourceServer extends ResourceServer
 	{ 
 		$scopes = $this->getCurrentSessionScopes();
 
-		if (!$scope === null and in_array($scope, $scopes))
+		if ($scope and in_array($scope, $scopes))
 		{
 			return true;
 		}
