@@ -25,7 +25,7 @@ class InitialOauthv4 extends AbstractMigration
         $this->dropTable('oauth_client_endpoints');
         $this->dropTable('oauth_clients');
 
-       $this->table('oauth_clients', ['id' => false])
+        $this->table('oauth_clients', ['id' => false])
             ->addColumn('id', 'string', ['limit' => 40])
             ->addColumn('secret', 'string', ['limit' => 40])
             ->addColumn('name', 'string')
