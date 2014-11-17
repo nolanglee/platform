@@ -2,15 +2,15 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class PopulateOauthScopes extends AbstractMigration
+class Oauthv4Populate extends AbstractMigration
 {
-
+ 
     /**
      * Migrate Up.
      */
     public function up()
     {
-        $this->execute("INSERT INTO oauth_scopes (scope, name)
+        $this->execute("INSERT INTO oauth_scopes (id, description)
             VALUES
                 ('api', 'api'),
                 ('posts', 'posts'),
@@ -22,6 +22,7 @@ class PopulateOauthScopes extends AbstractMigration
                 ('config', 'config'),
                 ('messages', 'messages'),
                 ('dataproviders', 'dataproviders'),
+                ('layers', 'layers'),
                 ('stats', 'stats');
         ");
     }
@@ -32,7 +33,7 @@ class PopulateOauthScopes extends AbstractMigration
     public function down()
     {
         $this->execute("DELETE FROM oauth_scopes
-            WHERE scope IN (
+            WHERE id IN (
                 'api',
                 'posts',
                 'forms',
@@ -43,6 +44,7 @@ class PopulateOauthScopes extends AbstractMigration
                 'config',
                 'messages',
                 'dataproviders',
+                'layers',
                 'stats'
             )
         ");
