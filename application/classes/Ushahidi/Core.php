@@ -35,9 +35,9 @@ abstract class Ushahidi_Core {
 		});
 		$di->set('symfony.http.request', function() use ($di) {
 
-
 			$request = Request::createFromGlobals();
 
+			// probably move this to some kind of helper class
 			if (!$request->headers->has('Authorization') && function_exists('apache_request_headers')) 
 	        {
 		        $all = apache_request_headers();
@@ -58,12 +58,6 @@ abstract class Ushahidi_Core {
 
 		$di->set('session.user', function() use ($di) {
 			// Using the OAuth resource server, get the userid (owner id) for this request
-			/**
-			 * @todo
-			 * this does not look cool to me
-			 * keeping logic in DI should be avoided afaik
-			 * 
-			 */
 			$server = $di->get('oauth.server.resource');
 			$userid = $server->getOwnerId();
 
