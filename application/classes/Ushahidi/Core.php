@@ -34,7 +34,21 @@ abstract class Ushahidi_Core {
 			return Kohana::$config->load('media.media_upload_dir');
 		});
 		$di->set('symfony.http.request', function() use ($di) {
-			return Request::createFromGlobals();
+
+
+			$request = Request::createFromGlobals();
+
+			if (!$request->headers->has('Authorization') && function_exists('apache_request_headers')) 
+	        {
+		        $all = apache_request_headers();
+		        if (isset($all['Authorization'])) 
+		        {
+		            $request->headers->set('Authorization', $all['Authorization']);
+		        }
+		    }
+
+			return $request;
+
 		});
 
 		// ACL

@@ -14,9 +14,7 @@
 
 use League\OAuth2\Server\ResourceServer;
 use League\OAuth2\Server\Storage\SessionInterface;
-/**
- * @todo  This is still in the works - be gentle 
- */
+
 class OAuth2_ResourceServer extends ResourceServer 
 {
 	protected $currentSession;
