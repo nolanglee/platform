@@ -14,51 +14,58 @@
 
 use League\OAuth2\Server\ResourceServer;
 use League\OAuth2\Server\Storage\SessionInterface;
+use League\OAuth2\Server\Exception\InsufficientScopeException;
 
 class OAuth2_ResourceServer extends ResourceServer 
 {
-	protected $currentSession;
+    protected $currentSession;
 
-	public function getCurrentSession() 
-	{
-		if ($this->currentSession === null)
-		{
-			$this->setCurrentSession();	
-		}
+    public function getCurrentSession() 
+    {
+        if ($this->currentSession === null)
+        {
+            $this->setCurrentSession(); 
+        }
 
-		return $this->currentSession; // maybe also check for correct instance ?
-	}
+        return $this->currentSession; // maybe also check for correct instance ?
+    }
 
-	private function setCurrentSession()
-	{
-		$this->currentSession = $this->getSessionStorage()
-									->getByAccessToken($this->getAccessToken());
+    private function setCurrentSession()
+    {
+        $this->currentSession = $this->getSessionStorage()->getByAccessToken($this->getAccessToken());
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getCurrentSessionScopes()
-	{
-		return $this->getCurrentSession()
-					->getScopes($this->getCurrentSession());
-	}
+    public function getCurrentSessionScopes()
+    {
+        return $this->getCurrentSession()->getScopes($this->getCurrentSession());
+    }
 
-	public function getOwnerId()
-	{
-		return $this->getCurrentSession()
-					->getOwnerId();
-	}	
+    public function getOwnerId()
+    {
+        return $this->getCurrentSession()->getOwnerId();
+    }   
 
-	public function hasScope($scope = null)
-	{ 
-		$scopes = $this->getCurrentSessionScopes();
+    public function verifyScope($requiredScope = null)
+    {
+        if ($this->hasScope($requiredScope) !== true)
+        {
+            $message = "User %d does not have privilegies to access %s scope";
+            throw new InsufficientScopeException(sprintf($message, $this->getOwnerId(), $requiredScope));
+        }
+    }
 
-		if ($scope and in_array($scope, $scopes))
-		{
-			return true;
-		}
+    public function hasScope($scope = null)
+    { 
+        $scopes = $this->getCurrentSessionScopes();
 
-		return false; // I do not like to have "has" method throw exceptions - it should just answer a question
-	}
+        if ($scope and in_array($scope, $scopes))
+        {
+            return true;
+        }
+
+        return false;
+    }
 
 }

@@ -207,10 +207,7 @@ class Ushahidi_Api extends Controller {
 		try
 		{
 			$server->isValidRequest($require_header);
-			if (!$server->hasScope($this->_scope_required))
-			{
-				//throw exception
-			}
+			$server->verifyScope($this->_scope_required);
 		}
 		catch (League\OAuth2\Server\Exception\OAuth2Exception $e)
 		{

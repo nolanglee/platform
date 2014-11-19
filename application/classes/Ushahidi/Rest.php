@@ -173,10 +173,7 @@ abstract class Ushahidi_Rest extends Controller {
 		try
 		{
 			$server->isValidRequest($require_header);
-			if (!$server->hasScope($required_scope))
-			{
-				//throw exception
-			}
+			$server->verifyScope($required_scope);
 		}
 		catch (OAuth2Exception $e)
 		{
