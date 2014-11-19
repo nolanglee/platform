@@ -17,9 +17,6 @@ use League\OAuth2\Server\Entity\ClientEntity;
 
 class OAuth2_Storage_RefreshToken extends OAuth2_Storage implements ClientInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function get($token)
     {
         $query = $this->createSelectQuery('oauth_refresh_tokens', ['refresh_token'=>$token]);
@@ -37,9 +34,6 @@ class OAuth2_Storage_RefreshToken extends OAuth2_Storage implements ClientInterf
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function create($token, $expireTime, $accessToken)
     {
         return $this->executeInsert('oauth_refresh_tokens', [
@@ -49,10 +43,7 @@ class OAuth2_Storage_RefreshToken extends OAuth2_Storage implements ClientInterf
                     ]);
 
     }
-
-    /**
-     * {@inheritdoc}
-     */
+    
     public function delete(RefreshTokenEntity $token)
     {
         $this->executeDelete('oauth_session_refresh_tokens', ['refresh_token' => $token->getId()]);

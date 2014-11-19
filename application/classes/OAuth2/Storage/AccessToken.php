@@ -19,9 +19,7 @@ use League\OAuth2\Server\Storage\Adapter;
 
 class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenInterface
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function get($token)
     {
         $query = $this->createSelectQuery('oauth_access_tokens', ['access_token' => $token]);
@@ -38,9 +36,6 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScopes(AbstractTokenEntity $token)
     {
         $query = DB::query(Database::SELECT, '
@@ -68,9 +63,6 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
         return $response;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function create($token, $expireTime, $sessionId)
     {
         return $this->executeInsert('oauth_access_tokens', [
@@ -80,9 +72,6 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
                     ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associateScope(AbstractTokenEntity $token, ScopeEntity $scope)
     {
         return $this->executeInsert('oauth_access_token_scopes', [
@@ -91,9 +80,6 @@ class OAuth2_Storage_AccessToken extends OAuth2_Storage implements AccessTokenIn
                     ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function delete(AbstractTokenEntity $token)
     {        
         $this->executeDelete('oauth_access_token_scopes', ['access_token' => $token->getId()]);

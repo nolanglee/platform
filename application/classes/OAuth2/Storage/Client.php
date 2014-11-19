@@ -17,9 +17,6 @@ use League\OAuth2\Server\Entity\ClientEntity;
 
 class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function get($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
     {
         if ($redirectUri AND $clientId === $this->get_internal_client_id())
@@ -71,9 +68,6 @@ class OAuth2_Storage_Client extends OAuth2_Storage implements ClientInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBySession(SessionEntity $session)
     {
         $query = DB::query(Database::SELECT, '

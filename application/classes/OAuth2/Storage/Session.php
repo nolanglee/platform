@@ -20,10 +20,6 @@ use League\OAuth2\Server\Storage\SessionInterface;
 
 class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
 {
- 
-    /**
-     * {@inheritdoc}
-     */
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
         $query = DB::query(Database::SELECT, '
@@ -51,9 +47,6 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getByAuthCode(AuthCodeEntity $authCode)
     {
         $query = DB::query(Database::SELECT, '
@@ -81,9 +74,6 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScopes(SessionEntity $session)
     {
 
@@ -110,9 +100,6 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
         return $scopes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
     {
         return $this->executeInsert('oauth_sessions', [
@@ -122,9 +109,6 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
                         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associateScope(SessionEntity $session, ScopeEntity $scope)
     {
         $this->executeInsert('oauth_session_scopes', [

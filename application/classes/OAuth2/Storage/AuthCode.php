@@ -7,9 +7,6 @@ use League\OAuth2\Server\Storage\AuthCodeInterface;
 
 class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function get($code)
     {
         $query = DB::query(Database::SELECT, '
@@ -44,9 +41,6 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
                     ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScopes(AuthCodeEntity $token)
     {
         $query = DB::query(Database::SELECT, '
@@ -74,9 +68,6 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
         return $response;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function associateScope(AuthCodeEntity $token, ScopeEntity $scope)
     {
         return $this->executeInsert('oauth_auth_code_scopes', 
@@ -85,9 +76,6 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
                     ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function delete(AuthCodeEntity $token)
     {   
         $this->executeDelete('oauth_auth_codes', ['auth_code'=>$token->getId()]);
