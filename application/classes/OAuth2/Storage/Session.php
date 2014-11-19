@@ -26,15 +26,19 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
      */
     public function getByAccessToken(AccessTokenEntity $accessToken)
     {
-		$query = DB::query(Database::SELECT, '
-		SELECT oauth_sessions.id, oauth_sessions.owner_type, oauth_sessions.owner_id, oauth_sessions.client_id, oauth_sessions.client_redirect_uri
-		  FROM oauth_sessions, oauth_access_tokens
-		 WHERE oauth_access_tokens.session_id = oauth_sessions.id
-		   AND oauth_access_tokens.access_token = :accessToken');
+        $query = DB::query(Database::SELECT, '
+                        SELECT oauth_sessions.id, 
+                                oauth_sessions.owner_type, 
+                                oauth_sessions.owner_id, 
+                                oauth_sessions.client_id, 
+                                oauth_sessions.client_redirect_uri
+                          FROM oauth_sessions, oauth_access_tokens
+                         WHERE oauth_access_tokens.session_id = oauth_sessions.id
+                           AND oauth_access_tokens.access_token = :accessToken');
 
-		$query->param(':accessToken', $accessToken->getId());
+        $query->param(':accessToken', $accessToken->getId());
 
-		$result = $this->fetchSingleResult($query);
+        $result = $this->fetchSingleResult($query);
 
         if ($result) {
             $session = new SessionEntity($this->server);
@@ -52,15 +56,19 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
      */
     public function getByAuthCode(AuthCodeEntity $authCode)
     {
-		$query = DB::query(Database::SELECT, '
-		SELECT oauth_sessions.id, oauth_sessions.owner_type, oauth_sessions.owner_id, oauth_sessions.client_id, oauth_sessions.client_redirect_uri
-		  FROM oauth_sessions, oauth_auth_codes
-		 WHERE oauth_auth_codes.session_id = oauth_sessions.id
-		   AND oauth_auth_codes.auth_code = :authCode');
+        $query = DB::query(Database::SELECT, '
+                        SELECT oauth_sessions.id, 
+                                oauth_sessions.owner_type, 
+                                oauth_sessions.owner_id, 
+                                oauth_sessions.client_id, 
+                                oauth_sessions.client_redirect_uri
+                          FROM oauth_sessions, oauth_auth_codes
+                         WHERE oauth_auth_codes.session_id = oauth_sessions.id
+                           AND oauth_auth_codes.auth_code = :authCode');
 
-		$query->param(':authCode', $authCode->getId());
+        $query->param(':authCode', $authCode->getId());
 
-		$result = $this->fetchSingleResult($query);
+        $result = $this->fetchSingleResult($query);
 
         if ($result) {
             $session = new SessionEntity($this->server);
@@ -79,16 +87,16 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
     public function getScopes(SessionEntity $session)
     {
 
-		$query = DB::query(Database::SELECT, '
-		SELECT oauth_scopes.*
-		  FROM oauth_sessions, oauth_session_scopes, oauth_scopes
-		 WHERE oauth_sessions.id = oauth_session_scopes.session_id
-		   AND oauth_scopes.id = oauth_session_scopes.scope
-		   AND oauth_sessions.id = :session');
+        $query = DB::query(Database::SELECT, '
+                        SELECT oauth_scopes.*
+                          FROM oauth_sessions, oauth_session_scopes, oauth_scopes
+                         WHERE oauth_sessions.id = oauth_session_scopes.session_id
+                           AND oauth_scopes.id = oauth_session_scopes.scope
+                           AND oauth_sessions.id = :session');
 
-		$query->param(':session', $session->getId());
+        $query->param(':session', $session->getId());
 
- 		$result = $this->fetchResults($query);
+        $result = $this->fetchResults($query);
 
         $scopes = [];
 
@@ -107,7 +115,7 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
      */
     public function create($ownerType, $ownerId, $clientId, $clientRedirectUri = null)
     {
-		return $this->executeInsert('oauth_sessions', [
+        return $this->executeInsert('oauth_sessions', [
                             'owner_type' => $ownerType,
                             'owner_id'   => $ownerId,
                             'client_id'  => $clientId,
@@ -119,7 +127,7 @@ class OAuth2_Storage_Session extends OAuth2_Storage implements SessionInterface
      */
     public function associateScope(SessionEntity $session, ScopeEntity $scope)
     {
-		$this->executeInsert('oauth_session_scopes', [
+        $this->executeInsert('oauth_session_scopes', [
                                 'session_id' =>  $session->getId(),
                                 'scope'      =>  $scope->getId(),
                             ]);

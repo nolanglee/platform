@@ -13,10 +13,10 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
     public function get($code)
     {
         $query = DB::query(Database::SELECT, '
-                SELECT oauth_auth_codes.* 
-                  FROM oauth_auth_codes
-                 WHERE auth_code = :authCode
-                   AND expire_time >= :time')
+                    SELECT oauth_auth_codes.* 
+                      FROM oauth_auth_codes
+                     WHERE auth_code = :authCode
+                       AND expire_time >= :time')
                     ->param(':authCode', $code)
                     ->param(':time', time());
 
@@ -50,10 +50,10 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
     public function getScopes(AuthCodeEntity $token)
     {
         $query = DB::query(Database::SELECT, '
-                SELECT oauth_scopes.id, oauth_scopes.description 
-                  FROM oauth_auth_code_scopes, oauth_scopes
-                 WHERE oauth_auth_code_scopes.scope = oauth_scopes.id
-                   AND auth_code >= :tokenId')
+                        SELECT oauth_scopes.id, oauth_scopes.description 
+                          FROM oauth_auth_code_scopes, oauth_scopes
+                         WHERE oauth_auth_code_scopes.scope = oauth_scopes.id
+                           AND auth_code >= :tokenId')
                     ->param(':tokenId', $token->getId());
 
 
@@ -61,7 +61,7 @@ class OAuth2_Storage_AuthCode extends Adapter implements AuthCodeInterface
 
         $response = [];
 
-        if ($result and sizeof($result) > 0) {
+        if ($result and count($result) > 0) {
             foreach ($result as $row) {
                 $scope = (new ScopeEntity($this->server))->hydrate([
                     'id'          =>  $row['id'],
