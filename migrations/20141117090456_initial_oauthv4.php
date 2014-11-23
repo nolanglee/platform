@@ -94,19 +94,4 @@ class InitialOauthv4 extends AbstractMigration
             ->addIndex(['owner_id'])
             ->create();
     }
-    /**
-     * Migrate Up.
-     */
-    public function up()
-    {
-    
-    }
-
-    /**
-     * Migrate Down.
-     */
-    public function down()
-    {
-
-    }
 }
