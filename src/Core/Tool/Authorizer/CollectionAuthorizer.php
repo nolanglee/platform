@@ -21,7 +21,7 @@ use Ushahidi\Core\Traits\UserContext;
 use Ushahidi\Core\Traits\PrivAccess;
 
 // The `SetAuthorizer` class is responsible for access checks on `Sets`
-class SetAuthorizer implements Authorizer
+class CollectionAuthorizer implements Authorizer
 {
 	// The access checks are run under the context of a specific user
 	use UserContext;

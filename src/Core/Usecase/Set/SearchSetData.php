@@ -23,4 +23,5 @@ class SearchSetData extends SearchData
 	public $name;
 	public $user;
 	public $featured;
+	public $id;
 }

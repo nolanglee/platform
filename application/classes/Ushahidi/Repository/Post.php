@@ -230,7 +230,7 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements
 			// search terms are all wrapped as a series of OR conditions
 			$query->and_where_open();
 
-			if (ctype_digit($search->q)) {
+			if (is_numeric($search->q)) {
 				// possibly searching for a specific id
 				$query->or_where('id', '=', $search->q);
 			}
@@ -241,6 +241,13 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements
 				->or_where("$table.content", 'LIKE', "%$search->q%");
 
 			$query->and_where_close();
+		}
+
+
+		if ($search->id)
+		{
+			//searching for specific post id, used for single post in set searches
+			$query->where('id', '=', $search->id);
 		}
 
 		// date chcks
@@ -780,18 +787,16 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements
 		}
 	}
 
+
 	protected function updatePostStages($post_id, $form_id, $completed_stages)
 	{
 		// Remove any existing entries
 		DB::delete('form_stages_posts')
 			->where('post_id', '=', $post_id)
 			->execute($this->db);
-
 		$insert = DB::insert('form_stages_posts', ['form_stage_id', 'post_id', 'completed']);
-
 		// Get all stages for form
 		$form_stages = $this->form_stage_repo->getByForm($form_id);
-
 		foreach ($form_stages as $stage)
 		{
 			$insert->values([
@@ -800,8 +805,24 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements
 				in_array($stage->id, $completed_stages) ? 1 : 0
 			]);
 		}
-
 		// Execute the insert
 		$insert->execute($this->db);
+	}
+
+
+	public function getPostInSet($post_id, $set_id)
+	{
+		$result =
+		$this->selectQuery(['posts.id' => $post_id])
+			->select(
+				'posts.*'
+			)
+			->join('posts_sets', 'INNER')->on('posts.id', '=', 'posts_sets.post_id')
+			->where('posts_sets.set_id', '=', $set_id)
+			->limit(1)
+			->execute($this->db)
+			->current();
+
+		return $this->getEntity($result);
 	}
 }

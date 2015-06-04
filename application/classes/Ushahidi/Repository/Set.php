@@ -16,6 +16,8 @@ use Ushahidi\Core\Tool\JsonTranscode;
 
 class Ushahidi_Repository_Set extends Ushahidi_Repository
 {
+	protected $search_data;
+	protected $post_repo;
 	protected $json_transcoder;
 	protected $json_properties = ['filter', 'view_options', 'visible_to'];
 
@@ -34,6 +36,12 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository
 	public function getEntity(Array $data = null)
 	{
 		return new Set($data);
+	}
+
+	public function setSearchData(SearchData $search_data)
+	{
+		$this->search_data = $search_data;
+		return $this;
 	}
 
 	// CreateRepository
@@ -120,5 +128,63 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository
 		{
 			$sets_query->where('user_id', '=', $search->user_id);
 		}
+
+		if (isset($search->search))
+		{
+			$sets_query->where('search', '=', (int)$search->search);
+		}
+
+		if ($search->id)
+		{
+			$sets_query->where('id', '=', $search->id);
+		}
 	}
+
+	public function getSmartSetFilters($id)
+	{
+		$filters = $this->get($id)->filter;
+		foreach($filters as $key=>$value)
+		{
+			if (property_exists($this->search_data, $key))
+			{
+				$this->search_data->$key = $value;
+			}
+		}
+
+		return $this->search_data;
+	}
+
+	public function deleteSetPost($set_id, $post_id)
+	{
+		DB::delete('posts_sets')
+			->where('post_id', '=', $post_id)
+			->where('set_id', '=', $set_id)
+			->execute($this->db);
+
+		return $post_id;
+	}
+
+	public function setPostExists($set_id, $post_id)
+	{
+		$result =
+		DB::select('posts_sets.*')
+			->from('posts_sets')
+			->where('post_id', '=', $post_id)
+			->where('set_id', '=', $set_id)
+			->execute($this->db)
+			->as_array();
+
+		return (bool) count($result);
+	}
+
+	public function addPostToSet($set_id, $post_id)
+	{
+		list($id, $rows) = DB::insert('posts_sets')
+			->columns(array_keys(compact('post_id', 'set_id')))
+			->values(array_values(compact('post_id', 'set_id')))
+			->execute($this->db);
+	
+		return $id;
+	}
+
 }

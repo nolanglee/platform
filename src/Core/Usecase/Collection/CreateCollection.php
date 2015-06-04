@@ -9,12 +9,12 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Set;
+namespace Ushahidi\Core\Usecase\Collection;
 
 use Ushahidi\Core\Entity;
 use Ushahidi\Core\Usecase\CreateUsecase;
 
-class CreateSet extends CreateUsecase
+class CreateCollection extends CreateUsecase
 {
 	protected function getEntity()
 	{
@@ -28,6 +28,9 @@ class CreateSet extends CreateUsecase
 		) {
 			$payload['user_id'] = $this->auth->getUserId();
 		}
+		
+		$payload['search'] = 0;
+		$payload['filter'] = null;
 
 		return $this->repo->getEntity()->setState($payload);
 	}

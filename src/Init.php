@@ -78,19 +78,22 @@ $di->set('factory.authorizer', $di->lazyNew('Ushahidi\Factory\AuthorizerFactory'
 
 // Authorizers are shared, so mapping is done with service names.
 $di->params['Ushahidi\Factory\AuthorizerFactory']['map'] = [
-	'config'          => $di->lazyGet('authorizer.config'),
-	'dataproviders'   => $di->lazyGet('authorizer.dataprovider'),
-	'forms'           => $di->lazyGet('authorizer.form'),
-	'form_attributes' => $di->lazyGet('authorizer.form_attribute'),
-	'form_stages'     => $di->lazyGet('authorizer.form_stage'),
-	'tags'            => $di->lazyGet('authorizer.tag'),
-	'layers'          => $di->lazyGet('authorizer.layer'),
-	'media'           => $di->lazyGet('authorizer.media'),
-	'messages'        => $di->lazyGet('authorizer.message'),
-	'posts'           => $di->lazyGet('authorizer.post'),
-	'tags'            => $di->lazyGet('authorizer.tag'),
-	'sets'            => $di->lazyGet('authorizer.set'),
-	'users'           => $di->lazyGet('authorizer.user'),
+	'config'               => $di->lazyGet('authorizer.config'),
+	'dataproviders'        => $di->lazyGet('authorizer.dataprovider'),
+	'forms'                => $di->lazyGet('authorizer.form'),
+	'form_attributes'      => $di->lazyGet('authorizer.form_attribute'),
+	'form_groups'          => $di->lazyGet('authorizer.form_group'),
+	'tags'                 => $di->lazyGet('authorizer.tag'),
+	'layers'               => $di->lazyGet('authorizer.layer'),
+	'media'                => $di->lazyGet('authorizer.media'),
+	'messages'             => $di->lazyGet('authorizer.message'),
+	'posts'                => $di->lazyGet('authorizer.post'),
+	'tags'                 => $di->lazyGet('authorizer.tag'),
+	'collections'          => $di->lazyGet('authorizer.collection'),
+	'collections_posts'    => $di->lazyGet('authorizer.collection'),
+	'saved_searches_posts' =>  $di->lazyGet('authorizer.collection'),
+	'saved_searches'       => $di->lazyGet('authorizer.collection'),
+	'users'                => $di->lazyGet('authorizer.user'),
 ];
 
 // Repositories are used for storage and retrieval of records.
@@ -98,18 +101,21 @@ $di->set('factory.repository', $di->lazyNew('Ushahidi\Factory\RepositoryFactory'
 
 // Repositories are shared, so mapping is done with service names.
 $di->params['Ushahidi\Factory\RepositoryFactory']['map'] = [
-	'config'          => $di->lazyGet('repository.config'),
-	'dataproviders'   => $di->lazyGet('repository.dataprovider'),
-	'forms'           => $di->lazyGet('repository.form'),
-	'form_attributes' => $di->lazyGet('repository.form_attribute'),
-	'form_stages'     => $di->lazyGet('repository.form_stage'),
-	'layers'          => $di->lazyGet('repository.layer'),
-	'media'           => $di->lazyGet('repository.media'),
-	'messages'        => $di->lazyGet('repository.message'),
-	'posts'           => $di->lazyGet('repository.post'),
-	'tags'            => $di->lazyGet('repository.tag'),
-	'sets'            => $di->lazyGet('repository.set'),
-	'users'           => $di->lazyGet('repository.user'),
+	'config'               => $di->lazyGet('repository.config'),
+	'dataproviders'        => $di->lazyGet('repository.dataprovider'),
+	'forms'                => $di->lazyGet('repository.form'),
+	'form_attributes'      => $di->lazyGet('repository.form_attribute'),
+	'form_groups'          => $di->lazyGet('repository.form_group'),
+	'layers'               => $di->lazyGet('repository.layer'),
+	'media'                => $di->lazyGet('repository.media'),
+	'messages'             => $di->lazyGet('repository.message'),
+	'posts'                => $di->lazyGet('repository.post'),
+	'tags'                 => $di->lazyGet('repository.tag'),
+	'collections'          => $di->lazyGet('repository.set'),
+	'collections_posts'    => $di->lazyGet('repository.post'),
+	'saved_searches_posts' => $di->lazyGet('repository.set'),
+	'saved_searches'       => $di->lazyGet('repository.set'),
+	'users'                => $di->lazyGet('repository.user'),
 ];
 
 // Formatters are used for to prepare the output of records. Actions that return
@@ -212,9 +218,30 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['posts'] = [
 
 
 // Add custom usecases for sets
-$di->params['Ushahidi\Factory\UsecaseFactory']['map']['sets'] = [
-	'create'  => $di->lazyNew('Ushahidi\Core\Usecase\Set\CreateSet'),
+$di->params['Ushahidi\Factory\UsecaseFactory']['map']['collections'] = [
+	'create' => $di->lazyNew('Ushahidi\Core\Usecase\Collection\CreateCollection'),
+	'search' => $di->lazyNew('Ushahidi\Core\Usecase\Collection\SearchCollection'),
 ];
+$di->params['Ushahidi\Factory\UsecaseFactory']['map']['saved_searches'] = [
+	'create' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\CreateSavedSearch'),
+	'search' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearch'),
+];
+
+$di->params['Ushahidi\Factory\UsecaseFactory']['map']['saved_searches_posts'] = [
+	'search' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearchPost'),
+];
+
+// Add custom usecases for sets_posts
+$di->params['Ushahidi\Factory\UsecaseFactory']['map']['collections_posts'] = [
+	'search' => $di->lazyNew('Ushahidi\Core\Usecase\Collection\SearchCollectionPost'),
+	'create' => $di->lazyNew('Ushahidi\Core\Usecase\Collection\CreateCollectionPost'),
+	'delete' => $di->lazyNew('Ushahidi\Core\Usecase\Collection\DeleteCollectionPost'),
+	'read'   => $di->lazyNew('Ushahidi\Core\Usecase\Collection\ReadCollectionPost'),
+];
+
+$di->setter['Ushahidi\Core\Usecase\Collection\CreateCollectionPost']['setSetRepository'] = $di->lazyGet('repository.set');
+$di->setter['Ushahidi\Core\Usecase\Collection\DeleteCollectionPost']['setSetRepository'] = $di->lazyGet('repository.set');
+$di->setter['Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearchPost']['setPostRepository'] = $di->lazyGet('repository.post');
 
 // User login is a custom read the uses authentication.
 $di->params['Ushahidi\Factory\UsecaseFactory']['map']['users'] = [
@@ -258,7 +285,9 @@ $di->set('authorizer.layer', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\LayerAu
 $di->set('authorizer.media', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\MediaAuthorizer'));
 $di->set('authorizer.message', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\MessageAuthorizer'));
 $di->set('authorizer.tag', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\TagAuthorizer'));
-$di->set('authorizer.set', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
+$di->set('authorizer.saved_search', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\CollectionAuthorizer'));
+$di->set('authorizer.collection', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\CollectionAuthorizer'));
+$di->set('authorizer.collection_post', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\CollectionAuthorizer'));
 
 $di->set('authorizer.post', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\PostAuthorizer'));
 $di->params['Ushahidi\Core\Tool\Authorizer\PostAuthorizer'] = [

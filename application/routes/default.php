@@ -22,7 +22,7 @@ Route::set('media', 'media/<filepath>', array(
 /**
  * Set Posts API SubRoute
  */
-Route::set('set-posts', 'api/v2/sets/<set_id>/posts(/<id>)',
+Route::set('collections-posts', 'api/v2/collections/<set_id>/posts(/<id>)',
 	array(
 		'set_id' => '\d+',
 		'id' => '\d+'
@@ -30,7 +30,18 @@ Route::set('set-posts', 'api/v2/sets/<set_id>/posts(/<id>)',
 	->defaults(array(
 		'action'     => 'index',
 		'controller' => 'Posts',
-		'directory'  => 'Api/Sets'
+		'directory'  => 'Api/Collections'
+	));
+
+Route::set('saved-search-posts', 'api/v2/savedsearch/<set_id>/posts(/<id>)',
+	array(
+		'set_id' => '\d+',
+		'id' => '\d+'
+	))
+	->defaults(array(
+		'action'     => 'index',
+		'controller' => 'Posts',
+		'directory'  => 'Api/SavedSearch'
 	));
 
 /**

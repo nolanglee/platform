@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Ushahidi Set Validator
+ * Ushahidi API Formatter for Set
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Application
@@ -9,20 +9,10 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-use Ushahidi\Core\Data;
-use Ushahidi\Core\Tool\Validator;
+use Ushahidi\Core\Traits\FormatterAuthorizerMetadata;
+use Ushahidi\Core\SearchData;
 
-class Ushahidi_Validator_Set_Delete extends Validator
+class Ushahidi_Formatter_PostCollection extends Ushahidi_Formatter_API
 {
-	protected $default_error_source = 'set';
-
-	protected function getRules()
-	{
-		return [
-			'id' => [
-				['not_empty'],
-				['digit'],
-			],
-		];
-	}
+	use FormatterAuthorizerMetadata;
 }

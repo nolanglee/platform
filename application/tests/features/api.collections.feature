@@ -1,46 +1,41 @@
 @setsFixture @oauth2Skip
 Feature: Testing the Sets API
 
-	Scenario: Creating a Set
-		Given that I want to make a new "set"
+	Scenario: Creating a Collection
+		Given that I want to make a new "collection"
 		And that the request "data" is:
 			"""
 			{
 				"name":"Set One",
-				"filter":"Set filter",
 				"featured": 1,
-				"search": 1,
-				"filter": {
-					"q":"zombie"
-				},
+				"search": 0,
 				"view":"map",
 				"view_options":[],
 				"visible_to":[]
 			}
 			"""
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
 		And the response has a "name" property
 		And the "name" property equals "Set One"
 		And the "featured" property equals "1"
-		And the "search" property equals "1"
-		And the "filter.q" property equals "zombie"
+		And the "search" property equals "0"
 		And the "view" property equals "map"
 		Then the guzzle status code should be 200
 
-	Scenario: Updating a Set
-		Given that I want to update a "set"
+
+	Scenario: Updating a Collection
+		Given that I want to update a "collection"
 		And that the request "data" is:
 			"""
 			{
-				"name":"Updated Set One",
-				"filter":"updated set filter"
+				"name":"Updated Set One"
 			}
 			"""
 		And that its "id" is "1"
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
@@ -49,8 +44,9 @@ Feature: Testing the Sets API
 		And the "name" property equals "Updated Set One"
 		Then the guzzle status code should be 200
 
-	Scenario: Updating a non-existent Set
-		Given that I want to update a "set"
+
+	Scenario: Updating a non-existent Collection
+		Given that I want to update a "collection"
 		And that the request "data" is:
 			"""
 			{
@@ -59,13 +55,13 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "20"
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
-	Scenario: Non admin user trying to make a set featured fails
-		Given that I want to update a "set"
+	Scenario: Non admin user trying to make a collection featured fails
+		Given that I want to update a "collection"
 		And that the request "Authorization" header is "Bearer testbasicuser2"
 		And that the request "data" is:
 			"""
@@ -76,14 +72,14 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "2"
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		Then the guzzle status code should be 403
 
 	@resetFixture
-	Scenario: Listing All Sets
-		Given that I want to get all "Sets"
-		When I request "/sets"
+	Scenario: Listing All Collections
+		Given that I want to get all "Collections"
+		When I request "/collections"
 		Then the response is JSON
 		And the response has a "count" property
 		And the type of the "count" property is "numeric"
@@ -91,10 +87,10 @@ Feature: Testing the Sets API
 		Then the guzzle status code should be 200
 
 	@resetFixture
-	Scenario: Listing All Sets as a normal user doesn't return admin set
-		Given that I want to get all "Sets"
+	Scenario: Listing All Collections as a normal user doesn't return admin set
+		Given that I want to get all "Collections"
 		And that the request "Authorization" header is "Bearer testbasicuser2"
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		And the response has a "count" property
 		And the type of the "count" property is "numeric"
@@ -102,45 +98,45 @@ Feature: Testing the Sets API
 		Then the guzzle status code should be 200
 
 	@resetFixture
-	Scenario: Search All Sets
-		Given that I want to get all "Sets"
+	Scenario: Search All Collections
+		Given that I want to get all "Collections"
 		And that the request "query string" is:
 			"""
 			q=Explo
 			"""
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		And the "count" property equals "1"
 		And the "results.0.name" property equals "Explosion"
 		Then the guzzle status code should be 200
 
-	Scenario: Finding a Set
-		Given that I want to find a "Set"
+	Scenario: Finding a Collection
+		Given that I want to find a "Collection"
 		And that its "id" is "1"
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
 		Then the guzzle status code should be 200
 
-	Scenario: Finding a non-existent Set
-		Given that I want to find a "Set"
+	Scenario: Finding a non-existent Collection
+		Given that I want to find a "Collection"
 		And that its "id" is "22"
-		When I request "/sets"
+		When I request "/collections"
 		Then the response is JSON
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
-	Scenario: Deleting a Set
-		Given that I want to delete a "Set"
+	Scenario: Deleting a Collection
+		Given that I want to delete a "Collection"
 		And that its "id" is "1"
-		When I request "/sets"
+		When I request "/collections"
 		Then the guzzle status code should be 200
 
-	Scenario: Deleting a non-existent Set
-		Given that I want to delete a "Set"
+	Scenario: Deleting a non-existent Collection
+		Given that I want to delete a "Collection"
 		And that its "id" is "22"
-		When I request "/sets"
+		When I request "/collection"
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
