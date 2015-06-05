@@ -89,9 +89,10 @@ $di->params['Ushahidi\Factory\AuthorizerFactory']['map'] = [
 	'messages'             => $di->lazyGet('authorizer.message'),
 	'posts'                => $di->lazyGet('authorizer.post'),
 	'tags'                 => $di->lazyGet('authorizer.tag'),
+	// @todo these should all have individual authorizers
 	'collections'          => $di->lazyGet('authorizer.collection'),
 	'collections_posts'    => $di->lazyGet('authorizer.collection'),
-	'saved_searches_posts' =>  $di->lazyGet('authorizer.collection'),
+	'saved_searches_posts' => $di->lazyGet('authorizer.collection'),
 	'saved_searches'       => $di->lazyGet('authorizer.collection'),
 	'users'                => $di->lazyGet('authorizer.user'),
 ];
