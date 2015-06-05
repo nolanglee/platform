@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Read Use Case
+ * Read post in Collection Use Case
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform

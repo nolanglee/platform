@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Create Set Usecase
+ * Add post to Collection Usecase
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -27,6 +27,7 @@ class CreateCollectionPost extends CreateUsecase
 	// Usecase
 	public function interact()
 	{
+		// Get payload input
 		$payload = $this->payload;
 
 		// Fetch and hydrate the entity...
@@ -38,6 +39,7 @@ class CreateCollectionPost extends CreateUsecase
 		// ... verify that the entity is in a valid state
 		$this->verifyValidPayload($payload);
 
+		// ... add post to set
 		$id = $this->set_repo->addPostToSet($payload['set_id'], $payload['post_id']);
 
 		// ... get the newly created entity

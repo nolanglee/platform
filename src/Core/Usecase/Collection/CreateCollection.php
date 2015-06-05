@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Create Set Usecase
+ * Create Collection Usecase
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -18,6 +18,7 @@ class CreateCollection extends CreateUsecase
 {
 	protected function getEntity()
 	{
+		// Start with the payload input
 		$payload = $this->payload;
 
 		// If no user information is provided, default to the current session user.
@@ -28,10 +29,15 @@ class CreateCollection extends CreateUsecase
 		) {
 			$payload['user_id'] = $this->auth->getUserId();
 		}
-		
+
+		// Force search to be false, and filter to be empty
+		// Collections and Saved Searches share the Set entity
+		// and this is what separates them
+		// @todo split Entity classes too
 		$payload['search'] = 0;
 		$payload['filter'] = null;
 
+		// Finally grab a new entity and push the payload into its state
 		return $this->repo->getEntity()->setState($payload);
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Post Delete Use Case
+ * Remove post from collection Use Case
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -41,7 +41,7 @@ class DeleteCollectionPost extends DeleteUsecase
 
 		// ... persist the delete
 		$this->set_repo->deleteSetPost($set_id, $post_id);
-		
+
 		// ... and return the formatted entity
 		return $this->formatter->__invoke($entity);
 	}

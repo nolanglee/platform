@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Entity Search Use Case
+ * Search Posts in SavedSearch Use Case
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -23,7 +23,7 @@ class SearchSavedSearchPost extends SearchPost
 		$this->post_repository = $repo;
 		return $this;
 	}
-	
+
 	protected function getSearch()
 	{
 		$fields = $this->repo->getSearchFields();

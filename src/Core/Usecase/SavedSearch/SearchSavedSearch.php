@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Entity Search Use Case
+ * Ushahidi Platform Saved Search Search Use Case
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -19,6 +19,9 @@ class SearchSavedSearch extends SearchUsecase
 	/**
 	 * Get filter parameters as search data.
 	 *
+	 * Override this to ensure we always search by
+	 * for saved searches with search=true.
+	 *
 	 * @return SearchData
 	 */
 	protected function getSearch()
@@ -28,6 +31,9 @@ class SearchSavedSearch extends SearchUsecase
 
 		$filters = $this->getFilters(array_merge($fields, array_keys($paging)));
 
+		// Force search=true as a filter. This ensures we always
+		// get saved search, not collections.
+		// @todo just add this and then call parent?
 		$filters['search'] = true;
 
 		$this->search->setFilters(array_merge($paging, $filters));

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Entity Search Use Case
+ * Search Posts in Collection Use Case
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -18,6 +18,8 @@ class SearchCollectionPost extends SearchPost
 	/**
 	 * Get filter parameters as search data.
 	 *
+	 * Override to filter posts to just this collection
+	 *
 	 * @return SearchData
 	 */
 	protected function getSearch()
@@ -28,6 +30,8 @@ class SearchCollectionPost extends SearchPost
 
 		$filters = $this->getFilters(array_merge($fields, array_keys($paging)));
 
+		// Include set_id identifier in filters to ensure
+		// we only get posts from in this collection
 		$this->search->setFilters(array_merge($paging, $filters, ['set'=>$set_id]));
 		$this->search->setSortingKeys(array_keys($paging));
 
@@ -62,6 +66,9 @@ class SearchCollectionPost extends SearchPost
 				unset($results[$idx]);
 			}
 		}
+
+		// Skip the formatter->setSearch step here
+		// @todo why? this should be getting skipped
 
 		// ... and return the formatted results.
 		return $this->formatter->__invoke($results);
