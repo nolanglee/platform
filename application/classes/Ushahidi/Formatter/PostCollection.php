@@ -1,7 +1,10 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Ushahidi API Formatter for Set
+ * Ushahidi API Formatter for Collections (aka Sets)
+ *
+ * Not to be confused with CollectionFormatter
+ * (collections of resources)
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Application
