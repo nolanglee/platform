@@ -12,13 +12,13 @@
 namespace Ushahidi\Core\Usecase\SavedSearch;
 
 use Ushahidi\Core\Usecase\Post\SearchPost;
-use Ushahidi_Repository;
+use Ushahidi\Core\Entity\PostRepository;
 
 class SearchSavedSearchPost extends SearchPost
 {
 	protected $post_repository;
 
-	public function setPostRepository(Ushahidi_Repository $repo)
+	public function setPostRepository(PostRepository $repo)
 	{
 		$this->post_repository = $repo;
 		return $this;

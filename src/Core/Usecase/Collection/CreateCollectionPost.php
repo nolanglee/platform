@@ -12,13 +12,14 @@
 namespace Ushahidi\Core\Usecase\Collection;
 
 use Ushahidi\Core\Entity;
+use Ushahidi\Core\Entity\SetRepository;
 use Ushahidi\Core\Usecase\CreateUsecase;
 
 class CreateCollectionPost extends CreateUsecase
 {
 	protected $set_repo;
 
-	public function setSetRepository(\Ushahidi_Repository $set_repo)
+	public function setSetRepository(SetRepository $set_repo)
 	{
 		$this->set_repo = $set_repo;
 		return $this;

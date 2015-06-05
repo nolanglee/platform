@@ -11,10 +11,11 @@
 
 use Ushahidi\Core\Entity;
 use Ushahidi\Core\Entity\Set;
+use Ushahidi\Core\Entity\SetRepository;
 use Ushahidi\Core\SearchData;
 use Ushahidi\Core\Tool\JsonTranscode;
 
-class Ushahidi_Repository_Set extends Ushahidi_Repository
+class Ushahidi_Repository_Set extends Ushahidi_Repository implements SetRepository
 {
 	protected $search_data;
 	protected $post_repo;
@@ -183,7 +184,7 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository
 			->columns(array_keys(compact('post_id', 'set_id')))
 			->values(array_values(compact('post_id', 'set_id')))
 			->execute($this->db);
-	
+
 		return $id;
 	}
 

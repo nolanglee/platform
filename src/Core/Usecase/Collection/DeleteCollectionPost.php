@@ -16,12 +16,13 @@ use Ushahidi\Core\Data;
 use Ushahidi\Core\Tool\ValidatorTrait;
 use Ushahidi_Repository;
 use Ushahidi\Core\Entity;
+use Ushahidi\Core\Entity\SetRepository;
 
 class DeleteCollectionPost extends DeleteUsecase
 {
 	protected $set_repo;
 
-	public function setSetRepository(\Ushahidi_Repository $set_repo)
+	public function setSetRepository(SetRepository $set_repo)
 	{
 		$this->set_repo = $set_repo;
 		return $this;
