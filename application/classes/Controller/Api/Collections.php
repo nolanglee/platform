@@ -13,6 +13,7 @@ class Controller_Api_Collections extends Ushahidi_Rest {
 
 	protected function _scope()
 	{
+		// @todo rename scope
 		return 'sets';
 	}
 

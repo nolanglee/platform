@@ -20,9 +20,10 @@ class Controller_API_SavedSearch_Posts extends Ushahidi_Rest {
 
 	protected function _scope()
 	{
+		// @todo rename scope
 		return 'sets';
 	}
-	
+
 
 	protected function _resource()
 	{
@@ -37,10 +38,11 @@ class Controller_API_SavedSearch_Posts extends Ushahidi_Rest {
 	 * @return void
 	 */
 	public function action_get_index_collection()
-	{		
+	{
 		parent::action_get_index_collection();
 
 		$this->_usecase
+			// Set parent saved search id
 			->setIdentifiers($this->_identifiers());
 	}
 }

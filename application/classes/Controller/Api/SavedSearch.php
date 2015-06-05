@@ -13,6 +13,7 @@ class Controller_Api_SavedSearch extends Ushahidi_Rest {
 
 	protected function _scope()
 	{
+		// @rename scope
 		return 'sets';
 	}
 
@@ -21,17 +22,4 @@ class Controller_Api_SavedSearch extends Ushahidi_Rest {
 		return 'saved_searches';
 	}
 
-	/**
-	 * Delete An Entity
-	 *
-	 * DELETE /api/foo/:id
-	 *
-	 * @return void
-	 */
-	public function action_delete_index()
-	{
-		$this->_usecase = service('factory.usecase')
-			->get($this->_resource(), 'delete')
-			->setIdentifiers($this->_identifiers());
-	}
 }

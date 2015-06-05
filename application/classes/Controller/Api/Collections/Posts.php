@@ -13,28 +13,36 @@ class Controller_API_Collections_Posts extends Ushahidi_Rest {
 
 	protected function _scope()
 	{
+		// @todo rename scope
 		return 'sets';
-	}	
+	}
 
 	protected function _resource()
 	{
 		return 'collections_posts';
 	}
-	
+
 	public function action_get_index_collection()
-	{		
+	{
 		parent::action_get_index_collection();
 
-		$this->_usecase->setIdentifiers($this->_identifiers());
-		$this->_usecase->setFilters($this->request->query() + [
-			'set_id' => $this->request->param('set_id')
-		]);
+		$this->_usecase
+			// Send through parent collection id
+			->setIdentifiers($this->_identifiers())
+			// And add parent collection id to the filters
+			->setFilters($this->request->query() + [
+				'set_id' => $this->request->param('set_id')
+			]);
 	}
 
 	public function action_post_index_collection()
 	{
-		$this->_usecase = service('factory.usecase')
-			->get($this->_resource(), 'create')
+		parent::action_post_index_collection();
+
+		// Merge IDs and payload so that set id appears
+		// in the payload.
+		// @todo use setIdentifiers and handle this properly in the usecase
+		$this->_usecase
 			->setPayload(array_merge($this->_payload(), $this->_identifiers()));
 	}
 }
