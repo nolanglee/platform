@@ -171,11 +171,19 @@ Feature: Testing the Sets API
 	@resetFixture
 	Scenario: Get savedsearch posts
 		Given that I want to get all "SavedSearches"
+		When I request "/savedsearches/4/posts"
+		Then the response is JSON
+		And the "count" property equals "1"
+		Then the guzzle status code should be 200
+
+	@resetFixture
+	Scenario: Search within savedsearch posts
+		Given that I want to get all "SavedSearches"
 		And that the request "query string" is:
 			"""
 			q=Explo
 			"""
-		When I request "/savedsearch/posts"
+		When I request "/savedsearches/4/posts"
 		Then the response is JSON
 		And the "count" property equals "1"
 		And the "results.0.name" property equals "Explosion"
