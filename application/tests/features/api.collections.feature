@@ -191,3 +191,63 @@ Feature: Testing the Sets API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
+	@resetFixture
+	Scenario: Get collection posts
+		Given that I want to get all "SavedSearches"
+		When I request "/collections/1/posts"
+		Then the response is JSON
+		And the "count" property equals "3"
+		Then the guzzle status code should be 200
+
+# ACL Tests
+    Scenario: Admin can add a post to a collection
+        Given that I want to make a new "Post"
+        And that the request "Authorization" header is "Bearer testadminuser"
+        And that the request "data" is:
+            """
+            {
+                "id":1
+            }
+            """
+        When I request "/collections/1/posts/"
+        Then the response is JSON
+        And the response has a "id" property
+        And the type of the "id" property is "numeric"
+        And the "id" property equals "1"
+        Then the guzzle status code should be 200
+
+    @resetFixture
+    Scenario: User can view public and own private posts in a collection
+        Given that I want to get all "Posts"
+        And that the request "Authorization" header is "Bearer testbasicuser"
+        And that the request "query string" is "status=all"
+        When I request "/collections/1/posts"
+        Then the guzzle status code should be 200
+        And the response is JSON
+        And the response has a "count" property
+        And the type of the "count" property is "numeric"
+        And the "count" property equals "4"
+
+    @resetFixture
+    Scenario: All users can view public posts in a collection
+        Given that I want to get all "Posts"
+        And that the request "Authorization" header is "Bearer testbasicuser2"
+        And that the request "query string" is "status=all"
+        When I request "/collections/1/posts"
+        Then the guzzle status code should be 200
+        And the response is JSON
+        And the response has a "count" property
+        And the type of the "count" property is "numeric"
+        And the "count" property equals "2"
+
+    @resetFixture
+    Scenario: Admin user all posts in a collection
+        Given that I want to get all "Posts"
+        And that the request "Authorization" header is "Bearer testadminuser"
+        And that the request "query string" is "status=all"
+        When I request "/collections/1/posts"
+        Then the guzzle status code should be 200
+        And the response is JSON
+        And the response has a "count" property
+        And the type of the "count" property is "numeric"
+        And the "count" property equals "6"
