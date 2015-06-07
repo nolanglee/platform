@@ -272,7 +272,7 @@ abstract class Ushahidi_Core {
 		$di->set('repository.oauth.scope', $di->lazyNew('OAuth2_Storage_Scope'));
 
 		$di->setter['Ushahidi_Repository_User']['setHasher'] = $di->lazyGet('tool.hasher.password');
-		$di->setter['Ushahidi_Repository_Set']['setSearchData'] = $di->lazyNew('Ushahidi\Core\Usecase\Set\SearchSetData');
+		$di->setter['Ushahidi_Repository_Set']['setSearchData'] = $di->lazyNew('Ushahidi\Core\SearchData');
 
 		// Repository parameters
 		foreach ([
