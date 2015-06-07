@@ -11,7 +11,6 @@ Feature: Testing the Sets API
 					"q":"zombie"
 				},
 				"featured": 1,
-				"search": 1,
 				"view":"map",
 				"view_options":[],
 				"visible_to":[]
@@ -29,6 +28,26 @@ Feature: Testing the Sets API
 		And the "filter.q" property equals "zombie"
 		Then the guzzle status code should be 200
 
+	Scenario: Creating a SavedSearch with search=0 is ignored
+		Given that I want to make a new "collection"
+		And that the request "data" is:
+			"""
+			{
+				"name":"Set One",
+				"featured": 1,
+				"search":"0",
+				"view":"map",
+				"view_options":[],
+				"visible_to":[]
+			}
+			"""
+		When I request "/savedsearch"
+		Then the response is JSON
+		And the response has a "id" property
+		And the type of the "id" property is "numeric"
+		And the response has a "name" property
+		And the "search" property equals "1"
+		Then the guzzle status code should be 200
 
 	Scenario: Updating a SavedSearch
 		Given that I want to update a "SavedSearch"
@@ -48,7 +67,6 @@ Feature: Testing the Sets API
 		And the "name" property equals "Updated Search One"
 		Then the guzzle status code should be 200
 
-
 	Scenario: Updating a non-existent SavedSearch
 		Given that I want to update a "SavedSearch"
 		And that the request "data" is:
@@ -59,6 +77,21 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "20"
+		When I request "/savedsearch"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 404
+
+	Scenario: Updating a Collection via SavedSearch API fails
+		Given that I want to update a "collection"
+		And that the request "data" is:
+			"""
+			{
+				"name":"Updated Set",
+				"filter":"updated filter"
+			}
+			"""
+		And that its "id" is "2"
 		When I request "/savedsearch"
 		Then the response is JSON
 		And the response has a "errors" property
@@ -75,7 +108,7 @@ Feature: Testing the Sets API
 				"featured":1
 			}
 			"""
-		And that its "id" is "2"
+		And that its "id" is "5"
 		When I request "/savedsearch"
 		Then the response is JSON
 		Then the guzzle status code should be 403
@@ -86,7 +119,7 @@ Feature: Testing the Sets API
 		Then the response is JSON
 		And the response has a "count" property
 		And the type of the "count" property is "numeric"
-		And the "count" property equals "1"
+		And the "count" property equals "3"
 		Then the guzzle status code should be 200
 
 	@resetFixture
@@ -98,9 +131,17 @@ Feature: Testing the Sets API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
-	Scenario: Finding a SavedSearch
+	Scenario: Finding a collection via  SavedSearch fails
 		Given that I want to find a "SavedSearch"
 		And that its "id" is "1"
+		When I request "/savedsearch"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 404
+
+	Scenario: Finding a SavedSearch
+		Given that I want to find a "SavedSearch"
+		And that its "id" is "4"
 		When I request "/savedsearch"
 		Then the response is JSON
 		And the response has a "id" property
@@ -109,13 +150,20 @@ Feature: Testing the Sets API
 
 	Scenario: Deleting a SavedSearch
 		Given that I want to delete a "SavedSearch"
-		And that its "id" is "1"
+		And that its "id" is "4"
 		When I request "/savedsearch"
 		Then the guzzle status code should be 200
 
 	Scenario: Deleting a non-existent SavedSearch
 		Given that I want to delete a "SavedSearch"
 		And that its "id" is "22"
+		When I request "/savedsearch"
+		And the response has a "errors" property
+		Then the guzzle status code should be 404
+
+	Scenario: Deleting a collection via SavedSearch fails
+		Given that I want to delete a "SavedSearch"
+		And that its "id" is "2"
 		When I request "/savedsearch"
 		And the response has a "errors" property
 		Then the guzzle status code should be 404

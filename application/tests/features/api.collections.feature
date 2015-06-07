@@ -8,7 +8,6 @@ Feature: Testing the Sets API
 			{
 				"name":"Set One",
 				"featured": 1,
-				"search": 0,
 				"view":"map",
 				"view_options":[],
 				"visible_to":[]
@@ -25,6 +24,28 @@ Feature: Testing the Sets API
 		And the "view" property equals "map"
 		Then the guzzle status code should be 200
 
+	Scenario: Creating a Collection ignores SavedSearch properties
+		Given that I want to make a new "collection"
+		And that the request "data" is:
+			"""
+			{
+				"name":"Set One",
+				"featured": 1,
+				"search": 1,
+				"filter": ["q":"test"]
+				"view":"map",
+				"view_options":[],
+				"visible_to":[]
+			}
+			"""
+		When I request "/collections"
+		Then the response is JSON
+		And the response has a "id" property
+		And the type of the "id" property is "numeric"
+		And the response has a "name" property
+		And the "search" property equals "0"
+		And the "filter" property equals ""
+		Then the guzzle status code should be 200
 
 	Scenario: Updating a Collection
 		Given that I want to update a "collection"
@@ -55,6 +76,21 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "20"
+		When I request "/collections"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 404
+
+	Scenario: Updating a SavedSearch via collections API fails
+		Given that I want to update a "collection"
+		And that the request "data" is:
+			"""
+			{
+				"name":"Updated Set",
+				"filter":"updated filter"
+			}
+			"""
+		And that its "id" is "4"
 		When I request "/collections"
 		Then the response is JSON
 		And the response has a "errors" property
@@ -127,6 +163,14 @@ Feature: Testing the Sets API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
+	Scenario: Finding a saved search via Collection should 404
+		Given that I want to find a "Collection"
+		And that its "id" is "4"
+		When I request "/collections"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 404
+
 	Scenario: Deleting a Collection
 		Given that I want to delete a "Collection"
 		And that its "id" is "1"
@@ -136,6 +180,13 @@ Feature: Testing the Sets API
 	Scenario: Deleting a non-existent Collection
 		Given that I want to delete a "Collection"
 		And that its "id" is "22"
+		When I request "/collection"
+		And the response has a "errors" property
+		Then the guzzle status code should be 404
+
+	Scenario: Deleting a saved search via Collections api fails
+		Given that I want to delete a "Collection"
+		And that its "id" is "4"
 		When I request "/collection"
 		And the response has a "errors" property
 		Then the guzzle status code should be 404

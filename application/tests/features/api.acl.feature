@@ -8,7 +8,7 @@ Feature: API Access Control Layer
                 "id":1
             }
             """
-        When I request "/sets/1/posts/"
+        When I request "/collections/1/posts/"
         Then the response is JSON
         And the response has a "id" property
         And the type of the "id" property is "numeric"
@@ -20,7 +20,7 @@ Feature: API Access Control Layer
         Given that I want to get all "Posts"
         And that the request "Authorization" header is "Bearer testbasicuser"
         And that the request "query string" is "status=all"
-        When I request "/sets/1/posts"
+        When I request "/collections/1/posts"
         Then the guzzle status code should be 200
         And the response is JSON
         And the response has a "count" property
@@ -32,7 +32,7 @@ Feature: API Access Control Layer
         Given that I want to get all "Posts"
         And that the request "Authorization" header is "Bearer testbasicuser2"
         And that the request "query string" is "status=all"
-        When I request "/sets/1/posts"
+        When I request "/collections/1/posts"
         Then the guzzle status code should be 200
         And the response is JSON
         And the response has a "count" property
@@ -44,7 +44,7 @@ Feature: API Access Control Layer
         Given that I want to get all "Posts"
         And that the request "Authorization" header is "Bearer testadminuser"
         And that the request "query string" is "status=all"
-        When I request "/sets/1/posts"
+        When I request "/collections/1/posts"
         Then the guzzle status code should be 200
         And the response is JSON
         And the response has a "count" property
