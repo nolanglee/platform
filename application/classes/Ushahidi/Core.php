@@ -145,7 +145,7 @@ abstract class Ushahidi_Core {
 			'update' => $di->lazyNew('Ushahidi_Validator_Message_Update'),
 			'receive' => $di->lazyNew('Ushahidi_Validator_Message_Receive'),
 		];
-		$di->params['Ushahidi\Factory\ValidatorFactory']['map']['saved_searches'] = [
+		$di->params['Ushahidi\Factory\ValidatorFactory']['map']['savedsearches'] = [
 			'create' => $di->lazyNew('Ushahidi_Validator_SavedSearch_Create'),
 			'update' => $di->lazyNew('Ushahidi_Validator_SavedSearch_Update'),
 		];
@@ -183,10 +183,10 @@ abstract class Ushahidi_Core {
 			'messages'             => $di->lazyNew('Ushahidi_Formatter_Message'),
 			'posts'                => $di->lazyNew('Ushahidi_Formatter_Post'),
 			'tags'                 => $di->lazyNew('Ushahidi_Formatter_Tag'),
-			'saved_searches'       => $di->lazyNew('Ushahidi_Formatter_Set'),
+			'savedsearches'        => $di->lazyNew('Ushahidi_Formatter_Set'),
 			'sets'                 => $di->lazyNew('Ushahidi_Formatter_Set'),
 			'sets_posts'           => $di->lazyNew('Ushahidi_Formatter_Post'),
-			'saved_searches_posts' => $di->lazyNew('Ushahidi_Formatter_Post'),
+			'savedsearches_posts'  => $di->lazyNew('Ushahidi_Formatter_Post'),
 			'users'                => $di->lazyNew('Ushahidi_Formatter_User'),
 		];
 
@@ -203,7 +203,7 @@ abstract class Ushahidi_Core {
 			'post',
 			'tag',
 			'user',
-			'saved_search',
+			'savedsearch',
 			'set_post',
 		] as $name)
 		{

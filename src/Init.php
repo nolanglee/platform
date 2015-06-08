@@ -92,8 +92,8 @@ $di->params['Ushahidi\Factory\AuthorizerFactory']['map'] = [
 	// @todo these should all have individual authorizers
 	'sets'          => $di->lazyGet('authorizer.set'),
 	'sets_posts'    => $di->lazyGet('authorizer.post'),
-	'saved_searches'       => $di->lazyGet('authorizer.saved_search'),
-	'saved_searches_posts' => $di->lazyGet('authorizer.post'),
+	'savedsearches'       => $di->lazyGet('authorizer.savedsearch'),
+	'savedsearches_posts' => $di->lazyGet('authorizer.post'),
 	'users'                => $di->lazyGet('authorizer.user'),
 ];
 
@@ -114,8 +114,8 @@ $di->params['Ushahidi\Factory\RepositoryFactory']['map'] = [
 	'tags'                 => $di->lazyGet('repository.tag'),
 	'sets'          => $di->lazyGet('repository.set'),
 	'sets_posts'    => $di->lazyGet('repository.post'),
-	'saved_searches_posts' => $di->lazyGet('repository.set'),
-	'saved_searches'       => $di->lazyGet('repository.set'),
+	'savedsearches_posts' => $di->lazyGet('repository.set'),
+	'savedsearches'       => $di->lazyGet('repository.set'),
 	'users'                => $di->lazyGet('repository.user'),
 ];
 
@@ -223,12 +223,12 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['sets'] = [
 	'create' => $di->lazyNew('Ushahidi\Core\Usecase\Set\CreateSet'),
 	'search' => $di->lazyNew('Ushahidi\Core\Usecase\Set\SearchSet'),
 ];
-$di->params['Ushahidi\Factory\UsecaseFactory']['map']['saved_searches'] = [
+$di->params['Ushahidi\Factory\UsecaseFactory']['map']['savedsearches'] = [
 	'create' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\CreateSavedSearch'),
 	'search' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearch'),
 ];
 
-$di->params['Ushahidi\Factory\UsecaseFactory']['map']['saved_searches_posts'] = [
+$di->params['Ushahidi\Factory\UsecaseFactory']['map']['savedsearches_posts'] = [
 	'search' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearchPost'),
 ];
 
@@ -289,7 +289,7 @@ $di->set('authorizer.layer', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\LayerAu
 $di->set('authorizer.media', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\MediaAuthorizer'));
 $di->set('authorizer.message', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\MessageAuthorizer'));
 $di->set('authorizer.tag', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\TagAuthorizer'));
-$di->set('authorizer.saved_search', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
+$di->set('authorizer.savedsearch', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
 $di->set('authorizer.set', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
 $di->set('authorizer.set_post', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
 

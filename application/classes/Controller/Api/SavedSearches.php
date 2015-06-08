@@ -19,7 +19,7 @@ class Controller_Api_SavedSearches extends Ushahidi_Rest {
 
 	protected function _resource()
 	{
-		return 'saved_searches';
+		return 'savedsearches';
 	}
 
 }

@@ -11,8 +11,7 @@
 
 class Controller_API_SavedSearches_Posts extends Ushahidi_Rest {
 
-	protected $_action_map =
-	[
+	protected $_action_map = [
 		Http_Request::GET => 'get'
 	];
 
@@ -27,7 +26,7 @@ class Controller_API_SavedSearches_Posts extends Ushahidi_Rest {
 
 	protected function _resource()
 	{
-		return 'saved_searches_posts';
+		return 'savedsearches_posts';
 	}
 
 	/**
