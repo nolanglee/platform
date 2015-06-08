@@ -16,7 +16,7 @@ Feature: Testing the Sets API
 				"visible_to":[]
 			}
 			"""
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
@@ -36,12 +36,15 @@ Feature: Testing the Sets API
 				"name":"Set One",
 				"featured": 1,
 				"search":"0",
+				"filter":{
+					"q":"zombie"
+				},
 				"view":"map",
 				"view_options":[],
 				"visible_to":[]
 			}
 			"""
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
@@ -58,7 +61,7 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "1"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
@@ -77,7 +80,7 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "20"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
@@ -92,7 +95,7 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "2"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
@@ -109,13 +112,14 @@ Feature: Testing the Sets API
 			}
 			"""
 		And that its "id" is "5"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		Then the guzzle status code should be 403
 
+	@resetFixture
 	Scenario: Listing All SavedSearches
 		Given that I want to get all "SavedSearch"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "count" property
 		And the type of the "count" property is "numeric"
@@ -126,7 +130,7 @@ Feature: Testing the Sets API
 	Scenario: Finding a non-existent SavedSearch
 		Given that I want to find a "SavedSearch"
 		And that its "id" is "22"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
@@ -134,7 +138,7 @@ Feature: Testing the Sets API
 	Scenario: Finding a collection via  SavedSearch fails
 		Given that I want to find a "SavedSearch"
 		And that its "id" is "1"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
@@ -142,7 +146,7 @@ Feature: Testing the Sets API
 	Scenario: Finding a SavedSearch
 		Given that I want to find a "SavedSearch"
 		And that its "id" is "4"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the response is JSON
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
@@ -151,20 +155,20 @@ Feature: Testing the Sets API
 	Scenario: Deleting a SavedSearch
 		Given that I want to delete a "SavedSearch"
 		And that its "id" is "4"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		Then the guzzle status code should be 200
 
 	Scenario: Deleting a non-existent SavedSearch
 		Given that I want to delete a "SavedSearch"
 		And that its "id" is "22"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
 	Scenario: Deleting a collection via SavedSearch fails
 		Given that I want to delete a "SavedSearch"
 		And that its "id" is "2"
-		When I request "/savedsearch"
+		When I request "/savedsearches"
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
@@ -173,7 +177,7 @@ Feature: Testing the Sets API
 		Given that I want to get all "SavedSearches"
 		When I request "/savedsearches/4/posts"
 		Then the response is JSON
-		And the "count" property equals "1"
+		And the "count" property equals "4"
 		Then the guzzle status code should be 200
 
 	@resetFixture

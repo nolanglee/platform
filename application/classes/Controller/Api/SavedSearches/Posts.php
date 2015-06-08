@@ -9,7 +9,7 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-class Controller_API_SavedSearch_Posts extends Ushahidi_Rest {
+class Controller_API_SavedSearches_Posts extends Ushahidi_Rest {
 
 	protected $_action_map =
 	[

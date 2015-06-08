@@ -4,7 +4,7 @@ Feature: Testing the Sets Posts API
     @resetFixture
     Scenario: Listing All Posts in a Set
         Given that I want to get all "Posts"
-        When I request "/savedsearch/4/posts/"
+        When I request "/savedsearches/4/posts/"
         Then the response is JSON
         And the response has a "count" property
         And the type of the "count" property is "numeric"
