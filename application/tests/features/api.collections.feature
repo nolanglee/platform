@@ -20,7 +20,6 @@ Feature: Testing the Sets API
 		And the response has a "name" property
 		And the "name" property equals "Set One"
 		And the "featured" property equals "1"
-		And the "search" property is false
 		And the "view" property equals "map"
 		Then the guzzle status code should be 200
 
@@ -43,8 +42,8 @@ Feature: Testing the Sets API
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
 		And the response has a "name" property
-		And the "search" property is false
-		And the "filter" property is empty
+		And the response does not have a "search" property
+		And the response does not have a "filter" property
 		Then the guzzle status code should be 200
 
 	Scenario: Updating a Collection

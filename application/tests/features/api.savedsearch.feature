@@ -23,7 +23,6 @@ Feature: Testing the Sets API
 		And the response has a "name" property
 		And the "name" property equals "Search One"
 		And the "featured" property equals "1"
-		And the "search" property equals "1"
 		And the "view" property equals "map"
 		And the "filter.q" property equals "zombie"
 		Then the guzzle status code should be 200
@@ -49,7 +48,7 @@ Feature: Testing the Sets API
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
 		And the response has a "name" property
-		And the "search" property equals "1"
+		And the response does not have a "search" property
 		Then the guzzle status code should be 200
 
 	Scenario: Updating a SavedSearch
@@ -60,12 +59,10 @@ Feature: Testing the Sets API
 				"name":"Updated Search One"
 			}
 			"""
-		And that its "id" is "1"
+		And that its "id" is "4"
 		When I request "/savedsearches"
 		Then the response is JSON
-		And the response has a "id" property
-		And the type of the "id" property is "numeric"
-		And the "id" property equals "1"
+		And the "id" property equals "4"
 		And the response has a "name" property
 		And the "name" property equals "Updated Search One"
 		Then the guzzle status code should be 200
@@ -135,7 +132,7 @@ Feature: Testing the Sets API
 		And the response has a "errors" property
 		Then the guzzle status code should be 404
 
-	Scenario: Finding a collection via  SavedSearch fails
+	Scenario: Finding a collection via SavedSearch fails
 		Given that I want to find a "SavedSearch"
 		And that its "id" is "1"
 		When I request "/savedsearches"

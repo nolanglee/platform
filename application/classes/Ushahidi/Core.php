@@ -265,6 +265,13 @@ abstract class Ushahidi_Core {
 		$di->set('repository.post', $di->lazyNew('Ushahidi_Repository_Post'));
 		$di->set('repository.tag', $di->lazyNew('Ushahidi_Repository_Tag'));
 		$di->set('repository.set', $di->lazyNew('Ushahidi_Repository_Set'));
+		$di->set('repository.savedsearch', $di->lazyNew(
+			'Ushahidi_Repository_Set',
+			[],
+			[
+				'setSavedSearch' => true
+			]
+		));
 		$di->set('repository.user', $di->lazyNew('Ushahidi_Repository_User'));
 		$di->set('repository.role', $di->lazyNew('Ushahidi_Repository_Role'));
 		$di->set('repository.oauth.client', $di->lazyNew('OAuth2_Storage_Client'));
@@ -272,7 +279,6 @@ abstract class Ushahidi_Core {
 		$di->set('repository.oauth.scope', $di->lazyNew('OAuth2_Storage_Scope'));
 
 		$di->setter['Ushahidi_Repository_User']['setHasher'] = $di->lazyGet('tool.hasher.password');
-		$di->setter['Ushahidi_Repository_Set']['setSearchData'] = $di->lazyNew('Ushahidi\Core\SearchData');
 
 		// Repository parameters
 		foreach ([

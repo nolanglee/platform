@@ -90,10 +90,10 @@ $di->params['Ushahidi\Factory\AuthorizerFactory']['map'] = [
 	'posts'                => $di->lazyGet('authorizer.post'),
 	'tags'                 => $di->lazyGet('authorizer.tag'),
 	// @todo these should all have individual authorizers
-	'sets'          => $di->lazyGet('authorizer.set'),
-	'sets_posts'    => $di->lazyGet('authorizer.post'),
-	'savedsearches'       => $di->lazyGet('authorizer.savedsearch'),
-	'savedsearches_posts' => $di->lazyGet('authorizer.post'),
+	'sets'                 => $di->lazyGet('authorizer.set'),
+	'sets_posts'           => $di->lazyGet('authorizer.post'),
+	'savedsearches'        => $di->lazyGet('authorizer.savedsearch'),
+	'savedsearches_posts'  => $di->lazyGet('authorizer.post'),
 	'users'                => $di->lazyGet('authorizer.user'),
 ];
 
@@ -112,10 +112,10 @@ $di->params['Ushahidi\Factory\RepositoryFactory']['map'] = [
 	'messages'             => $di->lazyGet('repository.message'),
 	'posts'                => $di->lazyGet('repository.post'),
 	'tags'                 => $di->lazyGet('repository.tag'),
-	'sets'          => $di->lazyGet('repository.set'),
-	'sets_posts'    => $di->lazyGet('repository.post'),
-	'savedsearches_posts' => $di->lazyGet('repository.set'),
-	'savedsearches'       => $di->lazyGet('repository.set'),
+	'sets'                 => $di->lazyGet('repository.set'),
+	'sets_posts'           => $di->lazyGet('repository.post'),
+	'savedsearches'        => $di->lazyGet('repository.savedsearch'),
+	'savedsearches_posts'  => $di->lazyGet('repository.post'),
 	'users'                => $di->lazyGet('repository.user'),
 ];
 
@@ -218,16 +218,7 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['posts'] = [
 ];
 
 
-// Add custom usecases for sets
-$di->params['Ushahidi\Factory\UsecaseFactory']['map']['sets'] = [
-	'create' => $di->lazyNew('Ushahidi\Core\Usecase\Set\CreateSet'),
-	'search' => $di->lazyNew('Ushahidi\Core\Usecase\Set\SearchSet'),
-];
-$di->params['Ushahidi\Factory\UsecaseFactory']['map']['savedsearches'] = [
-	'create' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\CreateSavedSearch'),
-	'search' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearch'),
-];
-
+// Add custom usecases for savedsearches_posts
 $di->params['Ushahidi\Factory\UsecaseFactory']['map']['savedsearches_posts'] = [
 	'search' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearchPost'),
 ];
@@ -291,7 +282,6 @@ $di->set('authorizer.message', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\Messa
 $di->set('authorizer.tag', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\TagAuthorizer'));
 $di->set('authorizer.savedsearch', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
 $di->set('authorizer.set', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
-$di->set('authorizer.set_post', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\SetAuthorizer'));
 
 $di->set('authorizer.post', $di->lazyNew('Ushahidi\Core\Tool\Authorizer\PostAuthorizer'));
 $di->params['Ushahidi\Core\Tool\Authorizer\PostAuthorizer'] = [
