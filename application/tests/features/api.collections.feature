@@ -20,7 +20,7 @@ Feature: Testing the Sets API
 		And the response has a "name" property
 		And the "name" property equals "Set One"
 		And the "featured" property equals "1"
-		And the "search" property equals "0"
+		And the "search" property is false
 		And the "view" property equals "map"
 		Then the guzzle status code should be 200
 
@@ -32,7 +32,7 @@ Feature: Testing the Sets API
 				"name":"Set One",
 				"featured": 1,
 				"search": 1,
-				"filter": ["q":"test"]
+				"filter": {"q":"test"},
 				"view":"map",
 				"view_options":[],
 				"visible_to":[]
@@ -43,8 +43,8 @@ Feature: Testing the Sets API
 		And the response has a "id" property
 		And the type of the "id" property is "numeric"
 		And the response has a "name" property
-		And the "search" property equals "0"
-		And the "filter" property equals ""
+		And the "search" property is false
+		And the "filter" property is empty
 		Then the guzzle status code should be 200
 
 	Scenario: Updating a Collection
@@ -193,61 +193,135 @@ Feature: Testing the Sets API
 
 	@resetFixture
 	Scenario: Get collection posts
-		Given that I want to get all "SavedSearches"
+		Given that I want to get all "Posts"
 		When I request "/collections/1/posts"
 		Then the response is JSON
 		And the "count" property equals "3"
 		Then the guzzle status code should be 200
 
+	Scenario: Get non-existent collection posts should 404
+		Given that I want to get all "Posts"
+		When I request "/collections/22/posts"
+		Then the response is JSON
+		Then the guzzle status code should be 404
+
+	@resetFixture
+	Scenario: Add a post to a collection
+		Given that I want to make a new "Post"
+		And that the request "data" is:
+			"""
+			{
+				"id":97
+			}
+			"""
+		When I request "/collections/1/posts/"
+		Then the response is JSON
+		And the response has a "id" property
+		And the type of the "id" property is "numeric"
+		And the "id" property equals "97"
+		Then the guzzle status code should be 200
+
+	@resetFixture
+	Scenario: Remove a post from a collection
+		Given that I want to delete a "Post"
+		And that its "id" is "1"
+		When I request "/collections/1/posts"
+		Then the response is JSON
+		And the response has a "id" property
+		And the type of the "id" property is "numeric"
+		Then the guzzle status code should be 200
+
+	Scenario: Add nonexistent post to collection fails
+		Given that I want to make a new "Post"
+		And that the request "data" is:
+			"""
+			{
+				"id":75
+			}
+			"""
+		When I request "/collections/1/posts/"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 400
+
 # ACL Tests
-    Scenario: Admin can add a post to a collection
-        Given that I want to make a new "Post"
-        And that the request "Authorization" header is "Bearer testadminuser"
-        And that the request "data" is:
-            """
-            {
-                "id":1
-            }
-            """
-        When I request "/collections/1/posts/"
-        Then the response is JSON
-        And the response has a "id" property
-        And the type of the "id" property is "numeric"
-        And the "id" property equals "1"
-        Then the guzzle status code should be 200
+	Scenario: Adding a post we cannot access to a collection fails
+		Given that I want to make a new "Post"
+		And that the request "Authorization" header is "Bearer testbasicuser2"
+		And that the request "data" is:
+			"""
+			{
+				"id":111
+			}
+			"""
+		When I request "/collections/1/posts/"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 403
 
-    @resetFixture
-    Scenario: User can view public and own private posts in a collection
-        Given that I want to get all "Posts"
-        And that the request "Authorization" header is "Bearer testbasicuser"
-        And that the request "query string" is "status=all"
-        When I request "/collections/1/posts"
-        Then the guzzle status code should be 200
-        And the response is JSON
-        And the response has a "count" property
-        And the type of the "count" property is "numeric"
-        And the "count" property equals "4"
+	Scenario: Adding a post to a collection we cannot access fails
+		Given that I want to make a new "Post"
+		And that the request "Authorization" header is "Bearer testbasicuser2"
+		And that the request "data" is:
+			"""
+			{
+				"id":97
+			}
+			"""
+		When I request "/collections/3/posts/"
+		Then the response is JSON
+		And the response has a "errors" property
+		Then the guzzle status code should be 403
 
-    @resetFixture
-    Scenario: All users can view public posts in a collection
-        Given that I want to get all "Posts"
-        And that the request "Authorization" header is "Bearer testbasicuser2"
-        And that the request "query string" is "status=all"
-        When I request "/collections/1/posts"
-        Then the guzzle status code should be 200
-        And the response is JSON
-        And the response has a "count" property
-        And the type of the "count" property is "numeric"
-        And the "count" property equals "2"
+	@resetFixture
+	Scenario: Admin can add a post to a collection
+		Given that I want to make a new "Post"
+		And that the request "Authorization" header is "Bearer testadminuser"
+		And that the request "data" is:
+			"""
+			{
+				"id":97
+			}
+			"""
+		When I request "/collections/1/posts/"
+		Then the response is JSON
+		And the response has a "id" property
+		And the type of the "id" property is "numeric"
+		And the "id" property equals "97"
+		Then the guzzle status code should be 200
 
-    @resetFixture
-    Scenario: Admin user all posts in a collection
-        Given that I want to get all "Posts"
-        And that the request "Authorization" header is "Bearer testadminuser"
-        And that the request "query string" is "status=all"
-        When I request "/collections/1/posts"
-        Then the guzzle status code should be 200
-        And the response is JSON
-        And the response has a "count" property
-        And the type of the "count" property is "numeric"
-        And the "count" property equals "6"
+	@resetFixture
+	Scenario: User can view public and own private posts in a collection
+		Given that I want to get all "Posts"
+		And that the request "Authorization" header is "Bearer testbasicuser"
+		And that the request "query string" is "status=all"
+		When I request "/collections/1/posts"
+		Then the guzzle status code should be 200
+		And the response is JSON
+		And the response has a "count" property
+		And the type of the "count" property is "numeric"
+		And the "count" property equals "4"
+
+	@resetFixture
+	Scenario: All users can view public posts in a collection
+		Given that I want to get all "Posts"
+		And that the request "Authorization" header is "Bearer testbasicuser2"
+		And that the request "query string" is "status=all"
+		When I request "/collections/1/posts"
+		Then the guzzle status code should be 200
+		And the response is JSON
+		And the response has a "count" property
+		And the type of the "count" property is "numeric"
+		And the "count" property equals "2"
+
+	@resetFixture
+	Scenario: Admin user can view all posts in a collection
+		Given that I want to get all "Posts"
+		And that the request "Authorization" header is "Bearer testadminuser"
+		And that the request "query string" is "status=all"
+		When I request "/collections/1/posts"
+		Then the guzzle status code should be 200
+		And the response is JSON
+		And the response has a "count" property
+		And the type of the "count" property is "numeric"
+		And the "count" property equals "6"
