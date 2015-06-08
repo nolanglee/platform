@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Get Collection for Collection/Post Usecase
+ * Ushahidi Platform Get Set for Set/Post Usecase
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -9,7 +9,7 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Collection;
+namespace Ushahidi\Core\Usecase\Set;
 
 use Ushahidi\Core\Data;
 use Ushahidi\Core\Entity;
@@ -18,14 +18,14 @@ use Ushahidi\Core\Traits\VerifyEntityLoaded;
 
 use Ushahidi\Core\Exception\NotFoundException;
 
-trait GetCollection
+trait GetSet
 {
 	/**
 	 * Find entity based on identifying parameters.
 	 *
 	 * @return Entity
 	 */
-	protected function getCollectionEntity()
+	protected function getSetEntity()
 	{
 		// Entity will be loaded using the provided id
 		$id = $this->getRequiredIdentifier('set_id');

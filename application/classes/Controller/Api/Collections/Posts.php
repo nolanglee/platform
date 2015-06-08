@@ -19,7 +19,7 @@ class Controller_API_Collections_Posts extends Ushahidi_Rest {
 
 	protected function _resource()
 	{
-		return 'collections_posts';
+		return 'sets_posts';
 	}
 
 	public function action_get_index_collection()

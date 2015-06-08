@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Read post in Collection Use Case
+ * Read post in Set Use Case
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -9,14 +9,14 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Collection;
+namespace Ushahidi\Core\Usecase\Set;
 
 use Ushahidi\Core\Usecase\Post\ReadPost;
 
-class ReadCollectionPost extends ReadPost
+class ReadSetPost extends ReadPost
 {
 	use SetRepositoryTrait,
-		VerifyCollectionExists;
+		VerifySetExists;
 
 	protected function getEntity()
 	{

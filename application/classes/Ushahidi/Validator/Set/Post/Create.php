@@ -12,7 +12,7 @@
 use Ushahidi\Core\Tool\Validator;
 use Ushahidi\Core\Entity\PostRepository;
 
-class Ushahidi_Validator_Collection_Post_Create extends Validator
+class Ushahidi_Validator_Set_Post_Create extends Validator
 {
 	protected $post_repo;
 	protected $default_error_source = 'set';

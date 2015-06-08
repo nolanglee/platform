@@ -13,7 +13,7 @@ use Ushahidi\Core\Tool\Validator;
 use Ushahidi\Core\Entity\UserRepository;
 use Ushahidi\Core\Entity\RoleRepository;
 
-class Ushahidi_Validator_Collection_Create extends Validator
+class Ushahidi_Validator_Set_Create extends Validator
 {
 	protected $user_repo;
 	protected $role_repo;

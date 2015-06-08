@@ -1,10 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
- * Ushahidi API Formatter for Collections (aka Sets)
- *
- * Not to be confused with CollectionFormatter
- * (collections of resources)
+ * Ushahidi API Formatter for Sets
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Application
@@ -15,7 +12,7 @@
 use Ushahidi\Core\Traits\FormatterAuthorizerMetadata;
 use Ushahidi\Core\SearchData;
 
-class Ushahidi_Formatter_PostCollection extends Ushahidi_Formatter_API
+class Ushahidi_Formatter_Set extends Ushahidi_Formatter_API
 {
 	use FormatterAuthorizerMetadata;
 }

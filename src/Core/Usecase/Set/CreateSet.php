@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Create Collection Usecase
+ * Create Set Usecase
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -9,12 +9,12 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Collection;
+namespace Ushahidi\Core\Usecase\Set;
 
 use Ushahidi\Core\Entity;
 use Ushahidi\Core\Usecase\CreateUsecase;
 
-class CreateCollection extends CreateUsecase
+class CreateSet extends CreateUsecase
 {
 	protected function getEntity()
 	{
@@ -31,7 +31,7 @@ class CreateCollection extends CreateUsecase
 		}
 
 		// Force search to be false, and filter to be empty
-		// Collections and Saved Searches share the Set entity
+		// Sets and Saved Searches share the Set entity
 		// and this is what separates them
 		// @todo split Entity classes too
 		$payload['search'] = 0;

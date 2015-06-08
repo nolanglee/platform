@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Add post to Collection Usecase
+ * Add post to Set Usecase
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -9,7 +9,7 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Collection;
+namespace Ushahidi\Core\Usecase\Set;
 
 use Ushahidi\Core\Entity;
 use Ushahidi\Core\Entity\SetRepository;
@@ -17,22 +17,22 @@ use Ushahidi\Core\Traits\IdentifyRecords;
 use Ushahidi\Core\Traits\VerifyEntityLoaded;
 use Ushahidi\Core\Usecase\CreateUsecase;
 
-class CreateCollectionPost extends CreateUsecase
+class CreateSetPost extends CreateUsecase
 {
 	use IdentifyRecords,
 		VerifyEntityLoaded,
 		SetRepositoryTrait,
-		GetCollection,
-		AuthorizeCollection;
+		GetSet,
+		AuthorizeSet;
 
 	// Usecase
 	public function interact()
 	{
-		// First fetch the collection entity
-		$collection = $this->getCollectionEntity();
+		// First fetch the set entity
+		$set = $this->getSetEntity();
 
-		// ... and verify the collection can be edited by the current user
-		$this->verifyCollectionUpdateAuth($collection);
+		// ... and verify the set can be edited by the current user
+		$this->verifySetUpdateAuth($set);
 
 		// ... then verify we have a valid payload
 		// @todo this is a bit of a hack to check we have an 'id' in the payload
@@ -44,8 +44,8 @@ class CreateCollectionPost extends CreateUsecase
 		// ... verify that the post is visible to the current user
 		$this->verifyReadAuth($post);
 
-		// .. add the post to the collection
-		$id = $this->setRepo->addPostToSet($collection->id, $post->id);
+		// .. add the post to the set
+		$id = $this->setRepo->addPostToSet($set->id, $post->id);
 
 		// ... and return the formatted post
 		return $this->formatter->__invoke($post);

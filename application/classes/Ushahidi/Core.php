@@ -149,12 +149,12 @@ abstract class Ushahidi_Core {
 			'create' => $di->lazyNew('Ushahidi_Validator_SavedSearch_Create'),
 			'update' => $di->lazyNew('Ushahidi_Validator_SavedSearch_Update'),
 		];
-		$di->params['Ushahidi\Factory\ValidatorFactory']['map']['collections'] = [
-			'create' => $di->lazyNew('Ushahidi_Validator_Collection_Create'),
-			'update' => $di->lazyNew('Ushahidi_Validator_Collection_Create'),
+		$di->params['Ushahidi\Factory\ValidatorFactory']['map']['sets'] = [
+			'create' => $di->lazyNew('Ushahidi_Validator_Set_Create'),
+			'update' => $di->lazyNew('Ushahidi_Validator_Set_Create'),
 		];
-		$di->params['Ushahidi\Factory\ValidatorFactory']['map']['collections_posts'] = [
-			'create' => $di->lazyNew('Ushahidi_Validator_Collection_Post_Create'),
+		$di->params['Ushahidi\Factory\ValidatorFactory']['map']['sets_posts'] = [
+			'create' => $di->lazyNew('Ushahidi_Validator_Set_Post_Create'),
 		];
 
 
@@ -183,9 +183,9 @@ abstract class Ushahidi_Core {
 			'messages'             => $di->lazyNew('Ushahidi_Formatter_Message'),
 			'posts'                => $di->lazyNew('Ushahidi_Formatter_Post'),
 			'tags'                 => $di->lazyNew('Ushahidi_Formatter_Tag'),
-			'saved_searches'       => $di->lazyNew('Ushahidi_Formatter_PostCollection'),
-			'collections'          => $di->lazyNew('Ushahidi_Formatter_PostCollection'),
-			'collections_posts'    => $di->lazyNew('Ushahidi_Formatter_Post'),
+			'saved_searches'       => $di->lazyNew('Ushahidi_Formatter_Set'),
+			'sets'                 => $di->lazyNew('Ushahidi_Formatter_Set'),
+			'sets_posts'           => $di->lazyNew('Ushahidi_Formatter_Post'),
 			'saved_searches_posts' => $di->lazyNew('Ushahidi_Formatter_Post'),
 			'users'                => $di->lazyNew('Ushahidi_Formatter_User'),
 		];
@@ -204,16 +204,16 @@ abstract class Ushahidi_Core {
 			'tag',
 			'user',
 			'saved_search',
-			'collection_post',
+			'set_post',
 		] as $name)
 		{
 			$di->setter['Ushahidi_Formatter_' . Text::ucfirst($name, '_')]['setAuth'] =
 				$di->lazyGet("authorizer.$name");
 		}
 
-		$di->setter['Ushahidi_Formatter_PostCollection']['setAuth'] = $di->lazyGet("authorizer.collection");
+		$di->setter['Ushahidi_Formatter_Set']['setAuth'] = $di->lazyGet("authorizer.set");
 
-		// Collection Formatter factory
+		// Set Formatter factory
 		$di->params['Ushahidi\Factory\FormatterFactory']['factory'] = $di->newFactory('Ushahidi_Formatter_Collection');
 
 		// Helpers, tools, etc
@@ -380,7 +380,7 @@ abstract class Ushahidi_Core {
 			'repo' => $di->lazyGet('repository.message'),
 		];
 
-		$di->params['Ushahidi_Validator_Collection_Create'] = [
+		$di->params['Ushahidi_Validator_Set_Create'] = [
 			'repo' => $di->lazyGet('repository.user'),
 			'role_repo' => $di->lazyGet('repository.role'),
 		];
@@ -393,7 +393,7 @@ abstract class Ushahidi_Core {
 			'role_repo' => $di->lazyGet('repository.role'),
 		];
 
-		$di->params['Ushahidi_Validator_Collection_Post_Create'] = [
+		$di->params['Ushahidi_Validator_Set_Post_Create'] = [
 			'post_repo' => $di->lazyGet('repository.post')
 		];
 

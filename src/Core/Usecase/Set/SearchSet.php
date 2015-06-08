@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Search Posts in Collection Use Case
+ * Ushahidi Platform Set Search Use Case
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -9,36 +9,36 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Collection;
+namespace Ushahidi\Core\Usecase\Set;
 
-use Ushahidi\Core\Usecase\Post\SearchPost;
+use Ushahidi\Core\Usecase\SearchUsecase;
+use Ushahidi_Repository;
 
-class SearchCollectionPost extends SearchPost
+class SearchSet extends SearchUsecase
 {
-	use SetRepositoryTrait,
-		VerifyCollectionExists;
-
 	/**
 	 * Get filter parameters as search data.
 	 *
-	 * Override to filter posts to just this collection
+	 * Override this to ensure we always search by
+	 * for sets with search=false.
 	 *
 	 * @return SearchData
 	 */
 	protected function getSearch()
 	{
-		$set_id = $this->getIdentifier('set_id');
 		$fields = $this->repo->getSearchFields();
 		$paging = $this->getPagingFields();
 
 		$filters = $this->getFilters(array_merge($fields, array_keys($paging)));
 
-		// Include set_id identifier in filters to ensure
-		// we only get posts from in this collection
-		$this->search->setFilters(array_merge($paging, $filters, ['set' => $set_id]));
+		// Force search=false as a filter. This ensures we always
+		// get sets, not saved searches.
+		// @todo just add this and then call parent?
+		$filters['search'] = false;
+
+		$this->search->setFilters(array_merge($paging, $filters));
 		$this->search->setSortingKeys(array_keys($paging));
 
 		return $this->search;
 	}
-
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Get Collection for Collection/Post Usecase
+ * Ushahidi Platform Get Set for Set/Post Usecase
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -9,7 +9,7 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Collection;
+namespace Ushahidi\Core\Usecase\Set;
 
 use Ushahidi\Core\Data;
 use Ushahidi\Core\Entity;
@@ -17,7 +17,7 @@ use Ushahidi\Core\Tool\Authorizer;
 
 use Ushahidi\Core\Exception\AuthorizerException;
 
-trait AuthorizeCollection
+trait AuthorizeSet
 {
 	/**
 	 * @var Authorizer
@@ -42,7 +42,7 @@ trait AuthorizeCollection
 	 * @return void
 	 * @throws AuthorizerException
 	 */
-	protected function verifyCollectionAuth(Entity $entity, $privilege)
+	protected function verifySetAuth(Entity $entity, $privilege)
 	{
 		if (!$this->setAuth->isAllowed($entity, $privilege)) {
 			throw new AuthorizerException(sprintf(
@@ -63,9 +63,9 @@ trait AuthorizeCollection
 	 * @return void
 	 * @throws AuthorizerException
 	 */
-	protected function verifyCollectionUpdateAuth(Entity $entity)
+	protected function verifySetUpdateAuth(Entity $entity)
 	{
-		$this->verifyCollectionAuth($entity, 'update');
+		$this->verifySetAuth($entity, 'update');
 	}
 
 }

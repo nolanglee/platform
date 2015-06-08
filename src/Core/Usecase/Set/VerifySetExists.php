@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Ushahidi Platform Verify Collection Exists for Usecase
+ * Ushahidi Platform Verify Set Exists for Usecase
  *
  * @author     Ushahidi Team <team@ushahidi.com>
  * @package    Ushahidi\Platform
@@ -9,29 +9,29 @@
  * @license    https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License Version 3 (AGPL3)
  */
 
-namespace Ushahidi\Core\Usecase\Collection;
+namespace Ushahidi\Core\Usecase\Set;
 
 use Ushahidi\Core\Entity;
 
-trait verifyCollectionExists
+trait verifySetExists
 {
 
 	/**
-	 * Checks that the collection exists.
+	 * Checks that the set exists.
 	 * @param  Data $input
 	 * @return void
 	 */
-	protected function verifyCollectionExists()
+	protected function verifySetExists()
 	{
-		// Ensure that the collection exists.
-		$collection = $this->getSetRepository()->get($this->getRequiredIdentifier('set_id'));
-		$this->verifyEntityLoaded($collection, $this->identifiers);
+		// Ensure that the set exists.
+		$set = $this->getSetRepository()->get($this->getRequiredIdentifier('set_id'));
+		$this->verifyEntityLoaded($set, $this->identifiers);
 	}
 
 	// Usecase
 	public function interact()
 	{
-		$this->verifyCollectionExists();
+		$this->verifySetExists();
 		return parent::interact();
 	}
 
