@@ -171,7 +171,7 @@ Route::set('savedsearches-api', 'api/v2/savedsearches(/<id>)',
 	->defaults(array(
 		'action'     => 'index',
 		'directory'  => 'Api',
-		'controller' => 'DataProviders',
+		'controller' => 'SavedSearches',
 	));
 
 /**
