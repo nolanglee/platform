@@ -22,7 +22,7 @@ class Ushahidi_Validator_Collection_Post_Create extends Validator
 	protected function getRules()
 	{
 		return [
-			'post_id' => [
+			'id' => [
 				['not_empty'],
 				['digit'],
 			],

@@ -39,10 +39,8 @@ class Controller_API_Collections_Posts extends Ushahidi_Rest {
 	{
 		parent::action_post_index_collection();
 
-		// Merge IDs and payload so that set id appears
-		// in the payload.
-		// @todo use setIdentifiers and handle this properly in the usecase
 		$this->_usecase
-			->setPayload(array_merge($this->_payload(), $this->_identifiers()));
+			// Send through parent collection id
+			->setIdentifiers($this->_identifiers());
 	}
 }

@@ -180,8 +180,13 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository implements SetReposito
 
 	public function addPostToSet($set_id, $post_id)
 	{
+		// Ensure post_id is an int
+		// @todo this probably should have happened elsewhere
+		$post_id = (int)$post_id;
+		$set_id = (int)$set_id;
+
 		list($id, $rows) = DB::insert('posts_sets')
-			->columns(array_keys(compact('post_id', 'set_id')))
+			->columns(['post_id', 'set_id'])
 			->values(array_values(compact('post_id', 'set_id')))
 			->execute($this->db);
 

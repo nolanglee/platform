@@ -13,10 +13,15 @@ namespace Ushahidi\Core\Usecase\Collection;
 
 use Ushahidi\Core\Entity;
 use Ushahidi\Core\Entity\SetRepository;
+use Ushahidi\Core\Traits\IdentifyRecords;
+use Ushahidi\Core\Traits\VerifyEntityLoaded;
 use Ushahidi\Core\Usecase\CreateUsecase;
 
 class CreateCollectionPost extends CreateUsecase
 {
+	use IdentifyRecords,
+		VerifyEntityLoaded;
+
 	protected $set_repo;
 
 	public function setSetRepository(SetRepository $set_repo)
@@ -41,10 +46,12 @@ class CreateCollectionPost extends CreateUsecase
 		$this->verifyValidPayload($payload);
 
 		// ... add post to set
-		$id = $this->set_repo->addPostToSet($payload['set_id'], $payload['post_id']);
+		$set_id = $this->getRequiredIdentifier('set_id');
+		$post_id = $payload['id'];
+		$id = $this->set_repo->addPostToSet($set_id, $post_id);
 
 		// ... get the newly created entity
-		$entity = $this->getCreatedEntity($payload['post_id']);
+		$entity = $this->getCreatedEntity($post_id);
 
 		// ... verify that the entity can be read by the current user
 		$this->verifyReadAuth($entity);
