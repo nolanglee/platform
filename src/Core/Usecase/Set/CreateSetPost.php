@@ -78,5 +78,4 @@ class CreateSetPost extends CreateUsecase
 			$this->validatorError($this->repo->getEntity());
 		}
 	}
-
 }

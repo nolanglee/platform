@@ -42,5 +42,4 @@ class DeleteSetPost extends DeleteUsecase
 		// ... and return the formatted entity
 		return $this->formatter->__invoke($post);
 	}
-
 }

@@ -40,5 +40,4 @@ class SearchSetPost extends SearchPost
 
 		return $this->search;
 	}
-
 }

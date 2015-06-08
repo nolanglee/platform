@@ -48,5 +48,4 @@ trait GetSet
 
 	// SetRepositoryTrait
 	abstract public function getSetRepository();
-
 }

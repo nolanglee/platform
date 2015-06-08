@@ -67,5 +67,4 @@ trait AuthorizeSet
 	{
 		$this->verifySetAuth($entity, 'update');
 	}
-
 }

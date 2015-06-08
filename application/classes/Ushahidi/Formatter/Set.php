@@ -10,7 +10,6 @@
  */
 
 use Ushahidi\Core\Traits\FormatterAuthorizerMetadata;
-use Ushahidi\Core\SearchData;
 
 class Ushahidi_Formatter_Set extends Ushahidi_Formatter_API
 {
