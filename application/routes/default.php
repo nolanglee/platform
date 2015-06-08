@@ -33,17 +33,6 @@ Route::set('collections-posts', 'api/v2/collections/<set_id>/posts(/<id>)',
 		'directory'  => 'Api/Collections'
 	));
 
-Route::set('saved-search-posts', 'api/v2/savedsearches/<set_id>/posts(/<id>)',
-	array(
-		'set_id' => '\d+',
-		'id' => '\d+'
-	))
-	->defaults(array(
-		'action'     => 'index',
-		'controller' => 'Posts',
-		'directory'  => 'Api/SavedSearches'
-	));
-
 /**
  * Forms API SubRoute
  */

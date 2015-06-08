@@ -89,11 +89,9 @@ $di->params['Ushahidi\Factory\AuthorizerFactory']['map'] = [
 	'messages'             => $di->lazyGet('authorizer.message'),
 	'posts'                => $di->lazyGet('authorizer.post'),
 	'tags'                 => $di->lazyGet('authorizer.tag'),
-	// @todo these should all have individual authorizers
 	'sets'                 => $di->lazyGet('authorizer.set'),
 	'sets_posts'           => $di->lazyGet('authorizer.post'),
 	'savedsearches'        => $di->lazyGet('authorizer.savedsearch'),
-	'savedsearches_posts'  => $di->lazyGet('authorizer.post'),
 	'users'                => $di->lazyGet('authorizer.user'),
 ];
 
@@ -115,7 +113,6 @@ $di->params['Ushahidi\Factory\RepositoryFactory']['map'] = [
 	'sets'                 => $di->lazyGet('repository.set'),
 	'sets_posts'           => $di->lazyGet('repository.post'),
 	'savedsearches'        => $di->lazyGet('repository.savedsearch'),
-	'savedsearches_posts'  => $di->lazyGet('repository.post'),
 	'users'                => $di->lazyGet('repository.user'),
 ];
 
@@ -217,12 +214,6 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['posts'] = [
 	'stats'   => $di->lazyNew('Ushahidi\Core\Usecase\Post\StatsPost')
 ];
 
-
-// Add custom usecases for savedsearches_posts
-$di->params['Ushahidi\Factory\UsecaseFactory']['map']['savedsearches_posts'] = [
-	'search' => $di->lazyNew('Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearchPost'),
-];
-
 // Add custom usecases for sets_posts
 $di->params['Ushahidi\Factory\UsecaseFactory']['map']['sets_posts'] = [
 	'search' => $di->lazyNew('Ushahidi\Core\Usecase\Set\SearchSetPost'),
@@ -231,12 +222,9 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['sets_posts'] = [
 	'read'   => $di->lazyNew('Ushahidi\Core\Usecase\Set\ReadSetPost'),
 ];
 
-// Injecting to traits FTW :)
+// Set up traits for SetsPosts Usecases
 $di->setter['Ushahidi\Core\Usecase\Set\SetRepositoryTrait']['setSetRepository'] = $di->lazyGet('repository.set');
 $di->setter['Ushahidi\Core\Usecase\Set\AuthorizeSet']['setSetAuthorizer'] = $di->lazyGet('authorizer.set');
-
-// wtf
-$di->setter['Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearchPost']['setPostRepository'] = $di->lazyGet('repository.post');
 
 // User login is a custom read the uses authentication.
 $di->params['Ushahidi\Factory\UsecaseFactory']['map']['users'] = [
