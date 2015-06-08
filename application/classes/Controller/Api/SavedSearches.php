@@ -13,8 +13,7 @@ class Controller_Api_SavedSearches extends Ushahidi_Rest {
 
 	protected function _scope()
 	{
-		// @rename scope
-		return 'sets';
+		return 'savedsearches';
 	}
 
 	protected function _resource()
