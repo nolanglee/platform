@@ -173,6 +173,7 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository implements SetReposito
 		}
 	}
 
+	// SetRepository
 	public function deleteSetPost($set_id, $post_id)
 	{
 		if ($this->savedSearch) {
@@ -183,10 +184,9 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository implements SetReposito
 			->where('post_id', '=', $post_id)
 			->where('set_id', '=', $set_id)
 			->execute($this->db);
-
-		return $post_id;
 	}
 
+	// SetRepository
 	public function setPostExists($set_id, $post_id)
 	{
 		if ($this->savedSearch) {
@@ -203,6 +203,7 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository implements SetReposito
 		return (bool) count($result);
 	}
 
+	// SetRepository
 	public function addPostToSet($set_id, $post_id)
 	{
 		if ($this->savedSearch) {
@@ -214,12 +215,10 @@ class Ushahidi_Repository_Set extends Ushahidi_Repository implements SetReposito
 		$post_id = (int)$post_id;
 		$set_id = (int)$set_id;
 
-		list($id, $rows) = DB::insert('posts_sets')
+		DB::insert('posts_sets')
 			->columns(['post_id', 'set_id'])
 			->values(array_values(compact('post_id', 'set_id')))
 			->execute($this->db);
-
-		return $id;
 	}
 
 }

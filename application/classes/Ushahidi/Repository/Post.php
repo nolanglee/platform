@@ -21,6 +21,7 @@ use Ushahidi\Core\SearchData;
 use Ushahidi\Core\Usecase\Post\StatsPostRepository;
 use Ushahidi\Core\Usecase\Post\UpdatePostRepository;
 use Ushahidi\Core\Usecase\Post\UpdatePostTagRepository;
+use Ushahidi\Core\Usecase\Set\SetPostRepository;
 use Ushahidi\Core\Tool\JsonTranscode;
 use Ushahidi\Core\Traits\UserContext;
 
@@ -28,7 +29,8 @@ use Aura\DI\InstanceFactory;
 
 class Ushahidi_Repository_Post extends Ushahidi_Repository implements
 	PostRepository,
-	UpdatePostRepository
+	UpdatePostRepository,
+	SetPostRepository
 {
 	use UserContext;
 
@@ -809,14 +811,11 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements
 		$insert->execute($this->db);
 	}
 
-
+	// SetPostRepository
 	public function getPostInSet($post_id, $set_id)
 	{
-		$result =
-		$this->selectQuery(['posts.id' => $post_id])
-			->select(
-				'posts.*'
-			)
+		$result = $this->selectQuery(['posts.id' => $post_id])
+			->select('posts.*')
 			->join('posts_sets', 'INNER')->on('posts.id', '=', 'posts_sets.post_id')
 			->where('posts_sets.set_id', '=', $set_id)
 			->limit(1)
