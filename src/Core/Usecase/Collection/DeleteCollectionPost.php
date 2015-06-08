@@ -20,51 +20,27 @@ use Ushahidi\Core\Entity\SetRepository;
 
 class DeleteCollectionPost extends DeleteUsecase
 {
-	protected $set_repo;
-
-	public function setSetRepository(SetRepository $set_repo)
-	{
-		$this->set_repo = $set_repo;
-		return $this;
-	}
+	use SetRepositoryTrait,
+		GetCollection,
+		AuthorizeCollection;
 
 	// Usecase
 	public function interact()
 	{
-		// Fetch the entity, using provided identifiers...
-		$entity = $this->getEntity();
+		// Fetch the post, using provided identifiers...
+		$post = $this->getEntity();
 
-		// ... verify that the entity can be deleted by the current user
-		$this->verifyDeleteAuth($entity);
+		// ... fetch the collection entity
+		$collection = $this->getCollectionEntity();
 
-		$post_id = $this->getIdentifier('id');
-		$set_id  = $this->getIdentifier('set_id');
+		// ... and that the collection can be edited by the current user
+		$this->verifyCollectionUpdateAuth($collection);
 
-		// ... persist the delete
-		$this->set_repo->deleteSetPost($set_id, $post_id);
+		// ... remove the post from the set
+		$this->setRepo->deleteSetPost($collection->id, $post->id);
 
 		// ... and return the formatted entity
-		return $this->formatter->__invoke($entity);
-	}
-
-	/**
-	 * Find entity based on identifying parameters.
-	 *
-	 * @return Entity
-	 */
-	protected function getEntity()
-	{
-		// Entity will be loaded using the provided id
-		$id = $this->getRequiredIdentifier('id');
-
-		// ... attempt to load the entity
-		$entity = $this->repo->get($id);
-
-		// ... and verify that the entity was actually loaded
-		$this->verifyEntityLoaded($entity, compact('id'));
-
-		// ... then return it
-		return $entity;
+		return $this->formatter->__invoke($post);
 	}
 
 }

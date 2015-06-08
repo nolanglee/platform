@@ -10,14 +10,17 @@
  */
 
 use Ushahidi\Core\Tool\Validator;
-use Ushahidi\Core\Entity\UserRepository;
-use Ushahidi\Core\Entity\RoleRepository;
+use Ushahidi\Core\Entity\PostRepository;
 
 class Ushahidi_Validator_Collection_Post_Create extends Validator
 {
-	protected $user_repo;
-	protected $role_repo;
+	protected $post_repo;
 	protected $default_error_source = 'set';
+
+	public function __construct(PostRepository $post_repo)
+	{
+		$this->post_repo = $post_repo;
+	}
 
 	protected function getRules()
 	{
@@ -25,6 +28,7 @@ class Ushahidi_Validator_Collection_Post_Create extends Validator
 			'id' => [
 				['not_empty'],
 				['digit'],
+				[[$this->post_repo, 'exists'], [':value']],
 			],
 		];
 	}

@@ -20,50 +20,62 @@ use Ushahidi\Core\Usecase\CreateUsecase;
 class CreateCollectionPost extends CreateUsecase
 {
 	use IdentifyRecords,
-		VerifyEntityLoaded;
-
-	protected $set_repo;
-
-	public function setSetRepository(SetRepository $set_repo)
-	{
-		$this->set_repo = $set_repo;
-		return $this;
-	}
+		VerifyEntityLoaded,
+		SetRepositoryTrait,
+		GetCollection,
+		AuthorizeCollection;
 
 	// Usecase
 	public function interact()
 	{
-		// Get payload input
-		$payload = $this->payload;
+		// First fetch the collection entity
+		$collection = $this->getCollectionEntity();
 
-		// Fetch and hydrate the entity...
-		$entity = $this->getEntity();
+		// ... and verify the collection can be edited by the current user
+		$this->verifyCollectionUpdateAuth($collection);
 
-		// ... verify that the entity can be created by the current user
-		$this->verifyCreateAuth($entity);
+		// ... then verify we have a valid payload
+		// @todo this is a bit of a hack to check we have an 'id' in the payload
+		$this->verifyValidPayload($this->payload);
 
-		// ... verify that the entity is in a valid state
-		$this->verifyValidPayload($payload);
+		// .. and fetchthe post...
+		$post = $this->getEntity();
 
-		// ... add post to set
-		$set_id = $this->getRequiredIdentifier('set_id');
-		$post_id = $payload['id'];
-		$id = $this->set_repo->addPostToSet($set_id, $post_id);
+		// ... verify that the post is visible to the current user
+		$this->verifyReadAuth($post);
 
-		// ... get the newly created entity
-		$entity = $this->getCreatedEntity($post_id);
+		// .. add the post to the collection
+		$id = $this->setRepo->addPostToSet($collection->id, $post->id);
 
-		// ... verify that the entity can be read by the current user
-		$this->verifyReadAuth($entity);
-
-		// ... and return the formatted entity
-		return $this->formatter->__invoke($entity);
+		// ... and return the formatted post
+		return $this->formatter->__invoke($post);
 	}
 
-	protected function verifyValidPayload(array $payload)
+	/**
+	 * Find entity based on identifying parameters.
+	 *
+	 * @return Entity
+	 */
+	protected function getEntity()
+	{
+		// Entity will be loaded using the provided id
+		$id = $this->payload['id'];
+
+		// ... attempt to load the entity
+		$entity = $this->repo->get($id);
+
+		// ... and verify that the entity was actually loaded
+		$this->verifyEntityLoaded($entity, compact('id'));
+
+		// ... then return it
+		return $entity;
+	}
+
+	// @todo original verifyValid method only takes an Entity so renamed
+	protected function verifyValidPayload($payload)
 	{
 		if (!$this->validator->check($payload)) {
-			$this->validatorError($this->getEntity());
+			$this->validatorError($this->repo->getEntity());
 		}
 	}
 

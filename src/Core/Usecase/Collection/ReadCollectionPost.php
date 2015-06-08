@@ -12,10 +12,12 @@
 namespace Ushahidi\Core\Usecase\Collection;
 
 use Ushahidi\Core\Usecase\Post\ReadPost;
-use Ushahidi_Repository;
 
 class ReadCollectionPost extends ReadPost
 {
+	use SetRepositoryTrait,
+		VerifyCollectionExists;
+
 	protected function getEntity()
 	{
 		$this->verifyPostRepo($this->repo);

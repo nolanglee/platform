@@ -393,6 +393,10 @@ abstract class Ushahidi_Core {
 			'role_repo' => $di->lazyGet('repository.role'),
 		];
 
+		$di->params['Ushahidi_Validator_Collection_Post_Create'] = [
+			'post_repo' => $di->lazyGet('repository.post')
+		];
+
 
 		$di->set('validator.post.datetime', $di->lazyNew('Ushahidi_Validator_Post_Datetime'));
 		$di->set('validator.post.decimal', $di->lazyNew('Ushahidi_Validator_Post_Decimal'));

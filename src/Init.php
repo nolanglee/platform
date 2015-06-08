@@ -91,9 +91,9 @@ $di->params['Ushahidi\Factory\AuthorizerFactory']['map'] = [
 	'tags'                 => $di->lazyGet('authorizer.tag'),
 	// @todo these should all have individual authorizers
 	'collections'          => $di->lazyGet('authorizer.collection'),
-	'collections_posts'    => $di->lazyGet('authorizer.collection'),
-	'saved_searches_posts' => $di->lazyGet('authorizer.collection'),
-	'saved_searches'       => $di->lazyGet('authorizer.collection'),
+	'collections_posts'    => $di->lazyGet('authorizer.post'),
+	'saved_searches'       => $di->lazyGet('authorizer.savedsearch'),
+	'saved_searches_posts' => $di->lazyGet('authorizer.post'),
 	'users'                => $di->lazyGet('authorizer.user'),
 ];
 
@@ -240,8 +240,11 @@ $di->params['Ushahidi\Factory\UsecaseFactory']['map']['collections_posts'] = [
 	'read'   => $di->lazyNew('Ushahidi\Core\Usecase\Collection\ReadCollectionPost'),
 ];
 
-$di->setter['Ushahidi\Core\Usecase\Collection\CreateCollectionPost']['setSetRepository'] = $di->lazyGet('repository.set');
-$di->setter['Ushahidi\Core\Usecase\Collection\DeleteCollectionPost']['setSetRepository'] = $di->lazyGet('repository.set');
+// Injecting to traits FTW :)
+$di->setter['Ushahidi\Core\Usecase\Collection\SetRepositoryTrait']['setSetRepository'] = $di->lazyGet('repository.set');
+$di->setter['Ushahidi\Core\Usecase\Collection\AuthorizeCollection']['setSetAuthorizer'] = $di->lazyGet('authorizer.collection');
+
+// wtf
 $di->setter['Ushahidi\Core\Usecase\SavedSearch\SearchSavedSearchPost']['setPostRepository'] = $di->lazyGet('repository.post');
 
 // User login is a custom read the uses authentication.
