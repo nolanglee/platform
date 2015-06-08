@@ -230,15 +230,15 @@ class Ushahidi_Repository_Post extends Ushahidi_Repository implements
 			// search terms are all wrapped as a series of OR conditions
 			$query->and_where_open();
 
-			if (is_numeric($search->q)) {
-				// possibly searching for a specific id
-				$query->or_where('id', '=', $search->q);
-			}
-
-			// or possible text searching in title / content
+			// searching in title / content
 			$query
 				->where("$table.title", 'LIKE', "%$search->q%")
 				->or_where("$table.content", 'LIKE', "%$search->q%");
+
+			if (is_numeric($search->q)) {
+				// if `q` is numeric, could be searching for a specific id
+				$query->or_where('id', '=', $search->q);
+			}
 
 			$query->and_where_close();
 		}
