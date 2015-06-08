@@ -166,7 +166,7 @@ Route::set('dataproviders-api', 'api/v2/dataproviders(/<id>)',
  */
 Route::set('savedsearches-api', 'api/v2/savedsearches(/<id>)',
 	array(
-		'id' => '[a-zA-Z_-]+'
+		'id' => '\d+'
 	))
 	->defaults(array(
 		'action'     => 'index',
